@@ -9,11 +9,11 @@ import LoginScreen from './screens/LoginScreen';
 
 const Stack = createNativeStackNavigator();
 
-const user = false;
+const user = true;
 
 const StackNavigator = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{headerShown: false}}>
 
         {user ? (
             <>
