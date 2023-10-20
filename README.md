@@ -80,11 +80,22 @@
 
 ## Appendices
 
+### Revision history
+
 | Date      | Author               | Version | Change reference            |
 |-----------|----------------------|---------|-----------------------------|
 | 20 X 2023 | Krzysztof Wiśniewski | 0.1     | SRS structure |
 | 20 X 2023 | Krzysztof Wiśniewski | 0.2     | Purpose, Scope, Acronyms, References, Overview |
-|           |                      |         |                             |
+| 20 X 2023 | Krzysztof Wiśniewski | 0.3     | Drafts |
+
+### Drafts 
+![draft01](drafts/draft01.jpg)
+![draft02](drafts/draft02.jpg)
+![draft03](drafts/draft03.jpg)
+![draft04](drafts/draft04.jpg)
+![draft05](drafts/draft05.jpg)
+![draft06](drafts/draft06.jpg)
+
 
 ## Index
 [1] https://se.inf.ethz.ch/courses/2011a_spring/soft_arch/exercises/02/Requirements_Specification.pdf
