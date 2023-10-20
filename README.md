@@ -3,27 +3,48 @@
 ## Introduction
 1. <b>Purpose</b> 
     <p style='text-align: justify;'>
-    The FilmderApp is a mobile app that cater the needs and desires of movie enthusiasts, offering a comprehensive solution for tracking, discovering and recommending films.
+    This document represent the Software Requirements Specification (SRS) for the FilmderAPP. It is designed and written primarily for the developers involved in this project. It's purpose is to describe the scope, both functional and non-functional requirements, as well as the design constraints of the project. Furthermore, this project shows how the system's interfaces are designed in detail. [1]
     <p>
 
 2. <b>Scope</b> 
     <p style='text-align: justify;'>
-    The primary purpose of Filmder is to empower users with the ability to discover films tailored to their individual tastes and preferences. Moreover, the app promotes social interactions and engagement by allowing users to connect with each other to find films in their common niche. <br />
-    The system is created for Android and iOS in ReactNative. Non-relational DataBase will be used to store data. <br />
+    The FilmderApp is a mobile app that cater the needs and desires of movie enthusiasts, offering a comprehensive solution for tracking, discovering and recommending films.
+
+    The primary purpose of Filmder is to empower users with the ability to discover films tailored to their individual tastes and preferences. Moreover, the app promotes social interactions and engagement by allowing users to connect with each other to find films in their common niche.
+
+    It is vital to add, that the app itself will not contain streaming service for films - however short trailers may be added in the future.
+
     Above all, we ought to create a place for film aficionados, where they can expand their cinematic horizons. 
     <p>
 
-3. <b>Definitions, acronyms, abbreviations</b> 
-    * FD - FilmderApp 
-    * DB - DataBase
-    * GH - GitHub
-    * SRS - Software Requirements Specification
+3. <b>Definitions, acronyms</b> 
+
+    | Definition | Explanation                         |
+    |------------|-------------------------------------|
+    | Def1       | Exp1                                |
+
+
+    | Acronym | Explanation                         |
+    |---------|-------------------------------------|
+    | FD      | FilmderApp                          |
+    | GH      | GitHub                              |
+    | SRS     | Software Requirements Specification |
+    | DB      | DataBase                            |
+    | DBMS    | DataBase Management System          |
+    | RN      | ReactNative                         |
 
 4. <b>Reference documents</b> 
     * GH link: https://github.com/KaWis17/Filmder
     * Jira link: https://kapelakapelki.atlassian.net/jira/software/projects/SCRUM/boards/1
 
-5. <b>Overview</b> 
+5. <b>Overview</b> <br />
+    Members of a team:
+    1. Maria Gnatyuk
+    2. Bartosz Tatys 
+    3. Paweł Cirko
+    4. Jan Poręba
+    5. Krzysztof Wiśniewski
+
     <p style='text-align: justify;'>
     Next part of the SRS will focus on overall description of our programming endeavor, but also on a more specific requirements for different part of the system. 
     <p>
@@ -59,5 +80,12 @@
 
 ## Appendices
 
+| Date      | Author               | Version | Change reference            |
+|-----------|----------------------|---------|-----------------------------|
+| 20 X 2023 | Krzysztof Wiśniewski | 0.1     | SRS structure |
+| 20 X 2023 | Krzysztof Wiśniewski | 0.2     | Purpose, Scope, Acronyms, References, Overview |
+|           |                      |         |                             |
+
 ## Index
+[1] https://se.inf.ethz.ch/courses/2011a_spring/soft_arch/exercises/02/Requirements_Specification.pdf
 
