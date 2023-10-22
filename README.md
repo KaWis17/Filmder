@@ -52,8 +52,19 @@
 ## Overall description
 1. Product perspective 
 2. Product functions
-3. User characteristics
-4. Constraints
+3. <b>User characteristics</b> <br />
+    <p style='text-align: justify;'>
+    The primary user of FD is a movie enthusiast. This group consists of people who vary in background and move preference. However, the common factor is that they are in most cases 'tech-savvy' and quickly adapt to new user interfaces. It is vital to provide them with high-quality and accurate predictions about their movie taste. As the primary target is the young generation, they will highly appreciate seamless user experience and social futures to connect to other like-minded individuals.
+    </p>
+4. <b>Constraints</b> <br />
+    * OS constraint - an app must be compatible with iOS 16 and Android 12 versions.
+    * Network constraint - an app must function both on Wi-Fi networks and Mobile Data. It should handle occasional network disruptions.
+    * Legal compliance - user data should be protected by standards required by the EU regulations.
+    * Platform constraints - an app should contain all requirements to deploy it on AppStore and PlayStore.
+    * Performance constraint - an app must load within 5 seconds on a middle-tier phones.
+    * Integration constraint - an app should support user authentication via Google OAuth.
+    * Framework constraint - an app must be compatible with third-party libraries licensing requirements.
+    * Scalable constraint - an app will be designed to support future scaling 
 5. Assumptions and Dependencies
 
 ## Specific requirements 
@@ -87,7 +98,9 @@
 | 20 X 2023 | Krzysztof Wiśniewski | 0.1     | SRS structure |
 | 20 X 2023 | Krzysztof Wiśniewski | 0.2     | Purpose, Scope, Acronyms, References, Overview |
 | 20 X 2023 | Krzysztof Wiśniewski | 0.3     | Drafts |
-| 22 X 2023 | Krzysztof Wiśniewski | 0.3     | Demo |
+| 22 X 2023 | Krzysztof Wiśniewski | 0.4     | Demo |
+| 22 X 2023 | Krzysztof Wiśniewski | 0.5     | Constraints, User Characteristics |
+
 
 
 ### Drafts 
