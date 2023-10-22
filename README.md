@@ -91,8 +91,8 @@
 
 
 ### Drafts 
-<video src="drafts/demo.mp4" controls="controls" style="max-width: 730px;">
-</video>
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/kUuHn3DL3q8/0.jpg)](https://youtube.com/shorts/kUuHn3DL3q8)
+
 
 ![draft01](drafts/draft01.jpg)
 ![draft02](drafts/draft02.jpg)
