@@ -49,14 +49,24 @@
     Next part of the SRS will focus on overall description of our programming endeavor, but also on a more specific requirements for different part of the system. 
     <p>
 
-## Overall description
-1. Product perspective 
-2. Product functions
-3. <b>User characteristics</b> <br />
+## General description
+1. <b>Product perspective</b> <br />
+    * Cross platform support: Offers operating support for all operating systems.
+    * Large database of films (including a short decsription and a link to a trailer).
+    * User account: The system allows the user to create their accounts in the system and provide features of updating and viewing profiles.
+    * Number of users being supported by the system: Though the number is precisely not mentioned but the system is able to support a large number of online users at the same time.
+    * People search: search is simply local search engine based on key words.
+    * Comment section for every film: provides users with a platform to discuss this particulat film.
+    * Comunication between profiles: allows user to privately communicate between each other.
+    * Generating film preferences for every user by analyzing users previous choices.
+    * Matching people with similar film preferences.
+    * Creating rankingS of films due to some criterias.
+2. <b>User characteristics</b> <br />
     <p style='text-align: justify;'>
     The primary user of FD is a movie enthusiast. This group consists of people who vary in background and move preference. However, the common factor is that they are in most cases 'tech-savvy' and quickly adapt to new user interfaces. It is vital to provide them with high-quality and accurate predictions about their movie taste. As the primary target is the young generation, they will highly appreciate seamless user experience and social futures to connect to other like-minded individuals.
+    The administrator is expected to be familiar with the interface of the tech support system.
     </p>
-4. <b>Constraints</b> <br />
+3. <b>Constraints</b> <br />
     * OS constraint - an app must be compatible with iOS 16 and Android 12 versions.
     * Network constraint - an app must function both on Wi-Fi networks and Mobile Data. It should handle occasional network disruptions.
     * Legal compliance - user data should be protected by standards required by the EU regulations.
@@ -65,8 +75,11 @@
     * Integration constraint - an app should support user authentication via Google OAuth.
     * Framework constraint - an app must be compatible with third-party libraries licensing requirements.
     * Scalable constraint - an app will be designed to support future scaling 
-5. Assumptions and Dependencies
-
+4. Assumptions and Dependencies
+    <p style='text-align: justify;'>
+    Performance of FD highly depends on the internet quality of user. Also some differences could appear due to different operation systems.
+    </p>
+    
 ## Specific requirements 
 1. External interface requirements
     * User interfaces
@@ -74,19 +87,28 @@
     * Software interfaces 
     * Communication interfaces
 2. Functional requirements
-    * Mode 1
-    * Mode 2
-    * Mode n
-3. Performance requirements
+    * Enable a user to create a profile.
+    * Enable a logged in user to ask update his profile which includes his location, film preferences, subscriptions and profile picture.
+    * Enable a logged in user to swipe films.
+    * Enable a logged in user to check films information.
+    * Enable a logged in user to write comments in a comment section, reply for other comments, delete users comments.
+    * Enable a logged in user to communicate with other users, add users to friend list and block users.
+    * Enable a logged in user to suggest changes in FD.
+    * Enable a logged in user to suggest extending film database with a selected film.
+    * Enable the admin to view users suggestions, add films to database, direct some suggestions to developers.
+3. <b>Performance requirements</b> <br />
+    * Performance - The system must be interactive and the delays involved must be less.
+    * Safety - Information transmission should be securely transmitted to server without any changes in information.
+    * Reliability - Users can access their profile 98% of the time without failure.
 4. Design constraints
     * Standards compliance
     * Hardware limitations
 5. Software system attributes
-    * Reliability
-    * Availability 
-    * Security
-    * Maintainability
-    * Portability
+    * Availability - If the internet service gets disrupted while sending information to the server, the information can be send again for verification.
+    * Security - The main security concern is for users account hence proper login mechanism should be used to avoid hacking. 
+    * Maintainability - Sending user suggestions to admins allows FD to be up-to-date.
+    * Portability - As the system uses unique profiles for every user, remembering login and password is enough to reach user account on enother device.
+    * Usability - As the system is easy to handle and navigates in the most expected way with no delays. 
 6. Other requirements
 
 ## Appendices
@@ -100,6 +122,7 @@
 | 20 X 2023 | Krzysztof Wiśniewski | 0.3     | Drafts |
 | 22 X 2023 | Krzysztof Wiśniewski | 0.4     | Demo |
 | 22 X 2023 | Krzysztof Wiśniewski | 0.5     | Constraints, User Characteristics |
+| 23 X 2023 | Mariia    Hnatiuk    | 0.6     | Functional / Non functional requirements |
 
 
 
