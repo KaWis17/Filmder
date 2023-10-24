@@ -111,6 +111,27 @@
     * Usability - As the system is easy to handle and navigates in the most expected way with no delays. 
 6. Other requirements
 
+## Key Design Components
+Matching films to user 
+
+The first part of movie proposal is to decide whether to pick title based on user preferences or something based on recent trends. This decision is being taken randomly with given probabilities. Option based on trends means picking one of the movies in top of leaderboard independently form user's taste. It prevents the overfitting of the model. The other option picks movie genre based on score system. 
+
+Genre score system: 
+
+Score system is being determined on the onboarding operation explained below and user's responses to previous proposals. All film categories receive a certain weight, which should reflect the user's interest in this category (proposed weights: 1, 2, 3). Then, a film category is drawn, and the probability of drawing a given category is equal to the category weight divided by the sum of the weights of all categories.  
+
+The weights may change depending on the user's likes. When a user likes 3 videos in a row from a given category, the weight of that category increases by 1 (if it was not the maximum weight). Similarly, when a user dislikes three videos in a row from a given category, the weight decreases by 1 (if it was not the minimum weight).  
+
+This score system allows to adapt to the user's preferences in a short time. A user can change the frequency of a given category after just 3 movies, even if they had a bad attitude towards such films before. 
+
+After selecting a category, the algorithm selects a movie (to be determined whether it is completely random, the newest, etc.) 
+
+Initial Preference Learning: 
+
+After creation of account, user is being given a certain amount of film suggestions. Suggestions are picked randomly, but there is a maximum number of suggestions with the given genre of motion picture. In this stage the number of points (positive or negative) given to genre if user likes/dislikes film of this genre is increased to make algorithm learn users tastes faster.  
+
+This “onboarding” sequence serves also as a walkthrough which explains how to use the application. First few films suggestions are displayed with additional popups containing explanation of how users interface works. 
+
 ## Appendices
 
 ### Revision history
