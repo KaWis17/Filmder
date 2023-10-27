@@ -111,7 +111,7 @@
     * Usability - As the system is easy to handle and navigates in the most expected way with no delays. 
 6. Other requirements
 
-## Key Design Components
+## Businnes Logic Elements
 Matching films to user 
 
 The first part of movie proposal is to decide whether to pick title based on user preferences or something based on recent trends. This decision is being taken randomly with given probabilities. Option based on trends means picking one of the movies in top of leaderboard independently form user's taste. It prevents the overfitting of the model. The other option picks movie genre based on score system. 
@@ -144,6 +144,7 @@ This “onboarding” sequence serves also as a walkthrough which explains how t
 | 22 X 2023 | Krzysztof Wiśniewski | 0.4     | Demo |
 | 22 X 2023 | Krzysztof Wiśniewski | 0.5     | Constraints, User Characteristics |
 | 23 X 2023 | Mariia    Hnatiuk    | 0.6     | Functional / Non functional requirements |
+| 24 X 2023 | Bartosz Tatys        | 0.7     | Businnes Logic Elements |
 
 
 
