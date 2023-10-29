@@ -39,7 +39,7 @@
 
 5. <b>Overview</b> <br />
     Members of a team:
-    1. Maria Gnatyuk
+    1. Mariia Hnatiuk
     2. Bartosz Tatys 
     3. Paweł Cirko
     4. Jan Poręba
@@ -79,6 +79,11 @@
     <p style='text-align: justify;'>
     Performance of FD highly depends on the internet quality of user. Also some differences could appear due to different operation systems.
     </p>
+5. <b>Tools and Technologies</b>
+    * React Native
+    * Mongo DB : using the Realm management system.
+      The entire project would be devided into 2 microservices (both using MongoDB), one for films DB and the second for messaging between users. If we decide to reduce functionality connected with messaging, than the entire app will be managed by one service.
+    
     
 ## Specific requirements 
 1. External interface requirements
@@ -145,6 +150,7 @@ This “onboarding” sequence serves also as a walkthrough which explains how t
 | 22 X 2023 | Krzysztof Wiśniewski | 0.5     | Constraints, User Characteristics |
 | 23 X 2023 | Mariia    Hnatiuk    | 0.6     | Functional / Non functional requirements |
 | 24 X 2023 | Bartosz Tatys        | 0.7     | Businnes Logic Elements |
+| 29 X 2023 | Mariia Hnatiuk       | 0.8     | Section for Tools and Technologies (needs to be extended) |
 
 
 
