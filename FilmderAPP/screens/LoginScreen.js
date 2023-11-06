@@ -8,7 +8,7 @@ const LoginScreen = () => {
 
     return (
         <View>
-        <Text className="text-red-500">chatScreen</Text>
+        <Text className="text-red-500">chatScreen 123</Text>
         </View>
     )
 }
