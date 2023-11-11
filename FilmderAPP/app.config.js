@@ -1,4 +1,6 @@
-{
+import 'dotenv/config';
+
+export default{
   "expo": {
     "name": "FilmderAPP",
     "slug": "FilmderAPP",
@@ -19,11 +21,11 @@
       "bundleIdentifier": "com.kawis.FilmderAPP"
     },
     "android": {
+      "package": "com.kawis.FilmderAPP",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      },
-      "package": "com.kawis.FilmderAPP"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -32,6 +34,7 @@
       "eas": {
         "projectId": "2de5ed97-da27-4c83-89f8-cd59a9660cfd"
       }
-    }
+    },
+  
   }
 }
