@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useState } from "react/cjs/react.development"
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, getAuth } from "firebase/auth";
 import { auth } from './FirebaseConfig';
 
 
@@ -11,7 +11,19 @@ export default function App() {
   const [password, setPassword] = useState('')
 
   function signIn(){
-    alert('SignIn message')
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in 
+        const user = userCredential.user;
+        alert("Logged in")
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        alert("not logged")
+    });
   }
 
   function signUp(){
@@ -19,8 +31,7 @@ export default function App() {
       .then((userCredential) => {
         // Signed up 
         const user = userCredential.user;
-        alert('Success')
-
+        alert('created user')
         // ...
       })
       .catch((error) => {
@@ -37,7 +48,8 @@ export default function App() {
       <StatusBar style="auto" />
       <TextInput placeholder='Email' value={email} onChangeText={(Text) => {setEmail(Text)}}></TextInput>
       <TextInput placeholder='Password' value={password} onChangeText={(Text) => {setPassword(Text)}}></TextInput>
-      <Button title="submit" onPress={signUp}/>
+      <Button title="signIn" onPress={signIn}/>
+      <Button title="signUp" onPress={signUp}/>
     </View>
   );
 }
