@@ -33,7 +33,3 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
-
-# ignore all google-auth
-firebase.ts
-*.env
