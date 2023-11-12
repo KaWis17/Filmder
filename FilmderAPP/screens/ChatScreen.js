@@ -9,8 +9,8 @@ const ChatScreen = () => {
 
     return (
 
-        <Stack.Navigator screenOptions={{headerShown: false}}>
-            <Stack.Screen name="chatList" component={ChatListScreen} />
+        <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName="chatList">
+            <Stack.Screen name="chatList" component={ChatListScreen}/>
             <Stack.Screen name="conversation" component={ChatConversationScreen}r/>
         </Stack.Navigator>
 

@@ -1,60 +1,71 @@
 import {View, Text, FlatList, TouchableOpacity} from 'react-native'
 import React, {useEffect, useState} from 'react'
-import {collection} from "firebase/firestore";
+
+import { collection, query, where, getDocs, or } from "firebase/firestore"; 
+import { db } from "../FirebaseConnection"
+
+import useAuth from '../AuthProvider'
+import { useNavigation } from '@react-navigation/core';
+
+
 
 const ChatListScreen = () => {
-    const [friends, setFriends] = useState([
-        { id: '1', name: 'Friend 1' },
-        { id: '2', name: 'Friend 2' },
-        // Add more friends as needed
-    ]);
-    const [selectedFriends, setSelectedFriends] = useState([]);
 
-    const toggleFriendSelection = (friendId) => {
-        const isSelected = selectedFriends.includes(friendId);
-        if (isSelected) {
-            setSelectedFriends(selectedFriends.filter((id) => id !== friendId));
-        } else {
-            setSelectedFriends([...selectedFriends, friendId]);
+    const { user } = useAuth();
+
+    const navigation = useNavigation();
+
+    React.useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            getFriendsList()
+        });
+        return unsubscribe;
+      }, [navigation]);
+
+
+    const getFriendsList = async () =>{
+        const q = query(collection(db, "friends"), or(where("uid1", "==", user.uid), (where("uid2", "==", user.uid))))
+
+        try {
+            const querySnapshot = await getDocs(q);
+            querySnapshot.forEach(async (doc) => {
+                
+                var friendID = doc.data().uid1
+                if(doc.data().uid1 == user.uid){ friendID = doc.data().uid2 }
+
+                var friendName = await getFriendNameByID(friendID)
+                setFriends(friends.concat({id: friendID, name: friendName}))
+            });
+        } catch (e) {
+            alert(e);
         }
-    };
+    }
+
+    const getFriendNameByID = async (userID) => {
+        const q = query(collection(db, "users"), where("uid", "==", userID));
+
+        const querySnapshot = await getDocs(q);
+        return await querySnapshot.docs[0].data().first.toString()
+    }
+
+    const [friends, setFriends] = useState([]);
 
     const renderItem = ({ item }) => (
         <TouchableOpacity
-            style={{
-                padding: 16,
-                borderBottomWidth: 1,
-                borderBottomColor: '#ccc',
-                backgroundColor: selectedFriends.includes(item.id) ? '#3498db' : '#fff',
-            }}
-            onPress={() => toggleFriendSelection(item.id)}
+            className="bg-white"
+            onPress={() => navigation.navigate("conversation")}
         >
-            <Text style={{ color: selectedFriends.includes(item.id) ? '#fff' : '#000' }}>{item.name}</Text>
+            <Text className="p-3 text-lg">{item.name}</Text>
         </TouchableOpacity>
     );
-
+        
     return (
-        <View style={{ flex: 1, padding: 16 }}>
+        <View className="flex pt-20 h-screen bg-slate-300">
             <FlatList
                 data={friends}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.id}
             />
-            <TouchableOpacity
-                style={{
-                    backgroundColor: '#3498db',
-                    padding: 16,
-                    alignItems: 'center',
-                    borderRadius: 8,
-                    marginTop: 16,
-                }}
-                onPress={() => {
-                    alert('Selected Friends:'+selectedFriends);
-                    // Perform any action with selected friends
-                }}
-            >
-                <Text style={{ color: '#fff' }}>Pick Selected Friends</Text>
-            </TouchableOpacity>
         </View>
   )
 }

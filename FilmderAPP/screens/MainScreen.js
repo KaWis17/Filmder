@@ -9,7 +9,7 @@ const MainScreen = () => {
 
     return (
 
-         <Stack.Navigator screenOptions={{headerShown: false}}>
+         <Stack.Navigator screenOptions={{headerShown: false}} >
             <Stack.Screen name="swiper" component={SwiperScreen} />
             <Stack.Group screenOptions={{presentation: 'modal'}}>
                 <Stack.Screen name="modal" component={ModalScreen}r/>

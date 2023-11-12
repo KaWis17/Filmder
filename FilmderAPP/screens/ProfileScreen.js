@@ -3,18 +3,20 @@ import React from 'react'
 import { useState } from "react/cjs/react.development"
 
 import useAuth from '../AuthProvider'
-import { collection, query, where, getDocs, setDoc, doc, serverTimestamp } from "firebase/firestore"; 
+import { collection, query, where, getDocs, setDoc, doc, serverTimestamp, addDoc } from "firebase/firestore"; 
 import { db } from "../FirebaseConnection"
-import { DummyData } from '../temporary/cards';
 
 
 const ProfileScreen = () => {
+
 
     const { profileUpdate, logout } = useAuth();
     const { name, setName, user } = useAuth();
 
     const [surname, setSurname] = useState('')
     const [age, setAge] = useState('')
+    const [friendToAdd, setFriendToAdd] = useState('dIfd2szWxJf74dbaZr8MI8JjA7b2')
+
 
     const updateUserData = () =>{
 
@@ -25,6 +27,16 @@ const ProfileScreen = () => {
             first: name,
             last: surname,
             born: age,
+            timestamp: serverTimestamp()
+        });
+    
+    }
+
+    const addToFriendList = (friendID) =>{
+       
+        addDoc(collection(db, "friends"), {
+            uid1: user.uid,
+            uid2: friendToAdd,
             timestamp: serverTimestamp()
         });
     
@@ -67,6 +79,10 @@ const ProfileScreen = () => {
         <Button 
             title="Change user data"
             onPress={updateUserData}
+        />
+        <Button 
+            title="Add Bartek to friends"
+            onPress={addToFriendList}
         />
         <Button 
             title="Logout"
