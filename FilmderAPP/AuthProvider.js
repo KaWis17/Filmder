@@ -1,14 +1,22 @@
-import React, { createContext, useContext } from 'react'
+import React, { createContext, useContext, useMemo } from 'react'
 import { useState } from "react/cjs/react.development"
 
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, getAuth } from "firebase/auth";
+import { 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword, 
+    sendEmailVerification, 
+    updateProfile,
+    signOut,
+    getAuth } from "firebase/auth";
+
 import { auth } from './FirebaseConnection';
 
 const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
 
-    const [user, setUser] = useState('')
+    const [user, setUser] = useState('Krzysztof')
+    const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
@@ -18,7 +26,7 @@ export const AuthProvider = ({ children }) => {
             .then((userCredential) => {
             if(userCredential.user.emailVerified){
                 setUser(userCredential.user)
-                alert("LoggedIn")
+                setName(userCredential.user.displayName)
             } else {
                 alert("Email not yet verified!")
             }
@@ -49,8 +57,30 @@ export const AuthProvider = ({ children }) => {
         });
     }
 
+    const profileUpdate = () => {
+        updateProfile(auth.currentUser, {
+            displayName: name, 
+        }).then(() => {
+            setName('')
+        }).catch((error) => {
+            alert(error)
+        });
+    }
+
+    const logout = () => {
+        signOut(auth).then(() => {
+            setUser(null);
+            setEmail('');
+            setPassword('');
+            alert("Successfully logged out!")
+          }).catch((error) => {
+            alert(error)
+          });
+    }
+
   return (
-    <AuthContext.Provider value={{user, email, setEmail, password, setPassword, signIn, signUp}}>
+    <AuthContext.Provider value={{  user, email, setEmail, password, setPassword, name, setName, 
+                                    signIn, signUp, profileUpdate, logout}}>
       {children}
     </AuthContext.Provider>
   )

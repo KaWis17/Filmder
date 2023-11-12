@@ -1,11 +1,69 @@
-import { View, Text } from 'react-native'
+import { View, Text, Image, Modal } from 'react-native'
 import React from 'react'
 
+import useAuth from '../AuthProvider'
+import Swiper from 'react-native-deck-swiper';
+
+import { DummyData } from '../temporary/cards';
+
 const MainScreen = () => {
+
+    const { user } = useAuth();
+
     return (
-        <View className="flex-1 items-center justify-center bg-white">
-            <Text className="text-red-500">MainScreen</Text>
-        </View>
+        <View className="flex h-screen bg-slate-300">
+
+        <Swiper 
+            containerStyle={{backgroundColor: "transparent" }}
+            cards={DummyData}
+            stackSize={10}
+            animateCardOpacity
+
+            onSwipedTop={() => {
+                alert("swipedTOP")
+            }}
+
+            onSwipedRight={() => {
+                alert("swipedRIGHT")
+            }}
+
+            onSwipedBottom={() => {
+                alert("swipedBOTTOM")
+            }}
+
+            onSwipedLeft={() => {
+                alert("swipedLEFT")
+            }}
+
+            onTapCard={() => {
+                alert("cartDAP")
+            }}
+
+            renderCard={(card) => {
+                return (
+                    <View className="my-auto relative bg-black h-4/5 rounded-xl">
+                        <Image 
+                        className="absolute top-0 h-full w-full rounded-xl"
+                        source={{ uri: card.posterUrl }}/>
+
+                        <View className="flex flex-col absolute bottom-0 bg-white w-full h-20 justify-between items-between px-6 py-2">
+                    
+                            <Text className="relative text-2xl font-bold w-full text-center truncate max-h-10 whitespace-nowrap">{card.title}</Text>
+                            
+                            <View className="flex flex-row w-full">
+                                <Text className="text-xl text-left grow">{card.director}</Text>
+                                <Text className="text-xl text-rightr">{card.id}</Text>
+                            </View>
+
+                        </View>
+
+                    </View>
+                )
+            }}
+            cardIndex={0}
+
+        />
+    </View>
     )
 }
 

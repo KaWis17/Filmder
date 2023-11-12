@@ -17,11 +17,10 @@ const Navigation = () => {
     return (
         <>
             {user ? (
-                <Tab.Navigator screenOptions={{headerShown: false}} initialRouteName="Main">
-                <>
+            <Tab.Navigator screenOptions={{headerShown: false}} initialRouteName="Main">
                 <Tab.Screen name='Chat' 
                             component={ChatScreen} 
-                            options={{tabBarIcon: ({ color, size }) => (<Ionicons name="chatbubbles-outline" color={color} size={size} />),}}
+                            options={{tabBarBadge: 3, tabBarIcon: ({ color, size }) => (<Ionicons name="chatbubbles-outline" color={color} size={size} />),}}
                 />
                 <Tab.Screen name='Main' 
                             component={MainScreen} 
@@ -31,7 +30,6 @@ const Navigation = () => {
                             component={ProfileScreen} 
                             options={{tabBarIcon: ({ color, size }) => (<Ionicons name="person-outline" color={color} size={size} />),}}
                 />
-                </>
             </Tab.Navigator>
             ) : (
                 LoginScreen(user)
