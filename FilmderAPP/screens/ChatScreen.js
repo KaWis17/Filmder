@@ -1,53 +1,20 @@
-import React from 'react';
-import { GiftedChat } from 'react-native-gifted-chat';
-import {auth} from "../FirebaseConnection";
+import React from 'react'
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import ChatListScreen from "./ChatListScreen";
+import ChatConversationScreen from "./ChatConversationScreen";
 
-class Chat extends React.Component {
-    static navigationOptions = ({ navigation }) => ({
-        title: (navigation.state.params || {}).name || 'Chat!',
-    });
+const Stack = createNativeStackNavigator();
 
-    state = {
-        messages: [
-            {
-                _id: 1,
-                text: 'Hello!',
-                createdAt: new Date(),
-                user: {
-                    _id: 2,
-                    name: 'React Native',
-                    avatar: 'https://placeimg.com/140/140/any',
-                },
-            },
-            {
-                _id: 2,
-                text: 'How are you?',
-                createdAt: new Date(),
-                user: {
-                    _id: 1,
-                    name: 'User',
-                    avatar: 'https://placeimg.com/140/140/any',
-                },
-            },
-        ],
-    };
+const ChatScreen = () => {
 
-    onSend = newMessages => {
-        this.setState(previousState => ({
-            messages: GiftedChat.append(previousState.messages, newMessages),
-        }));
-    };
+    return (
 
-    render() {
-        return (
-            <GiftedChat
-                user={{_id: auth?.currentUser?.email,name: auth?.currentUser?.displayName,avatar: auth?.currentUser?.photoURL}}
-                showAvatarForEveryMessage={true}
-                messages={this.state.messages}
-                onSend={messages => this.onSend(messages)}
-            />
-        );
-    }
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+            <Stack.Screen name="chatList" component={ChatListScreen} />
+            <Stack.Screen name="conversation" component={ChatConversationScreen}r/>
+        </Stack.Navigator>
+
+    )
 }
 
-export default Chat;
+export default ChatScreen
