@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Button, TextInput, Text } from 'react-native'
+import { View, TouchableOpacity, TextInput, Text } from 'react-native'
 
 import useAuth from '../AuthProvider'
 
@@ -18,19 +18,25 @@ const LoginScreen = () => {
                 value={email} 
                 onChangeText={(Text) => {setEmail(Text)}}
                 autoCapitalize='none'
-                className="w-3/5 h-12 mb-4 border-solid rounded-md border-sky-500 bg-white text-center"/>
+                className="w-4/5 h-12 mb-4 border-solid rounded-md border-sky-500 bg-white text-center"/>
             <TextInput 
                 placeholder="password" 
                 value={password} 
                 onChangeText={(Text) => {setPassword(Text)}}
                 secureTextEntry={true} 
-                className="w-3/5 h-12 mb-4 border-solid rounded-md border-sky-500 bg-white text-center"/>
-            <Button 
-                title="Sign in"
-                onPress={signIn}/>
-            <Button 
-                title="Sign up"
-                onPress={signUp}/>
+                className="w-4/5 h-12 mb-4 border-solid rounded-md border-sky-500 bg-white text-center"/>
+
+            <TouchableOpacity 
+                onPress={signIn}
+                className="mx-auto w-1/2 h-12 mb-4 border-solid rounded-md bg-blue-500">
+                <Text className=" text-lg my-auto text-center color-white">SIGN IN</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+                onPress={signUp}
+                className="absolute bottom-10 mx-auto w-1/2 h-12 mb-4 border-solid rounded-md bg-red-500">
+                <Text className=" text-lg my-auto text-center color-white">REGISTER</Text>
+            </TouchableOpacity>
         </View>
     )
 }

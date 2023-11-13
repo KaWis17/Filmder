@@ -5,7 +5,6 @@ import {
     createUserWithEmailAndPassword, 
     signInWithEmailAndPassword, 
     sendEmailVerification, 
-    updateProfile,
     signOut,
     getAuth } from "firebase/auth";
 
@@ -16,10 +15,8 @@ const AuthContext = createContext({});
 export const AuthProvider = ({ children }) => {
 
     const [user, setUser] = useState('')
-    const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [currentCardId, setCurrentCardId] = useState('')
 
     const signIn = () => {
         const auth = getAuth();
@@ -27,7 +24,6 @@ export const AuthProvider = ({ children }) => {
             .then((userCredential) => {
             if(userCredential.user.emailVerified){
                 setUser(userCredential.user)
-                setName(userCredential.user.displayName)
             } else {
                 alert("Email not yet verified!")
             }
@@ -49,22 +45,20 @@ export const AuthProvider = ({ children }) => {
           const errorMessage = error.message;
           alert(errorMessage)
       });
+
+      setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        first: "name",
+        last: "surname",
+        born: "age",
+        timestamp: serverTimestamp()
+    });
     }
 
     function sendVerificationEmail() {
         sendEmailVerification(auth.currentUser)
         .then(() => {
             alert("Account created. Email verification sent!")
-        });
-    }
-
-    const profileUpdate = () => {
-        updateProfile(auth.currentUser, {
-            displayName: name, 
-        }).then(() => {
-            setName('')
-        }).catch((error) => {
-            alert(error)
         });
     }
 
@@ -83,9 +77,7 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider value={{  user, 
                                     email, setEmail, 
                                     password, setPassword, 
-                                    name, setName, 
-                                    currentCardId, setCurrentCardId,
-                                    signIn, signUp, profileUpdate, logout }}>
+                                    signIn, signUp, logout }}>
       {children}
     </AuthContext.Provider>
   )
