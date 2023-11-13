@@ -1,53 +1,62 @@
-import React from 'react';
+import { addDoc, collection, serverTimestamp, onSnapshot, query, orderBy } from 'firebase/firestore';
+import React, { useState, useEffect, useCallback } from 'react';
 import { GiftedChat } from 'react-native-gifted-chat';
-import {auth} from "../FirebaseConnection";
+import { db } from '../FirebaseConnection';
+import useAuth from '../AuthProvider';
 
-class ChatConversationScreen extends React.Component {
-    static navigationOptions = ({ navigation }) => ({
-        title: (navigation.state.params || {}).name || 'Chat!',
-    });
+const ChatConversationScreen = ({route, navigation}) => {
+    const info = route.params.info;
 
-    state = {
-        messages: [
-            {
-                _id: 1,
-                text: 'Hello!',
-                createdAt: new Date(),
-                user: {
-                    _id: 2,
-                    name: 'React Native',
-                    avatar: 'https://placeimg.com/140/140/any',
-                },
-            },
-            {
-                _id: 2,
-                text: 'How are you?',
-                createdAt: new Date(),
-                user: {
-                    _id: 1,
-                    name: 'User',
-                    avatar: 'https://placeimg.com/140/140/any',
-                },
-            },
-        ],
-    };
+    const [messages, setMessages] = useState([])
+    const { user } = useAuth();
 
-    onSend = newMessages => {
-        this.setState(previousState => ({
-            messages: GiftedChat.append(previousState.messages, newMessages),
-        }));
-    };
 
-    render() {
-        return (
-            <GiftedChat
-                user={{_id: auth?.currentUser?.email,name: auth?.currentUser?.displayName,avatar: auth?.currentUser?.photoURL}}
-                showAvatarForEveryMessage={true}
-                messages={this.state.messages}
-                onSend={messages => this.onSend(messages)}
-            />
-        );
-    }
+    useEffect(
+        () =>         
+        onSnapshot(
+            query(
+                collection(db, "friends", info.id, "messages"), 
+                orderBy('createdAt', 'desc')
+            ), 
+            (snapshot) =>  
+                setMessages(
+                    snapshot.docs.map((doc) => ({
+                        _id: doc.id,
+                        ...doc.data(),
+                        createdAt: doc.data().createdAt.toDate(),
+                    }))
+                )
+            ),
+        [user]
+        
+    );
+
+  const onSend = useCallback((messages = []) => {
+    setMessages(previousMessages =>
+      GiftedChat.append(previousMessages, messages),
+    )
+
+    addDoc(collection(db, "friends", info.id, "messages"), {
+        text: messages[0].text,
+        user: {
+            _id: user.uid,
+            name: user.displayName,
+        },
+        createdAt: new Date(),
+    })
+    
+  }, [])
+
+  return (
+    <GiftedChat
+        messages={messages}
+        onSend={messages => onSend(messages)}
+        user={{
+            _id: user.uid,
+        }}
+    />
+  )
+
 }
 
 export default ChatConversationScreen;

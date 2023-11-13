@@ -12,7 +12,7 @@ const Tab = createBottomTabNavigator();
 
 const Navigation = () => {
 
-    const { user } =  useAuth()
+    const { user } =  useAuth();
 
     return (
         <>

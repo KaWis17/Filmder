@@ -1,61 +1,47 @@
 import {View, Text, FlatList, TouchableOpacity} from 'react-native'
 import React, {useEffect, useState} from 'react'
 
-import { collection, query, where, getDocs, or } from "firebase/firestore"; 
+import { collection, query, where, onSnapshot } from "firebase/firestore"; 
 import { db } from "../FirebaseConnection"
 
 import useAuth from '../AuthProvider'
 import { useNavigation } from '@react-navigation/core';
 
-
-
 const ChatListScreen = () => {
 
+    const[friends, setFriends] = useState([]);
     const { user } = useAuth();
-
     const navigation = useNavigation();
 
-    React.useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-            getFriendsList()
-        });
-        return unsubscribe;
-      }, [navigation]);
+    useEffect(
+        () =>     
+        onSnapshot(
+            query(
+                collection(db, "friends"), 
+                where('usersMatched', 'array-contains', user.uid)
+            ), 
+            (snapshot) =>  
+                setFriends(
+                    snapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }))
+                )
+            ),
+        [user]
+    );
 
-
-    const getFriendsList = async () =>{
-        const q = query(collection(db, "friends"), or(where("uid1", "==", user.uid), (where("uid2", "==", user.uid))))
-
-        try {
-            const querySnapshot = await getDocs(q);
-            querySnapshot.forEach(async (doc) => {
-                
-                var friendID = doc.data().uid1
-                if(doc.data().uid1 == user.uid){ friendID = doc.data().uid2 }
-
-                var friendName = await getFriendNameByID(friendID)
-                setFriends(friends.concat({id: friendID, name: friendName}))
-            });
-        } catch (e) {
-            alert(e);
-        }
+    const getFriend = (item, userID) => {
+        delete item[userID]
+        return item[Object.keys(item)[0]]
     }
-
-    const getFriendNameByID = async (userID) => {
-        const q = query(collection(db, "users"), where("uid", "==", userID));
-
-        const querySnapshot = await getDocs(q);
-        return await querySnapshot.docs[0].data().first.toString()
-    }
-
-    const [friends, setFriends] = useState([]);
 
     const renderItem = ({ item }) => (
         <TouchableOpacity
-            className="bg-white"
-            onPress={() => navigation.navigate("conversation")}
+            className="bg-white border-b-2"
+            onPress={() => navigation.navigate("conversation", {info: item})}
         >
-            <Text className="p-3 text-lg">{item.name}</Text>
+            <Text className="p-3 text-lg">{getFriend(item.users, user.uid).first +" "+ getFriend(item.users, user.uid).last}</Text>
         </TouchableOpacity>
     );
         
@@ -67,7 +53,10 @@ const ChatListScreen = () => {
                 keyExtractor={(item) => item.id}
             />
         </View>
-  )
+    )
+
+    
+
 }
 
 export default ChatListScreen
