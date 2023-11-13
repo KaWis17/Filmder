@@ -1,46 +1,34 @@
-import { View, Text, Image } from 'react-native'
-import React from 'react'
+import React from 'react';
+import { View, Text, Image, ScrollView } from 'react-native';
 import { DummyData } from '../temporary/cards';
 
+const ModalScreen = ({ route, navigation }) => {
+  const id = route.params.id;
 
-const ModalScreen = ({route, navigation}) => {
-    const id = route.params.id;
-    return (
-        <View>
-            <Text>
-                Title: {DummyData[id].title}
-            </Text>
+  return (
+    <ScrollView style={{ padding: 16 }}>
+      <Image
+        style={{ height: 200, width: '50%', borderRadius: 8, marginTop: 16, marginBottom: 16 }}
+        source={{ uri: DummyData[id].posterUrl }}
+      />
 
-            <Text>
-                Year: {DummyData[id].year}
-            </Text>
+      <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 8 }}>{DummyData[id].title}</Text>
 
-            <Text>
-                Runtime: {DummyData[id].runtime}
-            </Text>
+      <InfoItem label="Year" value={DummyData[id].year} />
+      <InfoItem label="Runtime" value={`${DummyData[id].runtime} minutes`} />
+      <InfoItem label="Genres" value={DummyData[id].genres.join(', ')} />
+      <InfoItem label="Director" value={DummyData[id].director} />
+      <InfoItem label="Actors" value={DummyData[id].actors} />
+      <InfoItem label="Plot" value={DummyData[id].plot} />
+    </ScrollView>
+  );
+};
 
-            <Text>
-                Genres: {DummyData[id].genres.toString()}
-            </Text>
+const InfoItem = ({ label, value }) => (
+  <View style={{ marginBottom: 8 }}>
+    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{label}:</Text>
+    <Text style={{ fontSize: 16 }}>{value}</Text>
+  </View>
+);
 
-            <Text>
-                Director: {DummyData[id].director}
-            </Text>
-
-            <Text>
-                Actors: {DummyData[id].actors.toString()}
-            </Text>
-
-            <Text>
-                Plot: {DummyData[id].plot}
-            </Text>
-
-            <Image 
-                className="h-full w-full rounded-xl"
-                source={{ uri: DummyData[id].posterUrl }}
-            />
-        </View>
-    )
-}
-
-export default ModalScreen
+export default ModalScreen;
