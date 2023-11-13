@@ -9,7 +9,6 @@ const LoginScreen = () => {
     const { signIn, signUp } = useAuth();
     const { email, setEmail, password, setPassword } = useAuth();
 
-
     return (
         <View className="flex-1 items-center justify-center bg-slate-300">
             <Text className="text-4xl mb-20">Filmder</Text>

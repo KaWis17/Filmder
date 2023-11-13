@@ -1,9 +1,9 @@
-import { View, Button, TextInput, Text, Image, ScrollView, Touchable, TouchableOpacity } from 'react-native'
+import { View, Button, TextInput, Text, Image, ScrollView, TouchableOpacity } from 'react-native'
 import React from 'react'
 import {useEffect, useState } from 'react'
 
 import useAuth from '../AuthProvider'
-import { collection, query, where, getDocs, setDoc, doc, serverTimestamp, addDoc, onSnapshot } from "firebase/firestore"; 
+import { collection, query, where, getDocs, setDoc, doc, serverTimestamp, addDoc, onSnapshot, updateDoc, arrayRemove, arrayUnion } from "firebase/firestore"; 
 import { db } from "../FirebaseConnection"
 
 
@@ -16,6 +16,8 @@ const ProfileScreen = () => {
     const[last, setLast] = useState('');
     const[age, setAge] = useState('');
 
+    const[friends, setFriends] = useState([]);
+
 
     //const [friendToAdd, setFriendToAdd] = useState('dIfd2szWxJf74dbaZr8MI8JjA7b2')
 
@@ -27,7 +29,6 @@ const ProfileScreen = () => {
                 where('uid', '==', user.uid)
             ), 
             (snapshot) => {
-                console.log("DOWNLOADED USER INFO FROM THE DATABASE")
                 setFirst(snapshot.docs[0].data().first)
                 setLast(snapshot.docs[0].data().last)
                 setAge(snapshot.docs[0].data().born)
@@ -53,18 +54,53 @@ const ProfileScreen = () => {
     */
 
 
-    const updateUserData = () =>{
+    const updateUserData = async() =>{
        
         setDoc(doc(db, "users", user.uid), {
             uid: user.uid,
+            email: user.email,
             first: first,
             last: last,
             born: age,
             timestamp: serverTimestamp()
         });
 
-        //setDoc(doc(db, "friends",))
+        /*
 
+        var loggedInProfile = getProfileById(user.uid)
+
+        const q = query(
+            collection(db, "friends"), 
+            where('usersMatched', 'array-contains', user.uid)
+        )
+        const querySnapshot = await getDocs(q);
+
+        querySnapshot.forEach(async (document) => {
+
+            if(Object.keys(document.data().users).length == 2){
+                var friendID = Object.keys(document.data().users).at(0)
+            
+                if(friendID == user.uid){
+                    friendID = document.data().users.at(1)
+                } 
+                        
+                await setDoc(doc(db, "friends", document.id)), {
+                    users: {
+                        [user.uid]: loggedInProfile,
+                        [friendID]: document.data().users[friendID],
+                    },
+                    usersMatched: [user.uid, friendID],
+                    timestamp: document.data().timestamp
+                }
+            }
+            
+        });
+
+        */
+        
+
+        //setDoc(doc(db, "friends",))
+    
     }
     /*
 
@@ -78,8 +114,8 @@ const ProfileScreen = () => {
 
     const addToFriendList = async () =>{
 
-        var loggedInProfile = await getFriendNameByID(user.uid)
-        var friendUser = await getFriendNameByID(friendToAdd)
+        var loggedInProfile = await getProfileById(user.uid)
+        var friendUser = await getProfileById(friendToAdd)
        
         const friendshipID =  (user.uid > friendToAdd ? user.uid + friendToAdd : friendToAdd + user.uid)
         setDoc(doc(db, "friends", friendshipID), {
@@ -92,15 +128,14 @@ const ProfileScreen = () => {
         });
     
     }
-
-    const getFriendNameByID = async (userID) => {
+    */
+    const getProfileById = async (userID) => {
         const q = query(collection(db, "users"), where("uid", "==", userID));
 
         const querySnapshot = await getDocs(q);
         return querySnapshot.docs[0].data()
     }  
 
-    */
 
     return (
 
