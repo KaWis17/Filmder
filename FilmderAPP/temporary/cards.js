@@ -1,4 +1,4 @@
-// this file was left for ModalScreen.js
+// can be deleted but feel free to use it for testing
 export const DummyData = [
       {
         id: 1,

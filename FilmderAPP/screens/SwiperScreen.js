@@ -2,7 +2,6 @@ import { View, Text, Image } from 'react-native'
 import React, { useEffect, useState} from 'react'
 import Swiper from 'react-native-deck-swiper';
 import { useNavigation } from '@react-navigation/core';
-// import { DummyData } from '../temporary/cards'; 
 import {fetchMovies, image500, fallbackMoviePoster } from '../api/moviedb';
 import { basicMovie } from '../constants/index'
 
@@ -10,7 +9,7 @@ const SwiperScreen = () => {
 
     const navigation = useNavigation();
     
-    // this is the default film on the screen, you can see it for a sec while loading <-- would be managed later 
+    // this is the default film on the screen, you can see it for a sec while loading <-- maybe would be managed later 
     const [trending, setMovies] = useState([ basicMovie ]);
 
     useEffect(()=>{
@@ -33,7 +32,7 @@ const SwiperScreen = () => {
             animateCardOpacity
             infinite={true}
 
-            // onSwipedAll={} <-- todo: write this function
+            // onSwipedAll={} <-- todo: write this function because for now without updates you have only 15 films
 
             onSwipedTop={(id) => {
                 //alert("swipedTOP")
@@ -57,7 +56,6 @@ const SwiperScreen = () => {
 
             renderCard={(card) => {
                 id = card.id;
-                console.log('\nCARD: ', card.title); 
                 return (
                     <View className="my-auto relative bg-black h-4/5 rounded-xl">
                         <Image 
@@ -78,8 +76,6 @@ const SwiperScreen = () => {
                     </View>
                 )
             }}
-            // cardIndex={card.id}
-            // cardIndex={0}
 
         />
     </View>

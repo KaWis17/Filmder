@@ -1,4 +1,5 @@
 export const apiKey = '7a06bffd3bb7365e86f4d21626d34371';
+export const apiBaseUrl = 'https://api.themoviedb.org/3';
 
 export const basicMovie = {
     "adult": false,
