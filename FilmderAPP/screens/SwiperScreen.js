@@ -3,35 +3,15 @@ import React, { useEffect, useState} from 'react'
 import Swiper from 'react-native-deck-swiper';
 import { useNavigation } from '@react-navigation/core';
 // import { DummyData } from '../temporary/cards'; 
-import { fetchMovies, image500, fallbackMoviePoster } from '../api/moviedb';
+import {fetchMovies, image500, fallbackMoviePoster } from '../api/moviedb';
+import { basicMovie } from '../constants/index'
 
 const SwiperScreen = () => {
 
     const navigation = useNavigation();
     
     // this is the default film on the screen, you can see it for a sec while loading <-- would be managed later 
-    const [trending, setMovies] = useState([
-        {
-            "adult": false,
-            "backdrop_path": "/fm6KqXpk3M2HVveHwCrBSSBaO0V.jpg",
-            "id": 872585,
-            "title": "Oppenheimer",
-            "original_language": "en",
-            "original_title": "Oppenheimer",
-            "overview": "The story of J. Robert Oppenheimer's role in the development of the atomic bomb during World War II.",
-            "poster_path": "/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg",
-            "media_type": "movie",
-            "genre_ids": [
-              18,
-              36
-            ],
-            "popularity": 2706.372,
-            "release_date": "2023-07-19",
-            "video": false,
-            "vote_average": 8.237,
-            "vote_count": 4380
-          },
-    ]);
+    const [trending, setMovies] = useState([ basicMovie ]);
 
     useEffect(()=>{
         getMovies();           
@@ -48,8 +28,8 @@ const SwiperScreen = () => {
         <Swiper 
             containerStyle={{backgroundColor: "transparent" }}
             cards={trending}
-            stackSize={10}
-            stackSeparation={15}
+            stackSize={1}
+            // stackSeparation={10}
             animateCardOpacity
             infinite={true}
 
@@ -71,11 +51,12 @@ const SwiperScreen = () => {
                 //alert("swipedLEFT")
             }}
 
-            onTapCard={(id) => {
-                navigation.navigate("modal", {id: id})
+            onTapCard={() => {
+                navigation.navigate("modal", {id})
             }}
 
             renderCard={(card) => {
+                id = card.id;
                 console.log('\nCARD: ', card.title); 
                 return (
                     <View className="my-auto relative bg-black h-4/5 rounded-xl">
@@ -97,7 +78,8 @@ const SwiperScreen = () => {
                     </View>
                 )
             }}
-            cardIndex={0}
+            // cardIndex={card.id}
+            // cardIndex={0}
 
         />
     </View>
