@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useMemo } from 'react'
 import { useState } from "react/cjs/react.development"
 
+
 import { 
     createUserWithEmailAndPassword, 
     signInWithEmailAndPassword, 
@@ -39,20 +40,13 @@ export const AuthProvider = ({ children }) => {
         createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             sendVerificationEmail();
+            console.log(auth.currentUser.uid)
             auth.signOut();
         })
         .catch((error) => {
           const errorMessage = error.message;
           alert(errorMessage)
       });
-
-      setDoc(doc(db, "users", user.uid), {
-        uid: user.uid,
-        first: "name",
-        last: "surname",
-        born: "age",
-        timestamp: serverTimestamp()
-    });
     }
 
     function sendVerificationEmail() {

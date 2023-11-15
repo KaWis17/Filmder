@@ -40,7 +40,6 @@ const ChatConversationScreen = ({route, navigation}) => {
         text: messages[0].text,
         user: {
             _id: user.uid,
-            name: user.displayName,
         },
         createdAt: new Date(),
     })
