@@ -1,22 +1,59 @@
 import { View, Text, Image } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState} from 'react'
 import Swiper from 'react-native-deck-swiper';
 import { useNavigation } from '@react-navigation/core';
-import { DummyData } from '../temporary/cards';
+// import { DummyData } from '../temporary/cards'; 
+import { fetchMovies, image500, fallbackMoviePoster } from '../api/moviedb';
 
 const SwiperScreen = () => {
 
     const navigation = useNavigation();
+    
+    // this is the default film on the screen, you can see it for a sec while loading <-- would be managed later 
+    const [trending, setMovies] = useState([
+        {
+            "adult": false,
+            "backdrop_path": "/fm6KqXpk3M2HVveHwCrBSSBaO0V.jpg",
+            "id": 872585,
+            "title": "Oppenheimer",
+            "original_language": "en",
+            "original_title": "Oppenheimer",
+            "overview": "The story of J. Robert Oppenheimer's role in the development of the atomic bomb during World War II.",
+            "poster_path": "/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg",
+            "media_type": "movie",
+            "genre_ids": [
+              18,
+              36
+            ],
+            "popularity": 2706.372,
+            "release_date": "2023-07-19",
+            "video": false,
+            "vote_average": 8.237,
+            "vote_count": 4380
+          },
+    ]);
+
+    useEffect(()=>{
+        getMovies();           
+    }, [])
+
+    const getMovies = async ()=>{
+        const data = await fetchMovies();
+        if (data && data.results) setMovies(data.results);
+    }
 
   return (
     <View className="flex h-screen bg-slate-300">
 
         <Swiper 
             containerStyle={{backgroundColor: "transparent" }}
-            cards={DummyData}
+            cards={trending}
             stackSize={10}
             stackSeparation={15}
             animateCardOpacity
+            infinite={true}
+
+            // onSwipedAll={} <-- todo: write this function
 
             onSwipedTop={(id) => {
                 //alert("swipedTOP")
@@ -39,11 +76,12 @@ const SwiperScreen = () => {
             }}
 
             renderCard={(card) => {
+                console.log('\nCARD: ', card.title); 
                 return (
                     <View className="my-auto relative bg-black h-4/5 rounded-xl">
                         <Image 
                         className="absolute top-0 h-full w-full rounded-xl"
-                        source={{ uri: card.posterUrl }}/>
+                        source={{uri: image500(card.poster_path) || fallbackMoviePoster}}/>
 
                         <View className="flex flex-col absolute bottom-0 bg-white/100 rounded-b-xl w-full h-20 justify-between items-between px-6 py-2">
                     

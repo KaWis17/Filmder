@@ -1,3 +1,4 @@
+// this file was left for ModalScreen.js
 export const DummyData = [
       {
         id: 1,
