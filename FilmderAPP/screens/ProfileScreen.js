@@ -15,6 +15,7 @@ const ProfileScreen = () => {
     const[first, setFirst] = useState('');
     const[last, setLast] = useState('');
     const[age, setAge] = useState('');
+    const[timestamp, setTimestamp] = useState('')
 
     const[friends, setFriends] = useState([]);
 
@@ -32,6 +33,7 @@ const ProfileScreen = () => {
                 setFirst(snapshot.docs[0].data().first)
                 setLast(snapshot.docs[0].data().last)
                 setAge(snapshot.docs[0].data().born)
+                setTimestamp(snapshot.docs[0].data().timestamp)
             }
             ),
         [user]
@@ -62,12 +64,10 @@ const ProfileScreen = () => {
             first: first,
             last: last,
             born: age,
-            timestamp: serverTimestamp()
+            timestamp: timestamp
         });
 
-        /*
-
-        var loggedInProfile = getProfileById(user.uid)
+        var loggedInProfile = await getProfileById(user.uid)
 
         const q = query(
             collection(db, "friends"), 
@@ -77,40 +77,29 @@ const ProfileScreen = () => {
 
         querySnapshot.forEach(async (document) => {
 
-            if(Object.keys(document.data().users).length == 2){
-                var friendID = Object.keys(document.data().users).at(0)
-            
-                if(friendID == user.uid){
-                    friendID = document.data().users.at(1)
-                } 
-                        
-                await setDoc(doc(db, "friends", document.id)), {
-                    users: {
-                        [user.uid]: loggedInProfile,
-                        [friendID]: document.data().users[friendID],
-                    },
-                    usersMatched: [user.uid, friendID],
-                    timestamp: document.data().timestamp
-                }
-            }
+            var friendID = Object.keys(document.data().users).at(0)
+        
+            if(friendID == user.uid){
+                friendID = Object.keys(document.data().users).at(1)
+            } 
+                    
+            var friendUser = await getProfileById(friendID)
+        
+            const friendshipID =  (user.uid > friendID ? user.uid + friendID : friendID + user.uid)
+
+            setDoc(doc(db, "friends", friendshipID), {
+                users: {
+                    [user.uid]: loggedInProfile,
+                    [friendUser.uid]: friendUser,
+                },
+                usersMatched: [user.uid, friendID],
+                timestamp: document.data().timestamp
+            });
             
         });
-
-        */
-        
-
-        //setDoc(doc(db, "friends",))
     
     }
     /*
-
-    <TextInput 
-    placeholder="e-mail" 
-    value={""} 
-    onChangeText={(Text) => {setEmail(Text)}}
-    autoCapitalize='none'
-    className="w-4/5 h-12 mb-4 border-solid rounded-md border-sky-500 bg-white text-center"/>
-
 
     const addToFriendList = async () =>{
 
