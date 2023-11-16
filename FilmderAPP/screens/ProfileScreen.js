@@ -133,7 +133,7 @@ const ProfileScreen = () => {
                 <View className="justify-center">
                     <Image 
                         className="= mt-20 mx-auto mb-5 aspect-square rounded-full"
-                        source={{ uri: "https://scontent-mad2-1.xx.fbcdn.net/v/t39.30808-6/360086319_3683278515233971_4867496317066971572_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=5f2048&_nc_ohc=vIWOnABbkkUAX-kos10&_nc_ht=scontent-mad2-1.xx&oh=00_AfAn11h_1Qi89l_fPDNcdJz4r9lUtDrty3xbQbC79OGwAw&oe=65566129" }}
+                        source={{ uri: "https://t4.ftcdn.net/jpg/03/49/49/79/360_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5.jpg" }}
                     />
 
                     <View className="items-center">
