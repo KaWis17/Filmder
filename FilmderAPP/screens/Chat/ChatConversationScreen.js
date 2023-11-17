@@ -1,9 +1,8 @@
 import { addDoc, collection, serverTimestamp, onSnapshot, query, orderBy } from 'firebase/firestore';
 import React, { useState, useEffect, useCallback } from 'react';
 import { GiftedChat } from 'react-native-gifted-chat';
-import { db } from '../FirebaseConnection';
-import useAuth from '../AuthProvider';
-import { useNavigation } from '@react-navigation/core';
+import { db } from '../../FirebaseConnection';
+import useAuth from '../../AuthProvider';
 import { View, TouchableOpacity, Text, SafeAreaView } from 'react-native'
 
 
@@ -20,7 +19,6 @@ const ChatConversationScreen = ({route, navigation}) => {
     }
 
     const friend = getFriend(info.users, user.uid);
-
 
     useEffect(
         () =>         
@@ -39,7 +37,6 @@ const ChatConversationScreen = ({route, navigation}) => {
                 )
             ),
         [user]
-        
     );
 
   const onSend = useCallback((messages = []) => {
@@ -65,7 +62,7 @@ const ChatConversationScreen = ({route, navigation}) => {
         <View className="w-full bg-blue-500">
             <SafeAreaView>
                 <TouchableOpacity 
-                    onPress={() => navigation.navigate("otherUserProfile", {friendID: friend.uid})}
+                    onPress={() => navigation.navigate("otherUserScreen", {friendID: friend.uid})}
                     className="w-full h-12 bg-blue-500">
                     <Text className=" text-lg my-auto text-center color-white">{friend.first + " " + friend.last}</Text>
                 </TouchableOpacity>
@@ -79,7 +76,7 @@ const ChatConversationScreen = ({route, navigation}) => {
             }} 
             showUserAvatar={false}
             showAvatarForEveryMessage={true}
-            onPressAvatar={() => navigation.navigate("otherUserProfile", {friendID: friend.uid})}
+            onPressAvatar={() => navigation.navigate("otherUserScreen", {friendID: friend.uid})}
         />
     </View>
   )

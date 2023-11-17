@@ -3,7 +3,7 @@ import React, { useEffect, useState} from 'react'
 import Swiper from 'react-native-deck-swiper';
 import { useNavigation } from '@react-navigation/core';
 // import { DummyData } from '../temporary/cards'; 
-import { fetchMovies, image500, fallbackMoviePoster } from '../api/moviedb';
+import { fetchMovies, image500, fallbackMoviePoster } from '../../api/moviedb';
 
 const SwiperScreen = () => {
 
@@ -72,7 +72,7 @@ const SwiperScreen = () => {
             }}
 
             onTapCard={(id) => {
-                navigation.navigate("modal", {id: id})
+                navigation.navigate("modalScreen", {id: id})
             }}
 
             renderCard={(card) => {

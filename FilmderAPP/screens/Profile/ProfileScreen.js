@@ -2,9 +2,9 @@ import { View, Button, TextInput, Text, Image, ScrollView, TouchableOpacity } fr
 import React from 'react'
 import {useEffect, useState } from 'react'
 
-import useAuth from '../AuthProvider'
+import useAuth from '../../AuthProvider'
 import { collection, query, where, getDocs, setDoc, doc, serverTimestamp, addDoc, onSnapshot, updateDoc, arrayRemove, arrayUnion } from "firebase/firestore"; 
-import { db } from "../FirebaseConnection"
+import { db } from "../../FirebaseConnection"
 
 
 const ProfileScreen = () => {
@@ -124,7 +124,6 @@ const ProfileScreen = () => {
         const querySnapshot = await getDocs(q);
         return querySnapshot.docs[0].data()
     }  
-
 
     return (
 

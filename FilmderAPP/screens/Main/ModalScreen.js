@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Image, ScrollView } from 'react-native';
-import { DummyData } from '../temporary/cards';
+import { DummyData } from '../../temporary/cards';
 
 const ModalScreen = ({ route, navigation }) => {
   const id = route.params.id;

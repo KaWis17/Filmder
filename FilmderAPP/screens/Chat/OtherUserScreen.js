@@ -1,13 +1,13 @@
-import React, { useEffect, useCallback, useState } from 'react';
-import { View, Button, TextInput, Text, Image, ScrollView, TouchableOpacity } from 'react-native'
+import React, { useEffect, useState } from 'react';
+import { View, TextInput, Image, ScrollView } from 'react-native'
 import { collection, query, where, onSnapshot } from "firebase/firestore"; 
-import { db } from "../FirebaseConnection"
-
-
+import { db } from "../../FirebaseConnection"
 
 const OtherUserScreen = ({route, navigation}) => {
 
     const friendID = route.params.friendID;
+
+    console.log("FRIENDID: " + friendID)
 
     const[first, setFirst] = useState('');
     const[last, setLast] = useState('');
@@ -26,10 +26,8 @@ const OtherUserScreen = ({route, navigation}) => {
                 setAge(snapshot.docs[0].data().born)
             }
             ),
-        []
+        [friendID]
     );
-
-
 
   return (
     <View className="h-full">
