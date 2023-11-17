@@ -8,6 +8,8 @@ import {
     getAuth } from "firebase/auth";
     
 import { auth } from './FirebaseConnection';
+import { doesUserExistInDb, updateUserData } from './UserQueries';
+import { serverTimestamp } from 'firebase/firestore';
 
 
 /**

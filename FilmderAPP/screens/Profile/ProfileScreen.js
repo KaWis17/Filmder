@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { View, TextInput, Text, Image, ScrollView, TouchableOpacity } from 'react-native'
 
+import { useNavigation } from '@react-navigation/core'
+
 import useAuth from '../../backend/AuthProvider'
 import { setUserData, updateUserData, uploadProfilePhoto } from '../../backend/UserQueries'
 
 const tempURL = "https://t4.ftcdn.net/jpg/03/49/49/79/360_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5.jpg"
 
-const ProfileScreen = () => {
+const ProfileScreen = ({}) => {
+
+    const navigation = useNavigation();
 
     const { logout } = useAuth();
     const { user } = useAuth();
@@ -69,6 +73,16 @@ const ProfileScreen = () => {
                         className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-blue-500">
                         <Text className=" text-lg my-auto text-center color-white">CHANGE IMAGE</Text>
                     </TouchableOpacity>
+
+                    <TouchableOpacity 
+                        onPress={() => navigation.navigate("addFriendsScreen", {userID: user.uid})}
+                        className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-green-500">
+                        <Text className=" text-lg my-auto text-center color-white">ADD FRIEND</Text>
+                    </TouchableOpacity>
+
+                    <Text className="mx-auto w-4/5 h-12 my-4 border-solid rounded-md border-sky-500 text-center">
+                        This product uses the TMDB API but is not endorsed or certified by TMDB.
+                    </Text>
 
                     <TouchableOpacity 
                         onPress={logout}

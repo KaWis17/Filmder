@@ -1,0 +1,36 @@
+import React, { useState } from 'react'
+import { View, ScrollView, Text, TouchableOpacity, TextInput } from 'react-native'
+
+import { addToFriendList } from '../../backend/UserQueries';
+
+const AddFriendsScreen = ({route, navigation}) => {
+
+    const userID = route.params.userID;
+
+    const[friendsEmail, setFriendsEmail] = useState('');
+
+    return (
+        <ScrollView>
+            <View className="my-auto bg-red-500">
+                <Text className="text-xl mx-auto w-4/5 h-12 my-4 border-solid rounded-md border-sky-500 text-center">
+                    Add a friend to your list:
+                </Text>
+
+                <TextInput 
+                    placeholder="Your friends email" 
+                    value={friendsEmail} 
+                    onChangeText={(Text) => {setFriendsEmail(Text)}}
+                    className="mx-auto w-4/5 h-12 mb-4 border-solid rounded-md border-sky-500 bg-white text-center"
+                />
+
+                <TouchableOpacity 
+                    onPress={() => addToFriendList(userID, friendsEmail, navigation)}
+                    className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-blue-500">
+                    <Text className=" text-lg my-auto text-center color-white">UPDATE PROFILE</Text>
+                </TouchableOpacity>
+            </View>
+        </ScrollView>
+    );
+};
+
+export default AddFriendsScreen

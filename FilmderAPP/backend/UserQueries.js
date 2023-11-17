@@ -1,7 +1,8 @@
+import { Alert } from 'react-native'; 
+
 import {    collection, query, where, 
-            getDocs, setDoc, addDoc, doc, 
-            serverTimestamp, onSnapshot, 
-            orderBy } from "firebase/firestore"; 
+            getDocs, setDoc, getDoc, addDoc, doc, 
+            onSnapshot, orderBy, serverTimestamp } from "firebase/firestore"; 
 import * as ImagePicker from "expo-image-picker";
             
 import { db, st } from "./FirebaseConnection"
@@ -11,6 +12,10 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
  * Function to set user data
  */
 export function setUserData (userID, setFirst, setLast, setAge, setImageUrl, setTimestamp) {
+
+    if(!doesUserExistInDb(userID)){
+        updateUserData(user.uid, user.email, 'Name', 'Surname', '0', '', serverTimestamp())
+    }
 
     onSnapshot(
         query(
@@ -26,6 +31,16 @@ export function setUserData (userID, setFirst, setLast, setAge, setImageUrl, set
                 setImageUrl(snapshot.docs[0].data().imageUrl)
         }
     )
+}
+
+/**
+ * Function to tell if user is in database, or only in authentication
+ */
+export async function doesUserExistInDb(userID) {
+    const docRef = doc(db, "users", userID);
+    const docSnap = await getDoc(docRef);
+
+    return (docSnap.exists()) 
 }
 
 /**
@@ -56,19 +71,33 @@ export async function updateUserData(userID, userEmail, first, last, age, imageU
 /**
  * Function to add a friend to a 'friends' collection
  */
-export async function addToFriendList(userID, friendID) {
-
+export async function addToFriendList(userID, friendsEmail, navigation) {
+      
     var userProfile = await getProfileById(userID)
-    var friendsProfile = await getProfileById(friendID)
-   
-    setDoc(doc(db, "friends", generateFriendshipID(userID, friendID)), {
-        users: {
-            [userID]: userProfile,
-            [friendID]: friendsProfile,
-        },
-        usersMatched: [userID, friendID],
-        timestamp: serverTimestamp()
-    });
+
+    var friendsProfile = await getProfileByEmail(friendsEmail)
+
+    var friendshipID = generateFriendshipID(userID, friendsProfile.uid)
+
+    const docRef = doc(db, "friends", friendshipID);
+    const docSnap = await getDoc(docRef);
+
+    if(!docSnap.exists()){
+        setDoc(doc(db, "friends", friendshipID), {
+            users: {
+                [userID]: userProfile,
+                [friendsProfile.uid]: friendsProfile,
+            },
+            usersMatched: [userID, friendsProfile.uid],
+            timestamp: serverTimestamp()
+        });
+        alert("Friend has been added!")
+    } else {
+        alert("Friendship already exists!")
+    }
+
+    navigation.navigate("profileScreen")
+    
 }
 
 /**
@@ -144,6 +173,7 @@ export function sendAMessage(GiftedChat, messages, setMessages, friendshipID, us
  * Function to change user avatar
  */
 export async function uploadProfilePhoto(userID, userEmail, first, last, age, timestamp) {
+
     let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
@@ -195,6 +225,16 @@ async function updateUserDataInFriends(userID, querySnapshot) {
  */
 async function getProfileById(userID) {
     const q = query(collection(db, "users"), where("uid", "==", userID));
+
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs[0].data()
+}  
+
+/**
+ * Helper function to get the profile from 'users' by an email of a user
+ */
+async function getProfileByEmail(userEmail) {
+    const q = query(collection(db, "users"), where("email", "==", userEmail));
 
     const querySnapshot = await getDocs(q);
     return querySnapshot.docs[0].data()
