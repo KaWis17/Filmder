@@ -1,10 +1,8 @@
-import { View, Button, TextInput, Text, Image, ScrollView, TouchableOpacity } from 'react-native'
-import React from 'react'
-import {useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { View, TextInput, Text, Image, ScrollView, TouchableOpacity } from 'react-native'
 
-import useAuth from '../../AuthProvider'
-import { collection, query, where, getDocs, setDoc, doc, serverTimestamp, addDoc, onSnapshot, updateDoc, arrayRemove, arrayUnion } from "firebase/firestore"; 
-import { db } from "../../FirebaseConnection"
+import useAuth from '../../backend/AuthProvider'
+import { setUserData, updateUserData } from '../../backend/UserQueries'
 
 
 const ProfileScreen = () => {
@@ -17,113 +15,13 @@ const ProfileScreen = () => {
     const[age, setAge] = useState('');
     const[timestamp, setTimestamp] = useState('')
 
-    const[friends, setFriends] = useState([]);
-
-
-    //const [friendToAdd, setFriendToAdd] = useState('dIfd2szWxJf74dbaZr8MI8JjA7b2')
-
+     /**
+     * React hook to synchronize userProfile depending on currently logged user
+     */
     useEffect(
-        () =>     
-        onSnapshot(
-            query(
-                collection(db, "users"), 
-                where('uid', '==', user.uid)
-            ), 
-            (snapshot) => {
-                setFirst(snapshot.docs[0].data().first)
-                setLast(snapshot.docs[0].data().last)
-                setAge(snapshot.docs[0].data().born)
-                setTimestamp(snapshot.docs[0].data().timestamp)
-            }
-            ),
+        () => setUserData(user.uid, setFirst, setLast, setAge, setTimestamp),
         [user]
     );
-
-
-    /*
-    const getUserData = async () => {
-        const q = query(collection(db, "users"), where("uid", "==", user.uid));
-
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-            setFirst(doc.data().first)
-            setLast(doc.data().last)
-            setAge(doc.data().age)
-            console.log(first);
-        });
-    }
-    getUserData;
-    */
-
-
-    const updateUserData = async() =>{
-       
-        setDoc(doc(db, "users", user.uid), {
-            uid: user.uid,
-            email: user.email,
-            first: first,
-            last: last,
-            born: age,
-            timestamp: timestamp
-        });
-
-        var loggedInProfile = await getProfileById(user.uid)
-
-        const q = query(
-            collection(db, "friends"), 
-            where('usersMatched', 'array-contains', user.uid)
-        )
-        const querySnapshot = await getDocs(q);
-
-        querySnapshot.forEach(async (document) => {
-
-            var friendID = Object.keys(document.data().users).at(0)
-        
-            if(friendID == user.uid){
-                friendID = Object.keys(document.data().users).at(1)
-            } 
-                    
-            var friendUser = await getProfileById(friendID)
-        
-            const friendshipID =  (user.uid > friendID ? user.uid + friendID : friendID + user.uid)
-
-            setDoc(doc(db, "friends", friendshipID), {
-                users: {
-                    [user.uid]: loggedInProfile,
-                    [friendUser.uid]: friendUser,
-                },
-                usersMatched: [user.uid, friendID],
-                timestamp: document.data().timestamp
-            });
-            
-        });
-    
-    }
-    /*
-
-    const addToFriendList = async () =>{
-
-        var loggedInProfile = await getProfileById(user.uid)
-        var friendUser = await getProfileById(friendToAdd)
-       
-        const friendshipID =  (user.uid > friendToAdd ? user.uid + friendToAdd : friendToAdd + user.uid)
-        setDoc(doc(db, "friends", friendshipID), {
-            users: {
-                [user.uid]: loggedInProfile,
-                [friendUser.uid]: friendUser,
-            },
-            usersMatched: [user.uid, friendToAdd],
-            timestamp: serverTimestamp()
-        });
-    
-    }
-    */
-    const getProfileById = async (userID) => {
-        const q = query(collection(db, "users"), where("uid", "==", userID));
-
-        const querySnapshot = await getDocs(q);
-        return querySnapshot.docs[0].data()
-    }  
 
     return (
 
@@ -158,7 +56,7 @@ const ProfileScreen = () => {
                     </View>
 
                     <TouchableOpacity 
-                        onPress={updateUserData}
+                        onPress={() => updateUserData(user.uid, user.email, first, last, age, timestamp)}
                         className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-blue-500">
                         <Text className=" text-lg my-auto text-center color-white">UPDATE PROFILE</Text>
                     </TouchableOpacity>

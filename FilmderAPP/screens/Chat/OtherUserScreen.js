@@ -1,36 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { View, TextInput, Image, ScrollView } from 'react-native'
-import { collection, query, where, onSnapshot } from "firebase/firestore"; 
-import { db } from "../../FirebaseConnection"
+
+import { setUserData } from '../../backend/UserQueries';
 
 const OtherUserScreen = ({route, navigation}) => {
 
     const friendID = route.params.friendID;
 
-    console.log("FRIENDID: " + friendID)
-
     const[first, setFirst] = useState('');
     const[last, setLast] = useState('');
     const[age, setAge] = useState('');
+    const[timestamp, setTimestamp] = useState('')
 
+    /**
+     * React hook to synchronize friendProfile depending on currently viewed friend
+     */
     useEffect(
         () =>     
-        onSnapshot(
-            query(
-                collection(db, "users"), 
-                where('uid', '==', friendID)
-            ), 
-            (snapshot) => {
-                setFirst(snapshot.docs[0].data().first)
-                setLast(snapshot.docs[0].data().last)
-                setAge(snapshot.docs[0].data().born)
-            }
-            ),
+        setUserData(friendID, setFirst, setLast, setAge, setTimestamp),
         [friendID]
     );
 
-  return (
-    <View className="h-full">
+    return (
+        <View className="h-full">
             <ScrollView>
                 <View className="justify-center">
                     <Image 

@@ -1,4 +1,8 @@
-// this file was left for ModalScreen.js
+
+    /**
+     * Temporary data to check the functionality of SwiperScreen.js
+     */
+
 export const DummyData = [
       {
         id: 1,

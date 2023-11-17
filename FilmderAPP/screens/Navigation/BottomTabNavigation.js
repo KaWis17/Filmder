@@ -1,13 +1,14 @@
 import React from 'react'
+
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+
+import useAuth from '../../backend/AuthProvider';
 
 import ChatStack from '../Chat/ChatStack';
 import MainStack from '../Main/MainStack';
 import ProfileStack from '../Profile/ProfileStack';
 import AuthenticationScreen from '../Authentication/AuthenticationScreen';
-
-import useAuth from '../../AuthProvider';
 
 const Navigation = () => {
 

@@ -1,5 +1,9 @@
 import axios from 'axios';
 
+/**
+ * TODO: Mario, zrób proszę dokumentację, jeśli uważasz, że jest potrzebna
+ */
+
 // const apiKey = '7a06bffd3bb7365e86f4d21626d34371';
 // const apiBaseUrl = 'https://api.themoviedb.org/3';
 export const trendingMoviesEndpoint = 'https://api.themoviedb.org/3/trending/movie/day?api_key=7a06bffd3bb7365e86f4d21626d34371';

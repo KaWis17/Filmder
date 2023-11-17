@@ -1,11 +1,16 @@
+import React, { useEffect, useState } from 'react'
 import { View, Text, Image } from 'react-native'
-import React, { useEffect, useState} from 'react'
+
 import Swiper from 'react-native-deck-swiper';
 import { useNavigation } from '@react-navigation/core';
-// import { DummyData } from '../temporary/cards'; 
+
 import { fetchMovies, image500, fallbackMoviePoster } from '../../api/moviedb';
 
 const SwiperScreen = () => {
+
+    /**
+     * TODO: Mario, Janie, zróbcie proszę dokumentację, jeśli uważacie, że jest potrzebna
+     */
 
     const navigation = useNavigation();
     
@@ -55,7 +60,7 @@ const SwiperScreen = () => {
 
             // onSwipedAll={} <-- todo: write this function
 
-            onSwipedTop={(id) => {
+            onSwipedTop={() => {
                 //alert("swipedTOP")
             }}
 

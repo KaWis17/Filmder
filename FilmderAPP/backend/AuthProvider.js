@@ -1,11 +1,12 @@
-import React, { createContext, useContext } from 'react'
-import { useState } from 'react';
+import React, { createContext, useContext, useState } from 'react'
+
 import { 
     createUserWithEmailAndPassword, 
     signInWithEmailAndPassword, 
     sendEmailVerification, 
     signOut,
     getAuth } from "firebase/auth";
+    
 import { auth } from './FirebaseConnection';
 
 

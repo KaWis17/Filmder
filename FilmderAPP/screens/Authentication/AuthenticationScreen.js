@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, TouchableOpacity, TextInput, Text } from 'react-native'
 
-import useAuth from '../../AuthProvider'
+import useAuth from '../../backend/AuthProvider'
 
 
 const AuthenticationScreen = () => {

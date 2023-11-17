@@ -1,6 +1,8 @@
-import { AuthProvider } from './AuthProvider';
-import Navigation from './screens/Navigation/BottomTabNavigation';
 import { NavigationContainer } from '@react-navigation/native';
+
+import { AuthProvider } from './backend/AuthProvider';
+
+import Navigation from './screens/Navigation/BottomTabNavigation';
 
 
 /**
