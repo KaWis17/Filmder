@@ -1,5 +1,3 @@
-import { Alert } from 'react-native'; 
-
 import {    collection, query, where, 
             getDocs, setDoc, getDoc, addDoc, doc, 
             onSnapshot, orderBy, serverTimestamp } from "firebase/firestore"; 
@@ -12,10 +10,6 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
  * Function to set user data
  */
 export function setUserData (userID, setFirst, setLast, setAge, setImageUrl, setTimestamp) {
-
-    if(!doesUserExistInDb(userID)){
-        updateUserData(user.uid, user.email, 'Name', 'Surname', '0', '', serverTimestamp())
-    }
 
     onSnapshot(
         query(

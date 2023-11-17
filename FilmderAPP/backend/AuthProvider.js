@@ -6,10 +6,12 @@ import {
     sendEmailVerification, 
     signOut,
     getAuth } from "firebase/auth";
+
+import { setDoc, doc, serverTimestamp } from "firebase/firestore"; 
+
+import { db } from "./FirebaseConnection"
     
 import { auth } from './FirebaseConnection';
-import { doesUserExistInDb, updateUserData } from './UserQueries';
-import { serverTimestamp } from 'firebase/firestore';
 
 
 /**
@@ -49,8 +51,16 @@ export const AuthProvider = ({ children }) => {
      */
     const signUp = () => {
         createUserWithEmailAndPassword(auth, email, password)
-            .then(() => {
+            .then((userCredential) => {
                 sendVerificationEmail();
+                setDoc(doc(db, "users", userCredential.user.uid), {
+                    uid: userCredential.user.uid,
+                    email: userCredential.user.email,
+                    first: "Name",
+                    last: "Surname",
+                    born: "18",
+                    timestamp: serverTimestamp()
+                });
                 auth.signOut();
             })
             .catch((error) => {
