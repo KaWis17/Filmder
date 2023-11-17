@@ -3,6 +3,8 @@ import { View, TextInput, Image, ScrollView } from 'react-native'
 
 import { setUserData } from '../../backend/UserQueries';
 
+const tempURL = "https://t4.ftcdn.net/jpg/03/49/49/79/360_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5.jpg"
+
 const OtherUserScreen = ({route, navigation}) => {
 
     const friendID = route.params.friendID;
@@ -10,14 +12,15 @@ const OtherUserScreen = ({route, navigation}) => {
     const[first, setFirst] = useState('');
     const[last, setLast] = useState('');
     const[age, setAge] = useState('');
+    const[imageUrl, setImageUrl] = useState(tempURL);
     const[timestamp, setTimestamp] = useState('')
 
     /**
      * React hook to synchronize friendProfile depending on currently viewed friend
      */
     useEffect(
-        () =>     
-        setUserData(friendID, setFirst, setLast, setAge, setTimestamp),
+        () =>
+        setUserData(friendID, setFirst, setLast, setAge, setImageUrl, setTimestamp),
         [friendID]
     );
 
@@ -27,7 +30,7 @@ const OtherUserScreen = ({route, navigation}) => {
                 <View className="justify-center">
                     <Image 
                         className="= mt-20 mx-auto mb-5 aspect-square rounded-full"
-                        source={{ uri: "https://t4.ftcdn.net/jpg/03/49/49/79/360_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5.jpg" }}
+                        source={imageUrl ? {uri: imageUrl } : tempURL}
                     />
 
                     <View className="items-center">

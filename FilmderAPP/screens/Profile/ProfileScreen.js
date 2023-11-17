@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { View, TextInput, Text, Image, ScrollView, TouchableOpacity } from 'react-native'
 
 import useAuth from '../../backend/AuthProvider'
-import { setUserData, updateUserData } from '../../backend/UserQueries'
+import { setUserData, updateUserData, uploadProfilePhoto } from '../../backend/UserQueries'
 
+const tempURL = "https://t4.ftcdn.net/jpg/03/49/49/79/360_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5.jpg"
 
 const ProfileScreen = () => {
 
@@ -13,13 +14,14 @@ const ProfileScreen = () => {
     const[first, setFirst] = useState('');
     const[last, setLast] = useState('');
     const[age, setAge] = useState('');
+    const[imageUrl, setImageUrl] = useState(tempURL)
     const[timestamp, setTimestamp] = useState('')
 
      /**
      * React hook to synchronize userProfile depending on currently logged user
      */
     useEffect(
-        () => setUserData(user.uid, setFirst, setLast, setAge, setTimestamp),
+        () => setUserData(user.uid, setFirst, setLast, setAge, setImageUrl, setTimestamp),
         [user]
     );
 
@@ -30,7 +32,8 @@ const ProfileScreen = () => {
                 <View className="justify-center">
                     <Image 
                         className="= mt-20 mx-auto mb-5 aspect-square rounded-full"
-                        source={{ uri: "https://t4.ftcdn.net/jpg/03/49/49/79/360_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5.jpg" }}
+                        source={imageUrl ? {uri: imageUrl } : tempURL}
+
                     />
 
                     <View className="items-center">
@@ -56,9 +59,15 @@ const ProfileScreen = () => {
                     </View>
 
                     <TouchableOpacity 
-                        onPress={() => updateUserData(user.uid, user.email, first, last, age, timestamp)}
+                        onPress={() => updateUserData(user.uid, user.email, first, last, age, imageUrl, timestamp)}
                         className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-blue-500">
                         <Text className=" text-lg my-auto text-center color-white">UPDATE PROFILE</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity 
+                        onPress={() => uploadProfilePhoto(user.uid, user.email, first, last, age, timestamp)}
+                        className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-blue-500">
+                        <Text className=" text-lg my-auto text-center color-white">CHANGE IMAGE</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity 

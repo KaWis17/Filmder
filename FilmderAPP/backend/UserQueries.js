@@ -2,13 +2,15 @@ import {    collection, query, where,
             getDocs, setDoc, addDoc, doc, 
             serverTimestamp, onSnapshot, 
             orderBy } from "firebase/firestore"; 
+import * as ImagePicker from "expo-image-picker";
             
-import { db } from "./FirebaseConnection"
+import { db, st } from "./FirebaseConnection"
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 /**
  * Function to set user data
  */
-export function setUserData (userID, setFirst, setLast, setAge, setTimestamp) {
+export function setUserData (userID, setFirst, setLast, setAge, setImageUrl, setTimestamp) {
 
     onSnapshot(
         query(
@@ -20,15 +22,17 @@ export function setUserData (userID, setFirst, setLast, setAge, setTimestamp) {
             setLast(snapshot.docs[0].data().last)
             setAge(snapshot.docs[0].data().born)
             setTimestamp(snapshot.docs[0].data().timestamp)
+            if(snapshot.docs[0].data().imageUrl !== undefined)
+                setImageUrl(snapshot.docs[0].data().imageUrl)
         }
-        )
+    )
 }
 
 /**
  * Function to update user data in the 'users' collection,
  * it also runs a function to update user data in all 'friends' collections 
  */
-export async function updateUserData(userID, userEmail, first, last, age, timestamp) {
+export async function updateUserData(userID, userEmail, first, last, age, imageUrl, timestamp) {
     
     setDoc(doc(db, "users", userID), {
         uid: userID,
@@ -36,6 +40,7 @@ export async function updateUserData(userID, userEmail, first, last, age, timest
         first: first,
         last: last,
         born: age,
+        imageUrl: imageUrl,
         timestamp: timestamp
     });
 
@@ -45,6 +50,7 @@ export async function updateUserData(userID, userEmail, first, last, age, timest
     )
 
     updateUserDataInFriends(userID, await getDocs(q))
+    alert("Profile has been successfully updated!")
 }
 
 /**
@@ -83,21 +89,21 @@ export function setUsersFriendList(userID, setFriends){
                 }))
             )
         }
-        )
+    )
 } 
 
 /**
  * Function to get the friend object from a list of a friend and the user
  */
 export function getFriendFromFriendsList(list, userID) {
-    delete list[userID]
-    return list[Object.keys(list)[0]]
+    var key = (list[Object.keys(list)[0]].uid == userID) ? 1 : 0;
+    return list[Object.keys(list)[key]]
 }
 
 /**
  * Function to set the messages 
  */
-export function setMessagesFromChat(friendshipID, setMessages) {
+export function setMessagesFromChat(friendshipID, setMessages, friendImageUrl) {
 
     onSnapshot(
         query(
@@ -110,6 +116,7 @@ export function setMessagesFromChat(friendshipID, setMessages) {
                     _id: doc.id,
                     ...doc.data(),
                     createdAt: doc.data().createdAt.toDate(),
+                    avatar: friendImageUrl
                 }))
             )
         )
@@ -128,10 +135,34 @@ export function sendAMessage(GiftedChat, messages, setMessages, friendshipID, us
         text: messages[0].text,
         user: {
             _id: userID,
-            avatar: "https://t4.ftcdn.net/jpg/03/49/49/79/360_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5.jpg",
         },
         createdAt: new Date(),
     })
+}
+
+/**
+ * Function to change user avatar
+ */
+export async function uploadProfilePhoto(userID, userEmail, first, last, age, timestamp) {
+    let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1
+    });
+
+    if(!result.canceled){
+        const response = await fetch(result.assets[0].uri);
+        const blob = await response.blob();
+
+        const storageRef = ref(st, "profilePictures/" + userID)
+        const uploadTask = uploadBytesResumable(storageRef, blob)
+
+        await uploadTask
+        var photoUrl = await getDownloadURL(uploadTask.snapshot.ref)
+
+        updateUserData(userID, userEmail, first, last, age, photoUrl, timestamp);
+    }
 }
 
 /**

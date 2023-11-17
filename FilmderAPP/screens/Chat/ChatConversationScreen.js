@@ -10,7 +10,7 @@ import { setMessagesFromChat, sendAMessage } from '../../backend/UserQueries';
 const ChatConversationScreen = ({route, navigation}) => {
 
     const friendshipID = route.params.friendshipID;
-    const friendProfile = route.params.friendProfile
+    const friendProfile = route.params.friendProfile;
 
     const [ messages, setMessages ] = useState([])
     const { user } = useAuth();
@@ -20,7 +20,7 @@ const ChatConversationScreen = ({route, navigation}) => {
      */
     useEffect(
         () =>         
-        setMessagesFromChat(friendshipID, setMessages),
+        setMessagesFromChat(friendshipID, setMessages, friendProfile.imageUrl),
         [user]
     );
 
