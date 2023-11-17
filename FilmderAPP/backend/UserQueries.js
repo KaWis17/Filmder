@@ -70,8 +70,9 @@ export async function updateUserData(userID, userEmail, first, last, age, imageU
 
 /**
  * Function to add a friend to a 'friends' collection
+ * TODO: consider adding by non-existing email and adding yourself
  */
-export async function addToFriendList(userID, friendsEmail, navigation) {
+export async function addToFriendList(userID, friendsEmail, setFriendsEmail) {
       
     var userProfile = await getProfileById(userID)
 
@@ -82,21 +83,26 @@ export async function addToFriendList(userID, friendsEmail, navigation) {
     const docRef = doc(db, "friends", friendshipID);
     const docSnap = await getDoc(docRef);
 
-    if(!docSnap.exists()){
-        setDoc(doc(db, "friends", friendshipID), {
-            users: {
-                [userID]: userProfile,
-                [friendsProfile.uid]: friendsProfile,
-            },
-            usersMatched: [userID, friendsProfile.uid],
-            timestamp: serverTimestamp()
-        });
-        alert("Friend has been added!")
-    } else {
-        alert("Friendship already exists!")
+    if(friendsProfile != null && friendsProfile.uid != userID){
+        if(!docSnap.exists()){
+            setDoc(doc(db, "friends", friendshipID), {
+                users: {
+                    [userID]: userProfile,
+                    [friendsProfile.uid]: friendsProfile,
+                },
+                usersMatched: [userID, friendsProfile.uid],
+                timestamp: serverTimestamp()
+            });
+            alert("Friend has been added!")
+        } else {
+            alert("Friendship already exists!")
+        }
+    }
+    else {
+        alert("There is no user with this ID")
     }
 
-    navigation.navigate("profileScreen")
+    setFriendsEmail('')
     
 }
 
@@ -237,7 +243,7 @@ async function getProfileByEmail(userEmail) {
     const q = query(collection(db, "users"), where("email", "==", userEmail));
 
     const querySnapshot = await getDocs(q);
-    return querySnapshot.docs[0].data()
+    return (querySnapshot.docs[0].data() !== undefined) ? querySnapshot.docs[0].data() : null
 }  
 
 /**

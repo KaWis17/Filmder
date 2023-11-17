@@ -77,7 +77,7 @@ const SwiperScreen = () => {
             }}
 
             onTapCard={(id) => {
-                navigation.navigate("modalScreen", {id: id})
+                navigation.navigate("modalScreen", {film: trending[id]})
             }}
 
             renderCard={(card) => {

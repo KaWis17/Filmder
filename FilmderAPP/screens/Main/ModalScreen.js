@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, Image, ScrollView } from 'react-native';
+import { View, Text, LinearGradient, ScrollView, ImageBackground } from 'react-native';
 
-import { DummyData } from '../../temporary/cards';
+import { image500, fallbackMoviePoster } from '../../api/moviedb';
 
 const ModalScreen = ({ route, navigation }) => {
 
@@ -9,32 +9,33 @@ const ModalScreen = ({ route, navigation }) => {
    * TODO: Pawle zrób proszę dokumentację, jeśli uważasz, że jest potrzebna
    */
   
-  const id = route.params.id;
+  const film = route.params.film;
+  console.log(film)
 
   return (
-    <ScrollView style={{ padding: 16 }}>
-      <Image
-        style={{ height: 200, width: '50%', borderRadius: 8, marginTop: 16, marginBottom: 16 }}
-        source={{ uri: DummyData[id].posterUrl }}
-      />
-
-      <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 8 }}>{DummyData[id].title}</Text>
-
-      <InfoItem label="Year" value={DummyData[id].year} />
-      <InfoItem label="Runtime" value={`${DummyData[id].runtime} minutes`} />
-      <InfoItem label="Genres" value={DummyData[id].genres.join(', ')} />
-      <InfoItem label="Director" value={DummyData[id].director} />
-      <InfoItem label="Actors" value={DummyData[id].actors} />
-      <InfoItem label="Plot" value={DummyData[id].plot} />
+    <ScrollView>
+        <ImageBackground className="h-96" source={{uri: image500(film.poster_path) || fallbackMoviePoster}} resizeMode="cover">
+            <View className="mt-80 h-16 bg-black order-dotted border-2 border-white">
+                <Text className="px-10 m-auto text-4xl text-white font-semibold">{film.title}</Text>
+            </View>
+        </ImageBackground>
+        <View className="px-5 pt-5 min-h-full mix-blend-multiply bg-black mb-16">
+            <Text className="text-justify text-white text-lg mb-10">{film.overview}</Text>
+            <InfoItem label="Vote average" value={film.vote_average} />
+            <InfoItem label="Vote count" value={film.vote_count} />
+            <InfoItem label="Release date" value={film.release_date} />
+            <InfoItem label="Popularity" value={film.popularity} />
+        </View>
+        
     </ScrollView>
   );
 };
 
 const InfoItem = ({ label, value }) => (
-  <View style={{ marginBottom: 8 }}>
-    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{label}:</Text>
-    <Text style={{ fontSize: 16 }}>{value}</Text>
-  </View>
+    <View style={{ marginBottom: 12 }}>
+        <Text style={{ color: 'white', fontSize: 16 }}>{label}:</Text>
+        <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>{value}</Text>
+    </View>
 );
 
 export default ModalScreen;

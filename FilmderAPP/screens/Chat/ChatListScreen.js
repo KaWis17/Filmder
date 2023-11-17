@@ -34,7 +34,7 @@ const ChatListScreen = () => {
                 }}
         >
 
-            <View className="flex flex-row w-full my-auto">
+            <View className="flex flex-row w-full my-auto shadow-xl">
                 <Image 
                     className="bg-red-500 ml-5 h-11 aspect-square rounded-full"
                     source={getFriendFromFriendsList(item.users, user.uid).imageUrl !== undefined ? {uri: getFriendFromFriendsList(item.users, user.uid).imageUrl } : {uri: tempURL}}

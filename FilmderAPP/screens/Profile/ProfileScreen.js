@@ -37,7 +37,6 @@ const ProfileScreen = ({}) => {
                     <Image 
                         className="= mt-20 mx-auto mb-5 aspect-square rounded-full"
                         source={imageUrl ? {uri: imageUrl } : tempURL}
-
                     />
 
                     <View className="items-center">
