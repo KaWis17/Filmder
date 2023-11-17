@@ -31,6 +31,7 @@ export function setUserData (userID, setFirst, setLast, setAge, setImageUrl, set
  * Function to tell if user is in database, or only in authentication
  */
 export async function doesUserExistInDb(userID) {
+
     const docRef = doc(db, "users", userID);
     const docSnap = await getDoc(docRef);
 
@@ -131,6 +132,7 @@ export function setUsersFriendList(userID, setFriends){
  * Function to get the friend object from a list of a friend and the user
  */
 export function getFriendFromFriendsList(list, userID) {
+
     var key = (list[Object.keys(list)[0]].uid == userID) ? 1 : 0;
     return list[Object.keys(list)[key]]
 }
@@ -205,14 +207,12 @@ export async function uploadProfilePhoto(userID, userEmail, first, last, age, ti
  * Function to update user preference about film
  */
 export function addWantPreference(userID, filmID, doWant) {
-    var preferenceID = userID + filmID;
 
-    setDoc(doc(db, "user_preferences", preferenceID), {
+    setDoc(doc(db, "user_preferences", userID + filmID), {
         userID: userID,
         filmID: filmID,
         doWant: doWant
     });
-
 }
 
 /**
@@ -244,6 +244,7 @@ async function updateUserDataInFriends(userID, querySnapshot) {
  * Helper function to get the profile from 'users' by the ID of a user
  */
 async function getProfileById(userID) {
+
     const q = query(collection(db, "users"), where("uid", "==", userID));
 
     const querySnapshot = await getDocs(q);
@@ -254,6 +255,7 @@ async function getProfileById(userID) {
  * Helper function to get the profile from 'users' by an email of a user
  */
 async function getProfileByEmail(userEmail) {
+
     const q = query(collection(db, "users"), where("email", "==", userEmail));
 
     const querySnapshot = await getDocs(q);
@@ -264,5 +266,6 @@ async function getProfileByEmail(userEmail) {
  * Helper function to generate/get valid friendship ID
  */
 function generateFriendshipID(uid1, uid2) {
+    
     return (uid1 > uid2 ? uid1 + uid2 : uid2 + uid1)
 }

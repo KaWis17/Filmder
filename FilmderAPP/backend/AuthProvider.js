@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
 
 import { 
     createUserWithEmailAndPassword, 
@@ -9,10 +9,8 @@ import {
 
 import { setDoc, doc, serverTimestamp } from "firebase/firestore"; 
 
-import { db } from "./FirebaseConnection"
+import { db, auth } from "./FirebaseConnection"
     
-import { auth } from './FirebaseConnection';
-
 
 /**
  * Authentication context to be passed down to BottomTabNavigation.js
@@ -27,6 +25,15 @@ export const AuthProvider = ({ children }) => {
     const [password, setPassword] = useState('')
 
     /**
+     * React hook to synchronize user (AsyncStorage is applied)
+     */
+    useEffect(() => {
+        auth.onAuthStateChanged((user) => {
+            setUser(user);
+        })
+    })
+
+    /**
      * Function that allows user to log in.
      * TODO: handle different error messages
      * TODO: create alternative form of authentication (GoogleAuth 2.0)
@@ -35,10 +42,10 @@ export const AuthProvider = ({ children }) => {
         const auth = getAuth();
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                if(userCredential.user.emailVerified)
-                    setUser(userCredential.user)
-                else 
+                if(!userCredential.user.emailVerified){
+                    logout()
                     alert("Email not yet verified!")
+                }
             })
             .catch((error) => {
                 alert(error.message)
