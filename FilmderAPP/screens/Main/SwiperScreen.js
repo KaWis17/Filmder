@@ -5,8 +5,13 @@ import Swiper from 'react-native-deck-swiper';
 import { useNavigation } from '@react-navigation/core';
 
 import { fetchMovies, image500, fallbackMoviePoster } from '../../api/moviedb';
+import { addWantPreference } from '../../backend/UserQueries';
+import useAuth from '../../backend/AuthProvider'
+
 
 const SwiperScreen = () => {
+
+    const { user } = useAuth();
 
     /**
      * TODO: Mario, Janie, zróbcie proszę dokumentację, jeśli uważacie, że jest potrzebna
@@ -64,16 +69,16 @@ const SwiperScreen = () => {
                 //alert("swipedTOP")
             }}
 
-            onSwipedRight={() => {
-                //alert("swipedRIGHT")
+            onSwipedRight={async (id) => {
+                addWantPreference(user.uid, trending[id].id, true, true)
             }}
 
             onSwipedBottom={() => {
                 //alert("swipedBOTTOM")
             }}
 
-            onSwipedLeft={() => {
-                //alert("swipedLEFT")
+            onSwipedLeft={async (id) => {
+                addWantPreference(user.uid, trending[id].id, false)
             }}
 
             onTapCard={(id) => {

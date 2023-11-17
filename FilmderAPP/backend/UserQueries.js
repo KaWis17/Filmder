@@ -202,6 +202,20 @@ export async function uploadProfilePhoto(userID, userEmail, first, last, age, ti
 }
 
 /**
+ * Function to update user preference about film
+ */
+export function addWantPreference(userID, filmID, doWant) {
+    var preferenceID = userID + filmID;
+
+    setDoc(doc(db, "user_preferences", preferenceID), {
+        userID: userID,
+        filmID: filmID,
+        doWant: doWant
+    });
+
+}
+
+/**
  * Helper function to update the user data if 'friends' collection
  */
 async function updateUserDataInFriends(userID, querySnapshot) {
