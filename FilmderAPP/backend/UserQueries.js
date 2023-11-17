@@ -72,28 +72,34 @@ export async function addToFriendList(userID, friendsEmail, setFriendsEmail) {
 
     var friendsProfile = await getProfileByEmail(friendsEmail)
 
-    var friendshipID = generateFriendshipID(userID, friendsProfile.uid)
+    if(friendsProfile !== undefined){
+        var friendshipID = generateFriendshipID(userID, friendsProfile.uid)
 
-    const docRef = doc(db, "friends", friendshipID);
-    const docSnap = await getDoc(docRef);
+        const docRef = doc(db, "friends", friendshipID);
+        const docSnap = await getDoc(docRef);
 
-    if(friendsProfile != null && friendsProfile.uid != userID){
-        if(!docSnap.exists()){
-            setDoc(doc(db, "friends", friendshipID), {
-                users: {
-                    [userID]: userProfile,
-                    [friendsProfile.uid]: friendsProfile,
-                },
-                usersMatched: [userID, friendsProfile.uid],
-                timestamp: serverTimestamp()
-            });
-            alert("Friend has been added!")
-        } else {
-            alert("Friendship already exists!")
+        if(friendsProfile !== undefined){
+            if(userProfile.first != "Name"){
+                console.log("1")
+                if(!docSnap.exists()){
+                    setDoc(doc(db, "friends", friendshipID), {
+                        users: {
+                            [userID]: userProfile,
+                            [friendsProfile.uid]: friendsProfile,
+                        },
+                        usersMatched: [userID, friendsProfile.uid],
+                        timestamp: serverTimestamp()
+                    });
+                    alert("Friend has been added!")
+                } else {
+                    alert("Friendship already exists!")
+                } 
+            } else {
+                alert("Firstly update your user profile!")
+            }
         }
-    }
-    else {
-        alert("There is no user with this ID")
+    } else {
+        alert("There is no user with this email")
     }
 
     setFriendsEmail('')
@@ -237,7 +243,7 @@ async function getProfileByEmail(userEmail) {
     const q = query(collection(db, "users"), where("email", "==", userEmail));
 
     const querySnapshot = await getDocs(q);
-    return (querySnapshot.docs[0].data() !== undefined) ? querySnapshot.docs[0].data() : null
+    return (querySnapshot.docs[0] !== undefined) ? querySnapshot.docs[0].data() : undefined;
 }  
 
 /**
