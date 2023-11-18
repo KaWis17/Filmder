@@ -25,9 +25,12 @@ const ProfileScreen = ({}) => {
      * React hook to synchronize userProfile depending on currently logged user
      */
     useEffect(
-        () => setUserData(user.uid, setFirst, setLast, setAge, setImageUrl, setTimestamp),
+        () => {
+            setUserData(user.uid, setFirst, setLast, setAge, setImageUrl, setTimestamp)
+         },
         [user]
     );
+
 
     return (
 

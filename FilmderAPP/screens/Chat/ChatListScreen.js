@@ -14,6 +14,8 @@ const ChatListScreen = () => {
     const { user } = useAuth();
     const navigation = useNavigation();
 
+    const days = ["Sun.", "Mon.", "Tue.", "Wed.","Thu.", "Fri.","Sat."]
+
     /**
      * React hook to synchronize friendList depending on user variable
      */
@@ -24,7 +26,7 @@ const ChatListScreen = () => {
 
     const renderFriend = ({ item }) => (
         <TouchableOpacity
-            className="mb-3 bg-blue-300 border-b-4 border-blue-500 rounded  h-16"
+            className="h-20"
             onPress={() => {
                 navigation.navigate("chatConversation", 
                     {   friendshipID: item.id, 
@@ -34,16 +36,46 @@ const ChatListScreen = () => {
                 }}
         >
 
-            <View className="flex flex-row w-full my-auto">
+            <View className="flex flex-row my-auto mx-5">
                 <Image 
-                    className="bg-red-500 ml-5 h-11 aspect-square rounded-full"
+                    className="bg-red-500 h-16 aspect-square rounded-full"
                     source={getFriendFromFriendsList(item.users, user.uid).imageUrl !== undefined ? {uri: getFriendFromFriendsList(item.users, user.uid).imageUrl } : {uri: tempURL}}
                 />
 
-                <Text className="ml-5 my-auto text-xl ">
-                    {getFriendFromFriendsList(item.users, user.uid).first +" "+ 
-                     getFriendFromFriendsList(item.users, user.uid).last}
-                </Text>
+                <View className="flex-auto ml-5 my-auto">
+                    <Text numberOfLines={1} className="text-xl font-medium">
+                        {   getFriendFromFriendsList(item.users, user.uid).first +" "+ 
+                            getFriendFromFriendsList(item.users, user.uid).last}
+                    </Text>
+                    <View className="flex-row">
+                        <Text numberOfLines={1} className="flex-1 text-base">
+                            {(item.lastMessage !== undefined) ? 
+                                (item.lastMessage.sendBy == user.uid ? 
+                                        ("You: " + item.lastMessage.text) : 
+                                        (getFriendFromFriendsList(item.users, user.uid).first + ": " + item.lastMessage.text)) :
+                                ("Say hi to " + getFriendFromFriendsList(item.users, user.uid).first + "!")
+                            }
+                        </Text>
+                        
+                        <Text className="text-base pl-5">{
+
+                            (item.lastMessage === undefined) ? 
+                                (
+                                    " "
+                                ) : (
+                                    (new Date(item.lastMessage.time.seconds*1000).isSameDateAs(new Date())) ? 
+                                    (
+                                        new Date(item.lastMessage.time.seconds*1000).getHours() + ":" + new Date(item.lastMessage.time.seconds*1000).getMinutes()
+                                    ) : (
+                                        days[new Date(item.lastMessage.time.seconds*1000).getDay(({ weekday:"short" }))]
+                                    )
+                                )
+                        }</Text>
+
+                    </View>
+                    
+                </View>
+            
             </View>
             
         </TouchableOpacity>
@@ -59,6 +91,14 @@ const ChatListScreen = () => {
         </SafeAreaView>
     )
 
+};
+
+Date.prototype.isSameDateAs = function(otherDate) {
+    return (
+      this.getFullYear() === otherDate.getFullYear() &&
+      this.getMonth() === otherDate.getMonth() &&
+      this.getDate() === otherDate.getDate()
+    );
 }
 
 export default ChatListScreen

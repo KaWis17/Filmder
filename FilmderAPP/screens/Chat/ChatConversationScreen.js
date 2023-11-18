@@ -52,6 +52,7 @@ const ChatConversationScreen = ({route, navigation}) => {
                 }} 
                 showUserAvatar={false}
                 showAvatarForEveryMessage={true}
+                scrollToBottom={true}
                 onPressAvatar={() => navigation.navigate("otherUserScreen", {friendID: friendProfile.uid})}
             />
         </View>

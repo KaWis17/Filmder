@@ -26,7 +26,7 @@ const AddFriendsScreen = ({route, navigation}) => {
                 <TouchableOpacity 
                     onPress={() => addToFriendList(userID, friendsEmail, setFriendsEmail)}
                     className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-blue-500">
-                    <Text className=" text-lg my-auto text-center color-white">UPDATE PROFILE</Text>
+                    <Text className=" text-lg my-auto text-center color-white">ADD FRIEND</Text>
                 </TouchableOpacity>
             </View>
         </ScrollView>

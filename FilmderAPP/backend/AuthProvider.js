@@ -95,6 +95,13 @@ export const AuthProvider = ({ children }) => {
                 setUser(null);
                 setEmail('');
                 setPassword('');
+
+                try {
+                    AsyncStorage.clear();
+                } catch (error) {
+                    console.log(error);
+                }
+
                 alert("Successfully logged out!")
           })
           .catch((error) => {

@@ -1,10 +1,11 @@
 import {    collection, query, where, 
-            getDocs, setDoc, getDoc, addDoc, doc, 
+            getDocs, setDoc, getDoc, addDoc, doc, updateDoc,
             onSnapshot, orderBy, serverTimestamp } from "firebase/firestore"; 
 import * as ImagePicker from "expo-image-picker";
             
 import { db, st } from "./FirebaseConnection"
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+
 
 /**
  * Function to set user data
@@ -23,6 +24,7 @@ export function setUserData (userID, setFirst, setLast, setAge, setImageUrl, set
             setTimestamp(snapshot.docs[0].data().timestamp)
             if(snapshot.docs[0].data().imageUrl !== undefined)
                 setImageUrl(snapshot.docs[0].data().imageUrl)
+
         }
     )
 }
@@ -43,7 +45,7 @@ export async function doesUserExistInDb(userID) {
  * it also runs a function to update user data in all 'friends' collections 
  */
 export async function updateUserData(userID, userEmail, first, last, age, imageUrl, timestamp) {
-    
+
     setDoc(doc(db, "users", userID), {
         uid: userID,
         email: userEmail,
@@ -115,7 +117,8 @@ export function setUsersFriendList(userID, setFriends){
     onSnapshot(
         query(
             collection(db, "friends"), 
-            where('usersMatched', 'array-contains', userID)
+            where('usersMatched', 'array-contains', userID),
+            orderBy("lastMessage.time", "desc")
         ), 
         (snapshot) =>  {
             setFriends(
@@ -175,6 +178,17 @@ export function sendAMessage(GiftedChat, messages, setMessages, friendshipID, us
         },
         createdAt: new Date(),
     })
+
+    console.log(messages[0])
+    
+    updateDoc(doc(db, "friends", friendshipID), {
+        lastMessage: {
+            text: messages[0].text,
+            time: messages[0].createdAt,
+            sendBy: messages[0].user._id
+        }
+    });
+    
 }
 
 /**
