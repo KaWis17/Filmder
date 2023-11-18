@@ -86,6 +86,11 @@ export async function addToFriendList(userID, friendsEmail, setFriendsEmail) {
                 console.log("1")
                 if(!docSnap.exists()){
                     setDoc(doc(db, "friends", friendshipID), {
+                        lastMessage: {
+                            text: "Say Hi",
+                            time: new Date(),
+                            sendBy: userID
+                        },
                         users: {
                             [userID]: userProfile,
                             [friendsProfile.uid]: friendsProfile,
@@ -156,16 +161,20 @@ export function setMessagesFromChat(friendshipID, setMessages, friendImageUrl) {
                     _id: doc.id,
                     ...doc.data(),
                     createdAt: doc.data().createdAt.toDate(),
-                    avatar: friendImageUrl
+                    user: {
+                        _id: doc.data().user._id,
+                        avatar: friendImageUrl
+                    }
                 }))
             )
+        
         )
 }
 
 /**
  * Function to add a message to the chat
  */
-export function sendAMessage(GiftedChat, messages, setMessages, friendshipID, userID) {
+export async function sendAMessage(GiftedChat, messages, setMessages, friendshipID, userID) {
 
     setMessages(previousMessages =>
         GiftedChat.append(previousMessages, messages),
@@ -177,9 +186,7 @@ export function sendAMessage(GiftedChat, messages, setMessages, friendshipID, us
             _id: userID,
         },
         createdAt: new Date(),
-    })
-
-    console.log(messages[0])
+    })    
     
     updateDoc(doc(db, "friends", friendshipID), {
         lastMessage: {
@@ -241,14 +248,13 @@ async function updateUserDataInFriends(userID, querySnapshot) {
         var usersKeys = Object.keys(document.data().users)
 
         var friendID = (usersKeys.at(0) != userID ? usersKeys.at(0) : usersKeys.at(1))
-                    
-        setDoc(doc(db, "friends", generateFriendshipID(userID, friendID)), {
+
+        updateDoc(doc(db, "friends", generateFriendshipID(userID, friendID)), {
             users: {
                 [userID]: userProfile,
                 [friendID]: await getProfileById(friendID),
             },
             usersMatched: [userID, friendID],
-            timestamp: document.data().timestamp
         });
         
     });

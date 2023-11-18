@@ -65,7 +65,13 @@ const ChatListScreen = () => {
                                 ) : (
                                     (new Date(item.lastMessage.time.seconds*1000).isSameDateAs(new Date())) ? 
                                     (
-                                        new Date(item.lastMessage.time.seconds*1000).getHours() + ":" + new Date(item.lastMessage.time.seconds*1000).getMinutes()
+                                        new Date(item.lastMessage.time.seconds*1000).getHours().toLocaleString('en-US', {
+                                            minimumIntegerDigits: 2,
+                                            useGrouping: false
+                                        }) + ":" + new Date(item.lastMessage.time.seconds*1000).getMinutes().toLocaleString('en-US', {
+                                            minimumIntegerDigits: 2,
+                                            useGrouping: false
+                                        })
                                     ) : (
                                         days[new Date(item.lastMessage.time.seconds*1000).getDay(({ weekday:"short" }))]
                                     )

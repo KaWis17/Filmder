@@ -19,8 +19,10 @@ const ChatConversationScreen = ({route, navigation}) => {
      * React hook to synchronize messages from chat depending on user variable
      */
     useEffect(
-        () =>         
-        setMessagesFromChat(friendshipID, setMessages, friendProfile.imageUrl),
+        () => {
+            setMessagesFromChat(friendshipID, setMessages, friendProfile.imageUrl)
+            console.log(messages)
+        },        
         [user]
     );
 
@@ -51,7 +53,7 @@ const ChatConversationScreen = ({route, navigation}) => {
                     _id: user.uid,
                 }} 
                 showUserAvatar={false}
-                showAvatarForEveryMessage={true}
+                showAvatarForEveryMessage={false}
                 scrollToBottom={true}
                 onPressAvatar={() => navigation.navigate("otherUserScreen", {friendID: friendProfile.uid})}
             />
