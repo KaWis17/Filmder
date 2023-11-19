@@ -137,6 +137,28 @@ After creation of account, user is being given a certain amount of film suggesti
 
 This “onboarding” sequence serves also as a walkthrough which explains how to use the application. First few films suggestions are displayed with additional popups containing explanation of how users interface works. 
 
+## Github rules
+Branch main now requires a pull request before merging. It requires 2 approving reviews including review from the code owner. Documentation of changes is needed for a positive review.
+
+### Workflow
+Move tasks between categories on Jira Software freely. Once a task ends up in 'Done', it is considered finished. If any issues arise, create new tasks to address them. After a pull request is created, include the link to it in the task, i.e. Review link: <https://kapelakapelki.atlassian.net/browse/SCRUM-68>
+
+Feel free to push any changes to your own branches. Review branches must be named after the task they address, e.g. SCRUM-68
+
+### Commit format
+Commit messages must be at most 80 columns wide and use the following format:
+```
+SCRUM-X: Short description
+
+Detailed description of what has been done, changed, addressed.
+```
+Example:
+```
+SCRUM-68: Create Github Rules
+
+Created set of rules which will guide team members how to properly use github (branches, reviews and ect.) and add it to the documentation.
+```
+
 ## Appendices
 
 ### Revision history
