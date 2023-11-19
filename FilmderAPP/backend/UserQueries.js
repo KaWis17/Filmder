@@ -1,5 +1,5 @@
 import {    collection, query, where, 
-            getDocs, setDoc, getDoc, addDoc, doc, updateDoc,
+            getDocs, setDoc, getDoc, addDoc, doc, updateDoc, deleteDoc,
             onSnapshot, orderBy, serverTimestamp } from "firebase/firestore"; 
 import * as ImagePicker from "expo-image-picker";
             
@@ -112,6 +112,16 @@ export async function addToFriendList(userID, friendsEmail, setFriendsEmail) {
 
     setFriendsEmail('')
     
+}
+
+/**
+ * Function to delete user from friend list
+ * TODO: Delete recursively also a collection of messages under friendship
+ */
+export async function deleteFromFriendList(userID, friendID){
+
+    await deleteDoc(doc(db, "friends", generateFriendshipID(userID, friendID)));
+    alert("User has been deleted from friends")
 }
 
 /**

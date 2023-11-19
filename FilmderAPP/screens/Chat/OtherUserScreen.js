@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, TextInput, Image, ScrollView } from 'react-native'
+import { View, TextInput, Image, ScrollView, TouchableOpacity, Text } from 'react-native'
 
-import { setUserData } from '../../backend/UserQueries';
+import useAuth from '../../backend/AuthProvider'
+import { deleteFromFriendList, setUserData } from '../../backend/UserQueries';
 
 const tempURL = "https://t4.ftcdn.net/jpg/03/49/49/79/360_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5.jpg"
 
 const OtherUserScreen = ({route, navigation}) => {
 
     const friendID = route.params.friendID;
+
+    const { user } = useAuth();
 
     const[first, setFirst] = useState('');
     const[last, setLast] = useState('');
@@ -52,6 +55,15 @@ const OtherUserScreen = ({route, navigation}) => {
                             editable={false} selectTextOnFocus={false}
                         className="w-4/5 h-12 mb-4 border-solid rounded-md border-sky-500 bg-white text-center"/>
                     </View>
+
+                    <TouchableOpacity 
+                        onPress={() => {
+                            deleteFromFriendList(user.uid, friendID);
+                            navigation.navigate("chatList");
+                        }}
+                        className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-red-500">
+                        <Text className=" text-lg my-auto text-center color-white">DELETE FROM FRIENDS</Text>
+                    </TouchableOpacity>
 
                 </View>
             </ScrollView>
