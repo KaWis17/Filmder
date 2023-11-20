@@ -242,7 +242,22 @@ export function addWantPreference(userID, filmID, doWant) {
     setDoc(doc(db, "user_preferences", userID + filmID), {
         userID: userID,
         filmID: filmID,
-        doWant: doWant
+        doWant: doWant,
+        rate: 0
+    });
+}
+
+
+/**
+ * Function to update user's rate about film
+ */
+export function addRatePreference(userID, filmID, rate) {
+
+    setDoc(doc(db, "user_preferences", userID + filmID), {
+        userID: userID,
+        filmID: filmID,
+        doWant: "NULL",
+        rate: rate
     });
 }
 

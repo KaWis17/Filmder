@@ -5,8 +5,10 @@ import Swiper from 'react-native-deck-swiper';
 import { useNavigation } from '@react-navigation/core';
 
 import { fetchMovies, image500, fallbackMoviePoster } from '../../api/moviedb';
-import { addWantPreference } from '../../backend/UserQueries';
+import { addRatePreference, addWantPreference } from '../../backend/UserQueries';
 import useAuth from '../../backend/AuthProvider'
+import { Rating } from 'react-native-ratings';
+
 
 
 const SwiperScreen = () => {
@@ -52,6 +54,21 @@ const SwiperScreen = () => {
         if (data && data.results) setMovies(data.results);
     }
 
+    //state describing whether rating bar is visible
+    const [isVisible, setIsVisible] = useState(false);
+    //state describning currently rated film
+    const [currFilm, setCurrFilm] = useState(0);
+
+
+    //function inserting film's rate to the data base
+    const ratingCompleted = async(rating) => {
+        console.log('Ocena: ' + rating + " " + currFilm);
+        addRatePreference(user.uid, currFilm, rating)
+        setIsVisible(false)
+    }
+
+
+
   return (
     <View className="flex h-screen bg-slate-300">
 
@@ -70,11 +87,15 @@ const SwiperScreen = () => {
             }}
 
             onSwipedRight={async (id) => {
-                addWantPreference(user.uid, trending[id].id, true, true)
+                addWantPreference(user.uid, trending[id].id, true)
             }}
 
-            onSwipedBottom={() => {
-                //alert("swipedBOTTOM")
+            onSwipedBottom={async (id) => {
+                console.log(trending[id].id)
+                setCurrFilm(trending[id].id)
+                console.log(currFilm)
+                console.log(typeof currFilm)
+                setIsVisible(true)
             }}
 
             onSwipedLeft={async (id) => {
@@ -110,6 +131,16 @@ const SwiperScreen = () => {
             cardIndex={0}
 
         />
+        {isVisible && (
+             <Rating
+                showRating
+                ratingColor='#239C3F'
+                ratingBackgroundColor='#239C3F'
+                onFinishRating={(rating) => ratingCompleted(rating) }
+                style={{ paddingVertical: 10 }}
+            />
+        )}
+       
     </View>
   )
 }
