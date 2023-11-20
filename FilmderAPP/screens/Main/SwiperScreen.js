@@ -65,8 +65,8 @@ const SwiperScreen = () => {
 
             // onSwipedAll={} <-- todo: write this function
 
-            onSwipedTop={() => {
-                //alert("swipedTOP")
+            onSwipedTop={async (id) => {
+                navigation.navigate("sendToFriendScreen", {film: trending[id]})
             }}
 
             onSwipedRight={async (id) => {
