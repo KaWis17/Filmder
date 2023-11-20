@@ -256,7 +256,7 @@ export function addRatePreference(userID, filmID, rate) {
     setDoc(doc(db, "user_preferences", userID + filmID), {
         userID: userID,
         filmID: filmID,
-        doWant: "NULL",
+        doWant: null,
         rate: rate
     });
 }

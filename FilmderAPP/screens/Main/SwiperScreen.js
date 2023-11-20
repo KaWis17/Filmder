@@ -55,17 +55,15 @@ const SwiperScreen = () => {
     }
 
     //state describing whether rating bar is visible
-    const [isVisible, setIsVisible] = useState(false);
+    const [isRatingBarVisible, setIsRatingBarVisible] = useState(false);
     //state describning currently rated film
     const [currFilm, setCurrFilm] = useState(0);
 
 
-    //function inserting film's rate to the data base
-    const ratingCompleted = async(rating) => {
-        console.log('Ocena: ' + rating + " " + currFilm);
-        addRatePreference(user.uid, currFilm, rating)
-        setIsVisible(false)
-    }
+    // //function inserting film's rate to the data base
+    // const ratingCompleted = async(rating) => {
+        
+    // }
 
 
 
@@ -84,10 +82,12 @@ const SwiperScreen = () => {
 
             onSwipedTop={() => {
                 //alert("swipedTOP")
+                setIsRatingBarVisible(false)
             }}
 
             onSwipedRight={async (id) => {
                 addWantPreference(user.uid, trending[id].id, true)
+                setIsRatingBarVisible(false)
             }}
 
             onSwipedBottom={async (id) => {
@@ -95,11 +95,12 @@ const SwiperScreen = () => {
                 setCurrFilm(trending[id].id)
                 console.log(currFilm)
                 console.log(typeof currFilm)
-                setIsVisible(true)
+                setIsRatingBarVisible(true)
             }}
 
             onSwipedLeft={async (id) => {
                 addWantPreference(user.uid, trending[id].id, false)
+                setIsRatingBarVisible(false)
             }}
 
             onTapCard={(id) => {
@@ -131,12 +132,15 @@ const SwiperScreen = () => {
             cardIndex={0}
 
         />
-        {isVisible && (
+        {isRatingBarVisible && (
              <Rating
                 showRating
                 ratingColor='#239C3F'
                 ratingBackgroundColor='#239C3F'
-                onFinishRating={(rating) => ratingCompleted(rating) }
+                onFinishRating={(rating) => {console.log('Ocena: ' + rating + " " + currFilm);
+                    addRatePreference(user.uid, currFilm, rating)
+                    setIsRatingBarVisible(false)
+                } }
                 style={{ paddingVertical: 10 }}
             />
         )}
