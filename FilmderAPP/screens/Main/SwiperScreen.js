@@ -5,7 +5,7 @@ import Swiper from 'react-native-deck-swiper';
 import { useNavigation } from '@react-navigation/core';
 
 import { fetchMovies, image500, fallbackMoviePoster } from '../../api/moviedb';
-import { addRatePreference, addWantPreference } from '../../backend/UserQueries';
+import { addEmptyPreferencesArray, addRatePreference, addWantPreference } from '../../backend/UserQueries';
 import useAuth from '../../backend/AuthProvider'
 import { Rating } from 'react-native-ratings';
 
@@ -60,10 +60,6 @@ const SwiperScreen = () => {
     const [currFilm, setCurrFilm] = useState(0);
 
 
-    // //function inserting film's rate to the data base
-    // const ratingCompleted = async(rating) => {
-        
-    // }
 
 
 
@@ -81,7 +77,7 @@ const SwiperScreen = () => {
             // onSwipedAll={} <-- todo: write this function
 
             onSwipedTop={() => {
-                //alert("swipedTOP")
+                // addEmptyPreferencesArray(user.uid)
                 setIsRatingBarVisible(false)
             }}
 

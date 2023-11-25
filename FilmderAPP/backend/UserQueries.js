@@ -29,6 +29,15 @@ export function setUserData (userID, setFirst, setLast, setAge, setImageUrl, set
     )
 }
 
+export async function addEmptyPreferencesArray()
+{
+    const docData = {
+        preferences: [],
+    };
+    await updateDoc(doc(db, "users", userId), docData)
+    
+}
+
 /**
  * Function to tell if user is in database, or only in authentication
  */
@@ -237,28 +246,72 @@ export async function uploadProfilePhoto(userID, userEmail, first, last, age, ti
 /**
  * Function to update user preference about film
  */
-export function addWantPreference(userID, filmID, doWant) {
+export async function addWantPreference(userID, filmID, doWant) {
+    const userRef = doc(db, "users", userID);
+    const userSnap = await getDoc(userRef)
+    preferencesArray = userSnap.data().preferences
+    console.log(preferencesArray)
+    hasPreference = false
+    for(let i = 0; i < preferencesArray.length; i++)
+    {
+        if(preferencesArray[i].id == userID + filmID)
+        {
+            preferencesArray[i].doWant = doWant
+            hasPreference = true
+        }
+    }
+    if(!hasPreference)
+    {
+        const preferenceData = {
+            id: userID + filmID,
+            filmID: filmID,
+            doWant: doWant,
+            rate: 0
+        };
+        preferencesArray.push(preferenceData)
+    }
+    console.log(preferencesArray)
+    const docData = {
+        preferences: preferencesArray
+    }
+    await updateDoc(doc(db, "users", userID), docData)
 
-    setDoc(doc(db, "user_preferences", userID + filmID), {
-        userID: userID,
-        filmID: filmID,
-        doWant: doWant,
-        rate: 0
-    });
 }
 
 
 /**
  * Function to update user's rate about film
  */
-export function addRatePreference(userID, filmID, rate) {
+export async function addRatePreference(userID, filmID, rate) {
 
-    setDoc(doc(db, "user_preferences", userID + filmID), {
-        userID: userID,
-        filmID: filmID,
-        doWant: null,
-        rate: rate
-    });
+    const userRef = doc(db, "users", userID);
+    const userSnap = await getDoc(userRef)
+    preferencesArray = userSnap.data().preferences
+    console.log(preferencesArray)
+    hasPreference = false
+    for(let i = 0; i < preferencesArray.length; i++)
+    {
+        if(preferencesArray[i].id == userID + filmID)
+        {
+            preferencesArray[i].rate = rate
+            hasPreference = true
+        }
+    }
+    if(!hasPreference)
+    {
+        const preferenceData = {
+            id: userID + filmID,
+            filmID: filmID,
+            doWant: null,
+            rate: rate
+        };
+        preferencesArray.push(preferenceData)
+    }
+    console.log(preferencesArray)
+    const docData = {
+        preferences: preferencesArray
+    }
+    await updateDoc(doc(db, "users", userID), docData)
 }
 
 /**
