@@ -1,8 +1,7 @@
 
     /**
-     * Temporary data to check the functionality of SwiperScreen.js
+     * Temporary data to use for testing
      */
-
 export const DummyData = [
       {
         id: 1,
