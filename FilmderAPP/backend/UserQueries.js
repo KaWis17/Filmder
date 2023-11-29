@@ -1,15 +1,15 @@
 import {    collection, query, where, 
-            getDocs, setDoc, getDoc, addDoc, doc, updateDoc, deleteDoc,
-            onSnapshot, orderBy, serverTimestamp } from "firebase/firestore"; 
+    getDocs, setDoc, getDoc, addDoc, doc, updateDoc, deleteDoc,
+    onSnapshot, orderBy, serverTimestamp } from "firebase/firestore"; 
 import * as ImagePicker from "expo-image-picker";
-            
+    
 import { db, st } from "./FirebaseConnection"
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 
 /**
- * Function to set user data
- */
+* Function to set user data
+*/
 export function setUserData (userID, setFirst, setLast, setAge, setImageUrl, setTimestamp) {
 
     onSnapshot(
@@ -30,8 +30,8 @@ export function setUserData (userID, setFirst, setLast, setAge, setImageUrl, set
 }
 
 /**
- * Function to tell if user is in database, or only in authentication
- */
+* Function to tell if user is in database, or only in authentication
+*/
 export async function doesUserExistInDb(userID) {
 
     const docRef = doc(db, "users", userID);
@@ -41,9 +41,9 @@ export async function doesUserExistInDb(userID) {
 }
 
 /**
- * Function to update user data in the 'users' collection,
- * it also runs a function to update user data in all 'friends' collections 
- */
+* Function to update user data in the 'users' collection,
+* it also runs a function to update user data in all 'friends' collections 
+*/
 export async function updateUserData(userID, userEmail, first, last, age, imageUrl, timestamp) {
 
     setDoc(doc(db, "users", userID), {
@@ -66,11 +66,87 @@ export async function updateUserData(userID, userEmail, first, last, age, imageU
 }
 
 /**
- * Function to add a friend to a 'friends' collection
- * TODO: consider adding by non-existing email and adding yourself
- */
-export async function addToFriendList(userID, friendsEmail, setFriendsEmail) {
-      
+* Function to add a friend to a 'friends' collection
+* TODO: consider adding by non-existing email and adding yourself
+*/
+/*export async function addToFriendList(userID, friendsEmail, setFriendsEmail) {
+
+var userProfile = await getProfileById(userID)
+
+var friendsProfile = await getProfileByEmail(friendsEmail)
+
+if(friendsProfile !== undefined){
+var friendshipID = generateFriendshipID(userID, friendsProfile.uid)
+
+const docRef = doc(db, "friends", friendshipID);
+const docSnap = await getDoc(docRef);
+
+if(friendsProfile !== undefined){
+    if(userProfile.first != "Name"){
+        console.log("1")
+        if(docSnap.data().sentInvitation.includes(friendsProfile.uid)){
+            setDoc(doc(db, "friends", friendshipID), {
+                lastMessage: {
+                    text: "Say Hi",
+                    time: new Date(),
+                    sendBy: userID
+                },
+                users: {
+                    [userID]: userProfile,
+                    [friendsProfile.uid]: friendsProfile,
+                },
+                usersMatched: [userID, friendsProfile.uid],
+                timestamp: serverTimestamp()
+            });
+            alert("Friend has been added!")
+        } else {
+            alert("Friendship already exists!")
+        } 
+    } else {
+        alert("Firstly update your user profile!")
+    }
+}
+} else {
+alert("There is no user with this email")
+}
+
+setFriendsEmail('')
+
+}*/
+
+/**
+* Function to add a friend to a 'friends' collection
+*/
+export async function addToFriendList(friendshipID) {
+    setDoc(doc(db, "friends", friendshipID), {
+        lastMessage: {
+            text: "Say Hi",
+            time: new Date(),
+            sendBy: userID
+        },
+        users: {
+            [userID]: userProfile,
+            [friendsProfile.uid]: friendsProfile,
+        },
+        usersMatched: [userID, friendsProfile.uid],
+        timestamp: serverTimestamp()
+    });
+    alert("Friend has been added!")
+}
+
+/**
+* Function to reject an invitation from other user
+*/
+export async function rejectInvitation(friendshipID) {
+    await deleteDoc(doc(db, "friends", friendshipID));
+    alert("Invitation has been rejected!")
+}
+
+/**
+* Function to send an invitation to other user
+*/
+export async function sendInvitation(userID, friendsEmail, setFriendsEmail) {
+
     var userProfile = await getProfileById(userID)
 
     var friendsProfile = await getProfileByEmail(friendsEmail)
@@ -86,6 +162,7 @@ export async function addToFriendList(userID, friendsEmail, setFriendsEmail) {
                 console.log("1")
                 if(!docSnap.exists()){
                     setDoc(doc(db, "friends", friendshipID), {
+                        sentInvitation: [userID],
                         lastMessage: {
                             text: "Say Hi",
                             time: new Date(),
@@ -98,35 +175,58 @@ export async function addToFriendList(userID, friendsEmail, setFriendsEmail) {
                         usersMatched: [userID, friendsProfile.uid],
                         timestamp: serverTimestamp()
                     });
-                    alert("Friend has been added!")
+                    alert("Invitation has been sent!")
                 } else {
-                    alert("Friendship already exists!")
+                    // if(docSnap.data().sentInvitation.includes(userID)) {
+                    //     alert("Invitation was sent!")
+                    // }
+                    if (Array.isArray(docSnap.data().sentInvitation) && docSnap.data().sentInvitation.indexOf(userID) !== -1) {
+                        alert("Invitation was sent!");
+                    }            
+                    // if(docSnap.data().sentInvitation.includes(friendsProfile.uid)) {
+                    //     addToFriendList(friendshipID)
+                    // }
+                    if(Array.isArray(docSnap.data().sentInvitation) && docSnap.data().sentInvitation.indexOf(userID) !== -1) {
+                        addToFriendList(friendshipID);
+                    }
+                    
+                    if(docSnap.exists() && docSnap.data() && !docSnap.data().sentInvitation) {
+                        alert("Friendship already exists!")
+                    }
                 } 
             } else {
                 alert("Firstly update your user profile!")
             }
         }
     } else {
-        alert("There is no user with this email")
+    alert("There is no user with this email")
     }
 
     setFriendsEmail('')
-    
+
 }
 
 /**
- * Function to delete user from friend list
- * TODO: Delete recursively also a collection of messages under friendship
- */
+* Function to delete user from friend list
+*/
 export async function deleteFromFriendList(userID, friendID){
 
-    await deleteDoc(doc(db, "friends", generateFriendshipID(userID, friendID)));
-    alert("User has been deleted from friends")
+    var friendshipID = generateFriendshipID(userID, friendID)
+
+    const messagesCollectionRef = collection(db, "friends", friendshipID, "messages");
+    const messagesQuerySnapshot = await getDocs(messagesCollectionRef);
+
+    messagesQuerySnapshot.forEach(async (doc) => {
+        await deleteDoc(doc.ref);
+    });
+
+    await deleteDoc(doc(db, "friends", friendshipID));
+    alert("User has been deleted from friends!")
 }
 
 /**
- * Function to set user friend list
- */
+* Function to set user friend list
+*/
 export function setUsersFriendList(userID, setFriends){
 
     onSnapshot(
@@ -147,8 +247,8 @@ export function setUsersFriendList(userID, setFriends){
 } 
 
 /**
- * Function to get the friend object from a list of a friend and the user
- */
+* Function to get the friend object from a list of a friend and the user
+*/
 export function getFriendFromFriendsList(list, userID) {
 
     var key = (list[Object.keys(list)[0]].uid == userID) ? 1 : 0;
@@ -156,8 +256,8 @@ export function getFriendFromFriendsList(list, userID) {
 }
 
 /**
- * Function to set the messages 
- */
+* Function to set the messages 
+*/
 export function setMessagesFromChat(friendshipID, setMessages, friendImageUrl) {
 
     onSnapshot(
@@ -177,13 +277,13 @@ export function setMessagesFromChat(friendshipID, setMessages, friendImageUrl) {
                     }
                 }))
             )
-        
-        )
+
+    )
 }
 
 /**
- * Function to add a message to the chat
- */
+* Function to add a message to the chat
+*/
 export async function sendAMessage(GiftedChat, messages, setMessages, friendshipID, userID) {
 
     setMessages(previousMessages =>
@@ -197,7 +297,7 @@ export async function sendAMessage(GiftedChat, messages, setMessages, friendship
         },
         createdAt: new Date(),
     })    
-    
+
     updateDoc(doc(db, "friends", friendshipID), {
         lastMessage: {
             text: messages[0].text,
@@ -205,12 +305,12 @@ export async function sendAMessage(GiftedChat, messages, setMessages, friendship
             sendBy: messages[0].user._id
         }
     });
-    
+
 }
 
 /**
- * Function to change user avatar
- */
+* Function to change user avatar
+*/
 export async function uploadProfilePhoto(userID, userEmail, first, last, age, timestamp) {
 
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -235,8 +335,8 @@ export async function uploadProfilePhoto(userID, userEmail, first, last, age, ti
 }
 
 /**
- * Function to update user preference about film
- */
+* Function to update user preference about film
+*/
 export function addWantPreference(userID, filmID, doWant) {
 
     setDoc(doc(db, "user_preferences", userID + filmID), {
@@ -247,8 +347,8 @@ export function addWantPreference(userID, filmID, doWant) {
 }
 
 /**
- * Helper function to update the user data if 'friends' collection
- */
+* Helper function to update the user data if 'friends' collection
+*/
 async function updateUserDataInFriends(userID, querySnapshot) {
 
     var userProfile = await getProfileById(userID)
@@ -266,13 +366,13 @@ async function updateUserDataInFriends(userID, querySnapshot) {
             },
             usersMatched: [userID, friendID],
         });
-        
+
     });
 }
 
 /**
- * Helper function to get the profile from 'users' by the ID of a user
- */
+* Helper function to get the profile from 'users' by the ID of a user
+*/
 async function getProfileById(userID) {
 
     const q = query(collection(db, "users"), where("uid", "==", userID));
@@ -282,8 +382,8 @@ async function getProfileById(userID) {
 }  
 
 /**
- * Helper function to get the profile from 'users' by an email of a user
- */
+* Helper function to get the profile from 'users' by an email of a user
+*/
 async function getProfileByEmail(userEmail) {
 
     const q = query(collection(db, "users"), where("email", "==", userEmail));
@@ -293,9 +393,9 @@ async function getProfileByEmail(userEmail) {
 }  
 
 /**
- * Helper function to generate/get valid friendship ID
- */
-function generateFriendshipID(uid1, uid2) {
+* Helper function to generate/get valid friendship ID
+*/
+export async function generateFriendshipID(uid1, uid2) {
     
     return (uid1 > uid2 ? uid1 + uid2 : uid2 + uid1)
 }

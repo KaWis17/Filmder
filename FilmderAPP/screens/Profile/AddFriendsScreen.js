@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { View, ScrollView, Text, TouchableOpacity, TextInput } from 'react-native'
 
-import { addToFriendList } from '../../backend/UserQueries';
+import { sendInvitation } from '../../backend/UserQueries';
 
 const AddFriendsScreen = ({route, navigation}) => {
 
@@ -25,11 +25,11 @@ const AddFriendsScreen = ({route, navigation}) => {
 
                 <TouchableOpacity 
                     onPress={() => {
-                        addToFriendList(userID, friendsEmail, setFriendsEmail)
+                        sendInvitation(userID, friendsEmail, setFriendsEmail)
                         navigation.navigate("profileScreen")
                     }}
                     className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-blue-500">
-                    <Text className=" text-lg my-auto text-center color-white">ADD FRIEND</Text>
+                    <Text className=" text-lg my-auto text-center color-white">SEND INVITATION</Text>
                 </TouchableOpacity>
             </View>
         </ScrollView>
