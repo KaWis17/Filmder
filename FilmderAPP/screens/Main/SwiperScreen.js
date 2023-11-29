@@ -5,7 +5,7 @@ import Swiper from 'react-native-deck-swiper';
 import { useNavigation } from '@react-navigation/core';
 
 import { fetchMovies, image500, fallbackMoviePoster } from '../../api/moviedb';
-import { addEmptyPreferencesArray, addRatePreference, addWantPreference } from '../../backend/UserQueries';
+import { addRatePreference, addWantPreference } from '../../backend/UserQueries';
 import useAuth from '../../backend/AuthProvider'
 import { Rating } from 'react-native-ratings';
 
@@ -77,7 +77,6 @@ const SwiperScreen = () => {
             // onSwipedAll={} <-- todo: write this function
 
             onSwipedTop={() => {
-                // addEmptyPreferencesArray(user.uid)
                 setIsRatingBarVisible(false)
             }}
 

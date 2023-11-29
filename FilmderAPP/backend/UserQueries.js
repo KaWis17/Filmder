@@ -29,14 +29,6 @@ export function setUserData (userID, setFirst, setLast, setAge, setImageUrl, set
     )
 }
 
-export async function addEmptyPreferencesArray()
-{
-    const docData = {
-        preferences: [],
-    };
-    await updateDoc(doc(db, "users", userId), docData)
-    
-}
 
 /**
  * Function to tell if user is in database, or only in authentication
@@ -243,76 +235,54 @@ export async function uploadProfilePhoto(userID, userEmail, first, last, age, ti
     }
 }
 
+
 /**
  * Function to update user preference about film
  */
 export async function addWantPreference(userID, filmID, doWant) {
-    const userRef = doc(db, "users", userID);
-    const userSnap = await getDoc(userRef)
-    preferencesArray = userSnap.data().preferences
-    console.log(preferencesArray)
-    hasPreference = false
-    for(let i = 0; i < preferencesArray.length; i++)
+    const collectionPath = "users/" + userID + "/upreferences"
+    const docRef = doc(db, collectionPath, userID+filmID);
+    const docSnap = await getDoc(docRef);
+    if(docSnap.exists())
     {
-        if(preferencesArray[i].id == userID + filmID)
-        {
-            preferencesArray[i].doWant = doWant
-            hasPreference = true
-        }
+        await updateDoc(doc(db, collectionPath, userID + filmID), {
+            doWant: doWant,
+        });
     }
-    if(!hasPreference)
+    else
     {
-        const preferenceData = {
-            id: userID + filmID,
+        await setDoc(doc(db, collectionPath, userID + filmID), {
             filmID: filmID,
             doWant: doWant,
             rate: 0
-        };
-        preferencesArray.push(preferenceData)
+        });
     }
-    console.log(preferencesArray)
-    const docData = {
-        preferences: preferencesArray
-    }
-    await updateDoc(doc(db, "users", userID), docData)
-
 }
-
 
 /**
  * Function to update user's rate about film
  */
 export async function addRatePreference(userID, filmID, rate) {
-
-    const userRef = doc(db, "users", userID);
-    const userSnap = await getDoc(userRef)
-    preferencesArray = userSnap.data().preferences
-    console.log(preferencesArray)
-    hasPreference = false
-    for(let i = 0; i < preferencesArray.length; i++)
+    const collectionPath = "users/" + userID + "/upreferences"
+    const docRef = doc(db, collectionPath, userID+filmID);
+    const docSnap = await getDoc(docRef);
+    if(docSnap.exists())
     {
-        if(preferencesArray[i].id == userID + filmID)
-        {
-            preferencesArray[i].rate = rate
-            hasPreference = true
-        }
+        await updateDoc(doc(db, collectionPath, userID + filmID), {
+            rate: rate,
+        });
     }
-    if(!hasPreference)
+    else
     {
-        const preferenceData = {
-            id: userID + filmID,
+        await setDoc(doc(db, collectionPath, userID + filmID), {
             filmID: filmID,
             doWant: null,
             rate: rate
-        };
-        preferencesArray.push(preferenceData)
+        });
     }
-    console.log(preferencesArray)
-    const docData = {
-        preferences: preferencesArray
-    }
-    await updateDoc(doc(db, "users", userID), docData)
 }
+
+
 
 /**
  * Helper function to update the user data if 'friends' collection
