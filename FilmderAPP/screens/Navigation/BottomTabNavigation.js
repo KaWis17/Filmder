@@ -16,7 +16,6 @@ const Navigation = () => {
      * Creating Tab Navigation using @react-navigation library 
      */
     const Tab = createBottomTabNavigator();
-
     const { user } =  useAuth();
 
     /**
@@ -26,12 +25,12 @@ const Navigation = () => {
     return (
         <>
             {user ? (
-            <Tab.Navigator screenOptions={{headerShown: false}} initialRouteName="Main">
+            <Tab.Navigator screenOptions={{headerShown: false}} initialRouteName="Discover">
                 <Tab.Screen name='Chat' 
                             component={ChatStack} 
                             options={{tabBarBadge: 3, tabBarIcon: ({ color, size }) => (<Ionicons name="chatbubbles-outline" color={color} size={size} />),}}
                 />
-                <Tab.Screen name='Main' 
+                <Tab.Screen name='Discover' 
                             component={MainStack} 
                             options={{tabBarIcon: ({ color, size }) => (<Ionicons name="home-outline" color={color} size={size} />),}}
                 />

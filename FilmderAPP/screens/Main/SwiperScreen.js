@@ -1,57 +1,59 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, Image } from 'react-native'
-
 import Swiper from 'react-native-deck-swiper';
 import { useNavigation } from '@react-navigation/core';
-
 import { fetchMovies, image500, fallbackMoviePoster } from '../../api/moviedb';
 import { addRatePreference, addWantPreference } from '../../backend/UserQueries';
+import { basicMovie } from '../../constants/index';
 import useAuth from '../../backend/AuthProvider'
 import { Rating } from 'react-native-ratings';
 
 
 
 const SwiperScreen = () => {
-
+    const [ cardsNumber, setCardsNumber ] = useState(19);
     const { user } = useAuth();
-
+    const [ page, setPage ] = useState(1);
     /**
-     * TODO: Mario, Janie, zróbcie proszę dokumentację, jeśli uważacie, że jest potrzebna
+     * TODO: Janie, zrób proszę dokumentację, jeśli uważasz, że jest potrzebna
      */
 
     const navigation = useNavigation();
-    
-    // this is the default film on the screen, you can see it for a sec while loading <-- would be managed later 
-    const [trending, setMovies] = useState([
-        {
-            "adult": false,
-            "backdrop_path": "/fm6KqXpk3M2HVveHwCrBSSBaO0V.jpg",
-            "id": 872585,
-            "title": "Oppenheimer",
-            "original_language": "en",
-            "original_title": "Oppenheimer",
-            "overview": "The story of J. Robert Oppenheimer's role in the development of the atomic bomb during World War II.",
-            "poster_path": "/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg",
-            "media_type": "movie",
-            "genre_ids": [
-              18,
-              36
-            ],
-            "popularity": 2706.372,
-            "release_date": "2023-07-19",
-            "video": false,
-            "vote_average": 8.237,
-            "vote_count": 4380
-          },
-    ]);
+    // this is the default film on the screen, you can see it for a sec while loading
+    const [trending, setMovies] = useState([ basicMovie ]);
 
     useEffect(()=>{
         getMovies();           
     }, [])
 
+    /**
+     * paramExample = {"queryParam1": int_value1,
+     *                 "queryParam2": "string_value2",
+     *                 "queryParam3": "value1|value2,value3"}    {, - and} {| - or}
+     * List of all parameters can be finded here: https://developer.themoviedb.org/reference/discover-movie
+     */
+    var exampleOptions = {
+        "with_original_language": 'pl', "year": 2023
+    }
+
+    /**
+     * This function gets films from API. The maximum number of films that can be received in one API call is one page which contains 19 films.
+     * Remember that variable {page} means actual page number + 1. 
+     */
     const getMovies = async ()=>{
-        const data = await fetchMovies();
-        if (data && data.results) setMovies(data.results);
+        setPage(p => p + 1);
+        console.log(`page = ${page}`)
+        const data = await fetchMovies(page, exampleOptions);
+        if (data && data.results) {
+            setMovies(data.results);
+            setCardsNumber(data.results.length - 1);
+        }
+    }
+
+    const update_cards = async (id)=>{
+        if (id == cardsNumber) {
+            await getMovies();
+        }
     }
 
     //state describing whether rating bar is visible
@@ -69,12 +71,14 @@ const SwiperScreen = () => {
         <Swiper 
             containerStyle={{backgroundColor: "transparent" }}
             cards={trending}
-            stackSize={10}
-            stackSeparation={15}
+            stackSize={1}
             animateCardOpacity
             infinite={true}
 
-            // onSwipedAll={} <-- todo: write this function
+            onSwiped={(id)=>{
+                console.log(`swiped, card_id = ${id} on page ${page}`);
+                update_cards(id)
+            }}
 
             onSwipedTop={() => {
                 setIsRatingBarVisible(false)
@@ -93,7 +97,7 @@ const SwiperScreen = () => {
                 setIsRatingBarVisible(true)
             }}
 
-            onSwipedLeft={async (id) => {
+            onSwipedLeft={(id) => {
                 addWantPreference(user.uid, trending[id].id, false)
                 setIsRatingBarVisible(false)
             }}
@@ -103,7 +107,7 @@ const SwiperScreen = () => {
             }}
 
             renderCard={(card) => {
-                console.log('\nCARD: ', card.title); 
+                id = card.id;
                 return (
                     <View className="my-auto relative bg-black h-4/5 rounded-xl">
                         <Image 
@@ -124,7 +128,6 @@ const SwiperScreen = () => {
                     </View>
                 )
             }}
-            cardIndex={0}
 
         />
         {isRatingBarVisible && (
