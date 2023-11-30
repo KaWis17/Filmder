@@ -61,9 +61,8 @@ const ChatConversationScreen = ({route, navigation}) => {
     };
 
     const handleBubblePress = (message) => {
-        if(message.proposal){
-            alert('Redirecting to movie by Id: '+message.proposal);
-            navigation.navigate("modalScreen", {film: message.proposal})
+        if(message.invitation){
+            navigation.navigate("modalScreen", {film: message.invitation})
         }
     };
 

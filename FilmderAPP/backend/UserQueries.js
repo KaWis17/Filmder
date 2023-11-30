@@ -182,7 +182,7 @@ export function setMessagesFromChat(friendshipID, setMessages, friendImageUrl) {
 }
 
 /**
- * Function to add a message to the chat
+ * Function to add a message (or movie invitation) to the chat
  */
 export async function sendAMessage(GiftedChat, messages, setMessages, friendshipID, userID) {
 
@@ -197,7 +197,7 @@ export async function sendAMessage(GiftedChat, messages, setMessages, friendship
         },
         image: messages[0].image,
         createdAt: new Date(),
-        proposal: messages[0].proposal
+        invitation: messages[0].invitation
     })    
     
     updateDoc(doc(db, "friends", friendshipID), {

@@ -1,15 +1,17 @@
-import {View, Text, TouchableOpacity, FlatList, SafeAreaView, Image} from 'react-native'
+import {View, Modal, Text, TouchableOpacity, FlatList, SafeAreaView, Image} from 'react-native'
 import React, {useState, useEffect} from 'react'
 import { GiftedChat } from 'react-native-gifted-chat';
 
 import useAuth from '../../backend/AuthProvider'
 import { setUsersFriendList, getFriendFromFriendsList, sendAMessage } from '../../backend/UserQueries';
 import { image500, fallbackMoviePoster } from '../../api/moviedb';
-const SendToFriend = ({route, navigation}) => {
+const SendFilmToFriendScreen = ({route, navigation}) => {
 
     const[ friends, setFriends ] = useState([]);
     const { user } = useAuth();
     const [messages, setMessages] = useState([]);
+
+    const film = route.params.film;
 
     /**
      * React hook to synchronize friendList depending on user variable
@@ -19,15 +21,26 @@ const SendToFriend = ({route, navigation}) => {
         [user]
     );
 
+    /**
+     * sends movie invitation to picked friend and goes back to swiper screen
+     * @param newMessages new message with movie invitation
+     * @param friendshipID id of connection between user and friend
+     */
     const onSend = (newMessages, friendshipID)  => {
-        sendAMessage(GiftedChat, newMessages, setMessages, friendshipID, user.uid);
+        sendAMessage(GiftedChat, newMessages, setMessages, friendshipID, user.uid).then(r => navigation.goBack());
     };
 
+    /**
+     * Creates button witch represents friend to pick in invitation menu,
+     * After clicking button sends a message to picked friend with
+     * special field 'invitation' containing data of film proposal
+     * @param item key to friends data
+     * @returns {JSX.Element} button
+     */
     const renderFriend = ({ item }) => (
         <TouchableOpacity
             className="h-20"
             onPress={() => {
-                alert(item.id+" "+getFriendFromFriendsList(item.users, user.uid)+" "+film.title)
                 const newMessage = {
                     _id: messages.length + 1,
                     text: "Hey lets watch " +film.title+ " together sometime!",
@@ -37,10 +50,9 @@ const SendToFriend = ({route, navigation}) => {
                         name: "Your Name",
                     },
                     image: image500(film.poster_path) || fallbackMoviePoster,
-                    proposal: film
+                    invitation: film
                 };
                 onSend( [newMessage],item.id);
-                navigation.goBack();
             }}
         >
 
@@ -62,8 +74,6 @@ const SendToFriend = ({route, navigation}) => {
         </TouchableOpacity>
     );
 
-
-    const film = route.params.film;
     return (
         <View style={{marginTop: 30}}>
             <Text> Invite to watch together: {film.title}</Text>
@@ -78,12 +88,4 @@ const SendToFriend = ({route, navigation}) => {
   )
 }
 
-Date.prototype.isSameDateAs = function(otherDate) {
-    return (
-        this.getFullYear() === otherDate.getFullYear() &&
-        this.getMonth() === otherDate.getMonth() &&
-        this.getDate() === otherDate.getDate()
-    );
-}
-
-export default SendToFriend;
+export default SendFilmToFriendScreen;

@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import SwiperScreen from './SwiperScreen';
 import ModalScreen from './ModalScreen';
-import SendToFriend from "./SendToFriend";
+import SendFilmToFriendScreen from "./SendFilmToFriendScreen";
 
 
 const MainStack = ({ navigation, route }) => {
@@ -17,7 +17,7 @@ const MainStack = ({ navigation, route }) => {
             <StackInMain.Screen name="swiperScreen" component={SwiperScreen} />
             <StackInMain.Group screenOptions={{presentation: 'modal'}} >
                 <StackInMain.Screen name="modalScreen" component={ModalScreen}/>
-                <StackInMain.Screen name="sendToFriendScreen" component={SendToFriend} />
+                <StackInMain.Screen name="sendToFriendScreen" component={SendFilmToFriendScreen} />
             </StackInMain.Group>
         </StackInMain.Navigator>
         
