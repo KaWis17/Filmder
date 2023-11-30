@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, TouchableOpacity, Text, SafeAreaView } from 'react-native'
+import {View, TouchableOpacity, Text, SafeAreaView, Alert} from 'react-native'
 
-import { GiftedChat } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 
 import useAuth from '../../backend/AuthProvider';
 import { setMessagesFromChat, sendAMessage } from '../../backend/UserQueries';
@@ -35,6 +35,38 @@ const ChatConversationScreen = ({route, navigation}) => {
         []
     )
 
+    const renderBubble = (props) => {
+        return (
+            <Bubble
+                {...props}
+                wrapperStyle={{
+                    left: {
+                        backgroundColor: '#e0e0e0', // Background color for received messages
+                    },
+                    right: {
+                        backgroundColor: '#333333', // Background color for sent messages
+                    },
+                }}
+                textStyle={{
+                    left: {
+                        color: '#000', // Text color for received messages
+                    },
+                    right: {
+                        color: '#fff', // Text color for sent messages
+                    },
+                }}
+                onPress={() => handleBubblePress(props.currentMessage)}
+            />
+        );
+    };
+
+    const handleBubblePress = (message) => {
+        if(message.proposal){
+            alert('Redirecting to movie by Id: '+message.proposal);
+            navigation.navigate("modalScreen", {film: message.proposal})
+        }
+    };
+
     return (
         <View style={{flex: 1}}>
             <View className="w-full bg-blue-500">
@@ -56,6 +88,7 @@ const ChatConversationScreen = ({route, navigation}) => {
                 showAvatarForEveryMessage={false}
                 scrollToBottom={true}
                 onPressAvatar={() => navigation.navigate("otherUserScreen", {friendID: friendProfile.uid})}
+                renderBubble={renderBubble}
             />
         </View>
     )

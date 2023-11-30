@@ -195,7 +195,9 @@ export async function sendAMessage(GiftedChat, messages, setMessages, friendship
         user: {
             _id: userID,
         },
+        image: messages[0].image,
         createdAt: new Date(),
+        proposal: messages[0].proposal
     })    
     
     updateDoc(doc(db, "friends", friendshipID), {

@@ -5,10 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="07133b7f-56f9-4df2-ab06-dc4846b8715d" name="Changes" comment="chore: deleted Proof Of Concept version of app">
-      <change afterPath="$PROJECT_DIR$/FilmderAPP/screens/PickChatScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FilmderAPP/backend/UserQueries.js" beforeDir="false" afterPath="$PROJECT_DIR$/FilmderAPP/backend/UserQueries.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FilmderAPP/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/FilmderAPP/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FilmderAPP/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/FilmderAPP/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FilmderAPP/screens/ChatScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/FilmderAPP/screens/ChatScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FilmderAPP/screens/Chat/ChatConversationScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/FilmderAPP/screens/Chat/ChatConversationScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FilmderAPP/screens/Main/SendToFriend.js" beforeDir="false" afterPath="$PROJECT_DIR$/FilmderAPP/screens/Main/SendToFriend.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,7 +40,7 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Filmder/DemoProject&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Filmder/FilmderApp/screens/Chat&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -46,9 +48,15 @@
     &quot;nodejs_interpreter_path&quot;: &quot;node&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;yarn&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\WebStorm 2022.3.2\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Filmder\FilmderApp\screens\Chat" />
+    </key>
+  </component>
   <component name="RunManager" selected="Node.js.App.js (1)">
     <configuration name="App.js (1)" type="NodeJSConfigurationType" temporary="true" path-to-node="$APPLICATION_CONFIG_DIR$/node/node-v16.16.0-win-x64/node" nameIsGenerated="true" path-to-js-file="App.js" working-dir="$PROJECT_DIR$/FilmderAPP">
       <method v="2" />
@@ -123,6 +131,9 @@
       <workItem from="1699374072561" duration="2601000" />
       <workItem from="1699718966489" duration="3898000" />
       <workItem from="1699788987073" duration="7855000" />
+      <workItem from="1700495379769" duration="5677000" />
+      <workItem from="1701102206265" duration="11227000" />
+      <workItem from="1701259599987" duration="6104000" />
     </task>
     <task id="LOCAL-00001" summary="chore: deleted Proof Of Concept version of app">
       <created>1699374434507</created>

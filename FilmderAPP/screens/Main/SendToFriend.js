@@ -4,7 +4,7 @@ import { GiftedChat } from 'react-native-gifted-chat';
 
 import useAuth from '../../backend/AuthProvider'
 import { setUsersFriendList, getFriendFromFriendsList, sendAMessage } from '../../backend/UserQueries';
-
+import { image500, fallbackMoviePoster } from '../../api/moviedb';
 const SendToFriend = ({route, navigation}) => {
 
     const[ friends, setFriends ] = useState([]);
@@ -23,43 +23,24 @@ const SendToFriend = ({route, navigation}) => {
         sendAMessage(GiftedChat, newMessages, setMessages, friendshipID, user.uid);
     };
 
-    const handleSendMessage = (friendshipID) => {
-        // You can customize this function further if needed
-        const newMessage = {
-            _id: messages.length + 1,
-            text: "Hello, this is a new message!",
-            createdAt: new Date(),
-            user: {
-                _id: user.uid,
-                name: "Your Name", // Replace with the actual user's name
-            },
-        };
-
-        onSend([newMessage],friendshipID);
-    };
-
     const renderFriend = ({ item }) => (
         <TouchableOpacity
             className="h-20"
             onPress={() => {
                 alert(item.id+" "+getFriendFromFriendsList(item.users, user.uid)+" "+film.title)
-                handleSendMessage(item.id);
-
                 const newMessage = {
                     _id: messages.length + 1,
-                    text: "Hello, it's a film proposal for somebody! "+film.title,
+                    text: "Hey lets watch " +film.title+ " together sometime!",
                     createdAt: new Date(),
                     user: {
                         _id: user.uid,
                         name: "Your Name",
                     },
+                    image: image500(film.poster_path) || fallbackMoviePoster,
+                    proposal: film
                 };
-                sendAMessage(GiftedChat, [newMessage], setMessages, item.id, user.uid);
-                navigation.navigate("chatConversation",
-                    {   friendshipID: item.id,
-                        friendProfile: getFriendFromFriendsList(item.users, user.uid),
-                    }
-                )
+                onSend( [newMessage],item.id);
+                navigation.goBack();
             }}
         >
 
@@ -74,39 +55,6 @@ const SendToFriend = ({route, navigation}) => {
                         {   getFriendFromFriendsList(item.users, user.uid).first +" "+
                             getFriendFromFriendsList(item.users, user.uid).last}
                     </Text>
-                    <View className="flex-row">
-                        <Text numberOfLines={1} className="flex-1 text-base">
-                            {(item.lastMessage !== undefined) ?
-                                (item.lastMessage.sendBy == user.uid ?
-                                    ("You: " + item.lastMessage.text) :
-                                    (getFriendFromFriendsList(item.users, user.uid).first + ": " + item.lastMessage.text)) :
-                                ("Say hi to " + getFriendFromFriendsList(item.users, user.uid).first + "!")
-                            }
-                        </Text>
-
-                        <Text className="text-base pl-5">{
-
-                            (item.lastMessage === undefined) ?
-                                (
-                                    " "
-                                ) : (
-                                    (new Date(item.lastMessage.time.seconds*1000).isSameDateAs(new Date())) ?
-                                        (
-                                            new Date(item.lastMessage.time.seconds*1000).getHours().toLocaleString('en-US', {
-                                                minimumIntegerDigits: 2,
-                                                useGrouping: false
-                                            }) + ":" + new Date(item.lastMessage.time.seconds*1000).getMinutes().toLocaleString('en-US', {
-                                                minimumIntegerDigits: 2,
-                                                useGrouping: false
-                                            })
-                                        ) : (
-                                            days[new Date(item.lastMessage.time.seconds*1000).getDay(({ weekday:"short" }))]
-                                        )
-                                )
-                        }</Text>
-
-                    </View>
-
                 </View>
 
             </View>
@@ -114,14 +62,12 @@ const SendToFriend = ({route, navigation}) => {
         </TouchableOpacity>
     );
 
+
     const film = route.params.film;
     return (
-        <View className="mt-5">
-            <Text className="m-auto text-4xl font-semibold">{film.title}</Text>
-            <Text className="m-auto text-xl font-semibold">Send to friend:</Text>
-
-            <Text>TEST</Text>
-            <SafeAreaView className="flex h-screen bg-slate-300">
+        <View style={{marginTop: 30}}>
+            <Text> Invite to watch together: {film.title}</Text>
+            <SafeAreaView>
                 <FlatList
                     data={friends}
                     renderItem={renderFriend}
