@@ -1,6 +1,6 @@
 import {    collection, query, where, 
     getDocs, setDoc, getDoc, addDoc, doc, updateDoc, deleteDoc,
-    onSnapshot, orderBy, serverTimestamp } from "firebase/firestore"; 
+    onSnapshot, orderBy, serverTimestamp, deleteField } from "firebase/firestore"; 
 import * as ImagePicker from "expo-image-picker";
     
 import { db, st } from "./FirebaseConnection"
@@ -28,6 +28,39 @@ export function setUserData (userID, setFirst, setLast, setAge, setImageUrl, set
         }
     )
 }
+
+/**
+* Function to set invitation data
+*/
+/**
+* Asynchronous function to set invitation data
+*/
+export async function setInvitationData(friendshipID, setSentInvitation) {
+    const docRef = doc(db, "friends", friendshipID);
+
+    try {
+        // Pobierz dane jednorazowo, nie tylko po zmianie
+        const snapshot = await getDoc(docRef);
+        if (snapshot.exists() && snapshot.data().sentInvitation !== undefined) {
+            setSentInvitation(snapshot.data().sentInvitation);
+        } else {
+            // Ustaw stan na coś, jeśli dane nie istnieją lub są undefined
+            setSentInvitation(''); // lub inna wartość domyślna
+        }
+
+        // Obserwuj zmiany w dokumencie
+        onSnapshot(docRef, (snapshot) => {
+            if (snapshot.exists() && snapshot.data().sentInvitation !== undefined) {
+                setSentInvitation(snapshot.data().sentInvitation);
+            }
+        });
+    } catch (error) {
+        console.error("Error fetching or observing invitation data:", error);
+    }
+}
+
+
+
 
 /**
 * Function to tell if user is in database, or only in authentication
@@ -117,27 +150,21 @@ export async function addToFriendList(userID, friendsEmail, setFriendsEmail) {
 /**
 * Function to add a friend to a 'friends' collection
 */
-// export async function addToFriendList(friendshipID) {
-//     setDoc(doc(db, "friends", friendshipID), {
-//         lastMessage: {
-//             text: "Say Hi",
-//             time: new Date(),
-//             sendBy: userID
-//         },
-//         users: {
-//             [userID]: userProfile,
-//             [friendsProfile.uid]: friendsProfile,
-//         },
-//         usersMatched: [userID, friendsProfile.uid],
-//         timestamp: serverTimestamp()
-//     });
-//     alert("Friend has been added!")
-// }
+export async function addToFriendList2(friendshipID) {
+    console.log("Friendship ID:", friendshipID);
+
+    await updateDoc(doc(db, "friends", friendshipID), {
+        sentInvitation: deleteField(),
+    });
+    alert("Friend has been added!")
+}
 
 /**
 * Function to reject an invitation from other user
 */
 export async function rejectInvitation(friendshipID) {
+    console.log("Friendship ID:", friendshipID);
+
     await deleteDoc(doc(db, "friends", friendshipID));
     alert("Invitation has been rejected!")
 }
@@ -162,17 +189,17 @@ export async function sendInvitation(userID, friendsEmail, setFriendsEmail) {
                 console.log("1")
                 if(!docSnap.exists()){
                     setDoc(doc(db, "friends", friendshipID), {
-                        // lastMessage: {
-                        //     text: "Say Hi",
-                        //     time: new Date(),
-                        //     sendBy: userID
-                        // },
-                        // users: {
-                        //     [userID]: userProfile,
-                        //     [friendsProfile.uid]: friendsProfile,
-                        // },
-                        // usersMatched: [userID, friendsProfile.uid],
-                        // timestamp: serverTimestamp(),
+                        lastMessage: {
+                            text: "Say Hi",
+                            time: new Date(),
+                            sendBy: userID
+                        },
+                        users: {
+                            [userID]: userProfile,
+                            [friendsProfile.uid]: friendsProfile,
+                        },
+                        usersMatched: [userID, friendsProfile.uid],
+                        timestamp: serverTimestamp(),
                         sentInvitation: userID
                     });
                     alert("Invitation has been sent!")
@@ -202,20 +229,20 @@ export async function sendInvitation(userID, friendsEmail, setFriendsEmail) {
 /**
 * Function to delete user from friend list
 */
-// export async function deleteFromFriendList(userID, friendID){
+export async function deleteFromFriendList(userID, friendID){
 
-//     var friendshipID = await generateFriendshipID(userID, friendID)
+    var friendshipID = await generateFriendshipID(userID, friendID)
 
-//     const messagesCollectionRef = collection(db, "friends", friendshipID, "messages");
-//     const messagesQuerySnapshot = await getDocs(messagesCollectionRef);
+    const messagesCollectionRef = collection(db, "friends", friendshipID, "messages");
+    const messagesQuerySnapshot = await getDocs(messagesCollectionRef);
 
-//     messagesQuerySnapshot.forEach(async (doc) => {
-//         await deleteDoc(doc.ref);
-//     });
+    messagesQuerySnapshot.forEach(async (doc) => {
+        await deleteDoc(doc.ref);
+    });
 
-//     await deleteDoc(doc(db, "friends", friendshipID));
-//     alert("User has been deleted from friends!")
-// }
+    await deleteDoc(doc(db, "friends", friendshipID));
+    alert("User has been deleted from friends!")
+}
 
 /**
 * Function to delete user from friend list by email
@@ -410,7 +437,7 @@ async function getProfileByEmail(userEmail) {
 /**
 * Helper function to generate/get valid friendship ID
 */
-export async function generateFriendshipID(uid1, uid2) {
+export function generateFriendshipID(uid1, uid2) {
     
     return (uid1 > uid2 ? uid1 + uid2 : uid2 + uid1)
 }

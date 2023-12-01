@@ -1,10 +1,14 @@
 import React, {useEffect, useState} from 'react'
-import {View, Text, FlatList, TouchableOpacity, Image, SafeAreaView} from 'react-native'
+import {View, Text, FlatList, TouchableOpacity, Image, SafeAreaView, Alert} from 'react-native'
 
 import { useNavigation } from '@react-navigation/core';
 
 import useAuth from '../../backend/AuthProvider'
 import { setUsersFriendList, getFriendFromFriendsList } from '../../backend/UserQueries';
+import { setInvitationData } from '../../backend/UserQueries';
+import { generateFriendshipID } from '../../backend/UserQueries';
+import { addToFriendList2 } from '../../backend/UserQueries';
+import { rejectInvitation } from '../../backend/UserQueries';
 
 const tempURL = "https://t4.ftcdn.net/jpg/03/49/49/79/360_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5.jpg"
 
@@ -13,6 +17,7 @@ const ChatListScreen = () => {
     const[ friends, setFriends ] = useState([]);
     const { user } = useAuth();
     const navigation = useNavigation();
+    const[sentInvitation, setSentInvitation] = useState('');
 
     const days = ["Sun.", "Mon.", "Tue.", "Wed.","Thu.", "Fri.","Sat."]
 
@@ -27,12 +32,36 @@ const ChatListScreen = () => {
     const renderFriend = ({ item }) => (
         <TouchableOpacity
             className="h-20"
-            onPress={() => {
-                navigation.navigate("chatConversation", 
-                    {   friendshipID: item.id, 
-                        friendProfile: getFriendFromFriendsList(item.users, user.uid),
-                    }
-                )
+            onPress={ async () => {
+                await setInvitationData(item.id, setSentInvitation)
+                const friendProfile = getFriendFromFriendsList(item.users, user.uid);
+                var friendshipID = generateFriendshipID(user.uid, friendProfile.uid)
+                if(sentInvitation === user.uid) {
+                    alert("Waiting for response...")
+                }
+                else if(sentInvitation === friendProfile.uid) {
+                    Alert.alert('Do you want to accept this account?', 'You cannot undo this action', [
+                        {
+                            text: 'accept',
+                            onPress: async () => {
+                                await addToFriendList2(friendshipID)
+                                await setInvitationData(item.id, setSentInvitation)
+                            },
+                        },
+                        {
+                            text: 'reject', 
+                            onPress: async () => rejectInvitation(friendshipID)
+                        },
+                    ]);
+                }
+                else {
+                    navigation.navigate("chatConversation", 
+                        {   friendshipID: item.id, 
+                            friendProfile: getFriendFromFriendsList(item.users, user.uid),
+                        }
+                    )
+                }
+
                 }}
         >
 
