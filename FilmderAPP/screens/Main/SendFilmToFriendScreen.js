@@ -5,6 +5,9 @@ import { GiftedChat } from 'react-native-gifted-chat';
 import useAuth from '../../backend/AuthProvider'
 import { setUsersFriendList, getFriendFromFriendsList, sendAMessage } from '../../backend/UserQueries';
 import { image500, fallbackMoviePoster } from '../../api/moviedb';
+
+const tempURL = "https://t4.ftcdn.net/jpg/03/49/49/79/360_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5.jpg"
+
 const SendFilmToFriendScreen = ({route, navigation}) => {
 
     const[ friends, setFriends ] = useState([]);
