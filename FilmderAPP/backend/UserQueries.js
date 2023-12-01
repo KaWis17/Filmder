@@ -190,16 +190,27 @@ export async function sendAMessage(GiftedChat, messages, setMessages, friendship
         GiftedChat.append(previousMessages, messages),
     )
 
-    addDoc(collection(db, "friends", friendshipID, "messages"), {
-        text: messages[0].text,
-        user: {
-            _id: userID,
-        },
-        image: messages[0].image,
-        createdAt: new Date(),
-        invitation: messages[0].invitation
-    })    
-    
+    if(messages[0].image && messages[0].invitation) {
+        addDoc(collection(db, "friends", friendshipID, "messages"), {
+            text: messages[0].text,
+            user: {
+                _id: userID,
+            },
+            image: messages[0].image,
+            createdAt: new Date(),
+            invitation: messages[0].invitation
+        })
+    }
+    else {
+        addDoc(collection(db, "friends", friendshipID, "messages"), {
+            text: messages[0].text,
+            user: {
+                _id: userID,
+            },
+            createdAt: new Date(),
+        })
+    }
+
     updateDoc(doc(db, "friends", friendshipID), {
         lastMessage: {
             text: messages[0].text,

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import {View, TouchableOpacity, Text, SafeAreaView, Alert} from 'react-native'
+import {View, TouchableOpacity, Text, SafeAreaView, Image} from 'react-native'
 
-import { GiftedChat, Bubble } from 'react-native-gifted-chat';
+import {GiftedChat, Bubble, Message} from 'react-native-gifted-chat';
 
 import useAuth from '../../backend/AuthProvider';
 import { setMessagesFromChat, sendAMessage } from '../../backend/UserQueries';
@@ -34,6 +34,22 @@ const ChatConversationScreen = ({route, navigation}) => {
         sendAMessage(GiftedChat, messages, setMessages, friendshipID, user.uid), 
         []
     )
+
+    const CustomMessage = (props) => {
+        const { currentMessage } = props;
+        if (currentMessage.image) {
+            return (
+                <TouchableOpacity onPress={() => handleBubblePress(props.currentMessage)} style={{marginBottom:10,marginTop:10,marginLeft:10,width:215}}>
+                    <Image
+                        source={{ uri: currentMessage.image }}
+                        style={{ height: 205}}
+                    />
+                    <Text style={{fontSize:20, backgroundColor: '#cccccc'}}> Let's watch together!</Text>
+                </TouchableOpacity>
+            );
+        }
+        return <Message {...props} />;
+    };
 
     const renderBubble = (props) => {
         return (
@@ -88,6 +104,7 @@ const ChatConversationScreen = ({route, navigation}) => {
                 scrollToBottom={true}
                 onPressAvatar={() => navigation.navigate("otherUserScreen", {friendID: friendProfile.uid})}
                 renderBubble={renderBubble}
+                renderMessage={props => <CustomMessage {...props} />}
             />
         </View>
     )
