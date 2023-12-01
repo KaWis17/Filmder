@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { View, ScrollView, Text, TouchableOpacity, TextInput } from 'react-native'
 
 import { sendInvitation } from '../../backend/UserQueries';
+import { deleteFromFriendList2 } from '../../backend/UserQueries';
 
 const AddFriendsScreen = ({route, navigation}) => {
 
@@ -30,6 +31,15 @@ const AddFriendsScreen = ({route, navigation}) => {
                     }}
                     className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-blue-500">
                     <Text className=" text-lg my-auto text-center color-white">SEND INVITATION</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                    onPress={() => {
+                        deleteFromFriendList2(userID, friendsEmail, setFriendsEmail)
+                        navigation.navigate("profileScreen")
+                    }}
+                    className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-blue-500">
+                    <Text className=" text-lg my-auto text-center color-white">DELETE FRIEND</Text>
                 </TouchableOpacity>
             </View>
         </ScrollView>

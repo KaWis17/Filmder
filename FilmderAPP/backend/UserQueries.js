@@ -69,70 +69,70 @@ export async function updateUserData(userID, userEmail, first, last, age, imageU
 * Function to add a friend to a 'friends' collection
 * TODO: consider adding by non-existing email and adding yourself
 */
-/*export async function addToFriendList(userID, friendsEmail, setFriendsEmail) {
+export async function addToFriendList(userID, friendsEmail, setFriendsEmail) {
 
-var userProfile = await getProfileById(userID)
+    var userProfile = await getProfileById(userID)
 
-var friendsProfile = await getProfileByEmail(friendsEmail)
+    var friendsProfile = await getProfileByEmail(friendsEmail)
 
-if(friendsProfile !== undefined){
-var friendshipID = generateFriendshipID(userID, friendsProfile.uid)
+    if(friendsProfile !== undefined){
+        var friendshipID = await generateFriendshipID(userID, friendsProfile.uid)
 
-const docRef = doc(db, "friends", friendshipID);
-const docSnap = await getDoc(docRef);
+        const docRef = doc(db, "friends", friendshipID);
+        const docSnap = await getDoc(docRef);
 
-if(friendsProfile !== undefined){
-    if(userProfile.first != "Name"){
-        console.log("1")
-        if(docSnap.data().sentInvitation.includes(friendsProfile.uid)){
-            setDoc(doc(db, "friends", friendshipID), {
-                lastMessage: {
-                    text: "Say Hi",
-                    time: new Date(),
-                    sendBy: userID
-                },
-                users: {
-                    [userID]: userProfile,
-                    [friendsProfile.uid]: friendsProfile,
-                },
-                usersMatched: [userID, friendsProfile.uid],
-                timestamp: serverTimestamp()
-            });
-            alert("Friend has been added!")
-        } else {
-            alert("Friendship already exists!")
-        } 
+        if(friendsProfile !== undefined){
+            if(userProfile.first != "Name"){
+                console.log("1")
+                if(docSnap.data().sentInvitation === friendsProfile.uid){
+                    setDoc(doc(db, "friends", friendshipID), {
+                        lastMessage: {
+                            text: "Say Hi",
+                            time: new Date(),
+                            sendBy: userID
+                        },
+                        users: {
+                            [userID]: userProfile,
+                            [friendsProfile.uid]: friendsProfile,
+                        },
+                        usersMatched: [userID, friendsProfile.uid],
+                        timestamp: serverTimestamp()
+                    });
+                    alert("Friend has been added!")
+                } else {
+                    alert("Friendship already exists!")
+                } 
+            } else {
+                alert("Firstly update your user profile!")
+            }
+        }
     } else {
-        alert("Firstly update your user profile!")
+    alert("There is no user with this email")
     }
-}
-} else {
-alert("There is no user with this email")
-}
 
-setFriendsEmail('')
+    setFriendsEmail('')
 
-}*/
+}
 
 /**
 * Function to add a friend to a 'friends' collection
 */
-export async function addToFriendList(friendshipID) {
-    setDoc(doc(db, "friends", friendshipID), {
-        lastMessage: {
-            text: "Say Hi",
-            time: new Date(),
-            sendBy: userID
-        },
-        users: {
-            [userID]: userProfile,
-            [friendsProfile.uid]: friendsProfile,
-        },
-        usersMatched: [userID, friendsProfile.uid],
-        timestamp: serverTimestamp()
-    });
-    alert("Friend has been added!")
-}
+// export async function addToFriendList(friendshipID) {
+//     setDoc(doc(db, "friends", friendshipID), {
+//         lastMessage: {
+//             text: "Say Hi",
+//             time: new Date(),
+//             sendBy: userID
+//         },
+//         users: {
+//             [userID]: userProfile,
+//             [friendsProfile.uid]: friendsProfile,
+//         },
+//         usersMatched: [userID, friendsProfile.uid],
+//         timestamp: serverTimestamp()
+//     });
+//     alert("Friend has been added!")
+// }
 
 /**
 * Function to reject an invitation from other user
@@ -152,7 +152,7 @@ export async function sendInvitation(userID, friendsEmail, setFriendsEmail) {
     var friendsProfile = await getProfileByEmail(friendsEmail)
 
     if(friendsProfile !== undefined){
-        var friendshipID = generateFriendshipID(userID, friendsProfile.uid)
+        var friendshipID = await generateFriendshipID(userID, friendsProfile.uid)
 
         const docRef = doc(db, "friends", friendshipID);
         const docSnap = await getDoc(docRef);
@@ -162,34 +162,27 @@ export async function sendInvitation(userID, friendsEmail, setFriendsEmail) {
                 console.log("1")
                 if(!docSnap.exists()){
                     setDoc(doc(db, "friends", friendshipID), {
-                        sentInvitation: [userID],
-                        lastMessage: {
-                            text: "Say Hi",
-                            time: new Date(),
-                            sendBy: userID
-                        },
-                        users: {
-                            [userID]: userProfile,
-                            [friendsProfile.uid]: friendsProfile,
-                        },
-                        usersMatched: [userID, friendsProfile.uid],
-                        timestamp: serverTimestamp()
+                        // lastMessage: {
+                        //     text: "Say Hi",
+                        //     time: new Date(),
+                        //     sendBy: userID
+                        // },
+                        // users: {
+                        //     [userID]: userProfile,
+                        //     [friendsProfile.uid]: friendsProfile,
+                        // },
+                        // usersMatched: [userID, friendsProfile.uid],
+                        // timestamp: serverTimestamp(),
+                        sentInvitation: userID
                     });
                     alert("Invitation has been sent!")
                 } else {
-                    // if(docSnap.data().sentInvitation.includes(userID)) {
-                    //     alert("Invitation was sent!")
-                    // }
-                    if (Array.isArray(docSnap.data().sentInvitation) && docSnap.data().sentInvitation.indexOf(userID) !== -1) {
+                    if (docSnap.data().sentInvitation !== undefined && docSnap.data().sentInvitation === userID) {
                         alert("Invitation was sent!");
-                    }            
-                    // if(docSnap.data().sentInvitation.includes(friendsProfile.uid)) {
-                    //     addToFriendList(friendshipID)
-                    // }
-                    if(Array.isArray(docSnap.data().sentInvitation) && docSnap.data().sentInvitation.indexOf(userID) !== -1) {
-                        addToFriendList(friendshipID);
+                    } 
+                    if(docSnap.data().sentInvitation !== undefined && docSnap.data().sentInvitation === friendsProfile.uid) {
+                        addToFriendList(userID, friendsEmail, setFriendsEmail);
                     }
-                    
                     if(docSnap.exists() && docSnap.data() && !docSnap.data().sentInvitation) {
                         alert("Friendship already exists!")
                     }
@@ -209,19 +202,41 @@ export async function sendInvitation(userID, friendsEmail, setFriendsEmail) {
 /**
 * Function to delete user from friend list
 */
-export async function deleteFromFriendList(userID, friendID){
+// export async function deleteFromFriendList(userID, friendID){
 
-    var friendshipID = generateFriendshipID(userID, friendID)
+//     var friendshipID = await generateFriendshipID(userID, friendID)
+
+//     const messagesCollectionRef = collection(db, "friends", friendshipID, "messages");
+//     const messagesQuerySnapshot = await getDocs(messagesCollectionRef);
+
+//     messagesQuerySnapshot.forEach(async (doc) => {
+//         await deleteDoc(doc.ref);
+//     });
+
+//     await deleteDoc(doc(db, "friends", friendshipID));
+//     alert("User has been deleted from friends!")
+// }
+
+/**
+* Function to delete user from friend list by email
+*/
+export async function deleteFromFriendList2(userID, friendsEmail, setFriendsEmail){
+
+    var friendsProfile = await getProfileByEmail(friendsEmail)
+
+    var friendshipID = await generateFriendshipID(userID, friendsProfile.uid)
 
     const messagesCollectionRef = collection(db, "friends", friendshipID, "messages");
     const messagesQuerySnapshot = await getDocs(messagesCollectionRef);
 
     messagesQuerySnapshot.forEach(async (doc) => {
-        await deleteDoc(doc.ref);
+    await deleteDoc(doc.ref);
     });
 
     await deleteDoc(doc(db, "friends", friendshipID));
-    alert("User has been deleted from friends!")
+    alert("User has been deleted from friends")
+
+    setFriendsEmail('')
 }
 
 /**
