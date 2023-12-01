@@ -93,6 +93,7 @@ const ChatListScreen = () => {
                 data={friends}
                 renderItem={renderFriend}
                 keyExtractor={(item) => item.id}
+                style={{marginTop:30}}
             />
         </SafeAreaView>
     )
