@@ -78,8 +78,9 @@ const SendFilmToFriendScreen = ({route, navigation}) => {
     );
 
     return (
-        <View style={{marginTop: 30}}>
-            <Text style={{ fontSize: 30 }}> Invite to watch together!  {film.title}</Text>
+        <View style={{marginTop: 30, paddingLeft:10}}>
+            <Text style={{fontSize:30,marginLeft:5,marginTop:8}}>Invite to watch together!</Text>
+            <Text style={{ fontSize: 30,marginLeft:5}}>{film.title}</Text>
             <SafeAreaView>
                 <FlatList
                     data={friends}
