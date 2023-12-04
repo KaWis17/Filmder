@@ -22,7 +22,6 @@ const ChatConversationScreen = ({route, navigation}) => {
     useEffect(
         () => {
             setMessagesFromChat(friendshipID, setMessages, friendProfile.imageUrl)
-            console.log(messages)
         },        
         [user]
     );
@@ -44,7 +43,6 @@ const ChatConversationScreen = ({route, navigation}) => {
         }
 
         if (currentMessage.image) {
-            console.log(currentMessage.user._id, user.uid)
             return (
                 <TouchableOpacity onPress={() => handleBubblePress(props.currentMessage)}
                                   style={{margin:10,width:215,alignSelf: getAlignment()}}>
