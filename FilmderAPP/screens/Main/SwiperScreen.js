@@ -111,8 +111,8 @@ const SwiperScreen = () => {
                 update_cards(id)
             }}
 
-            onSwipedTop={() => {
-                //alert("swipedTOP")
+            onSwipedTop={async (id) => {
+                navigation.navigate("sendToFriendScreen", {film: trending[id]})
             }}
 
             onSwipedRight={(id) => {
