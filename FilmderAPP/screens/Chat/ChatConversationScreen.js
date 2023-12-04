@@ -5,6 +5,7 @@ import {GiftedChat, Bubble, Message} from 'react-native-gifted-chat';
 
 import useAuth from '../../backend/AuthProvider';
 import { setMessagesFromChat, sendAMessage } from '../../backend/UserQueries';
+import {flex} from "nativewind/dist/postcss/to-react-native/properties/flex";
 
 
 const ChatConversationScreen = ({route, navigation}) => {
@@ -37,14 +38,21 @@ const ChatConversationScreen = ({route, navigation}) => {
 
     const CustomMessage = (props) => {
         const { currentMessage } = props;
+
+        function getAlignment() {
+            return currentMessage.user._id === user.uid ? 'flex-end' : 'flex-start';
+        }
+
         if (currentMessage.image) {
+            console.log(currentMessage.user._id, user.uid)
             return (
-                <TouchableOpacity onPress={() => handleBubblePress(props.currentMessage)} style={{marginBottom:10,marginTop:10,marginLeft:10,width:215}}>
+                <TouchableOpacity onPress={() => handleBubblePress(props.currentMessage)}
+                                  style={{margin:10,width:215,alignSelf: getAlignment()}}>
                     <Image
                         source={{ uri: currentMessage.image }}
                         style={{ height: 205}}
                     />
-                    <Text style={{fontSize:20, backgroundColor: '#cccccc'}}> Let's watch together!</Text>
+                    <Text style={{fontSize:20, backgroundColor: '#ccbbcc'}}> Let's watch together!</Text>
                 </TouchableOpacity>
             );
         }
