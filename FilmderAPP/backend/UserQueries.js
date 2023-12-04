@@ -29,7 +29,6 @@ export function setUserData (userID, setFirst, setLast, setAge, setImageUrl, set
     )
 }
 
-
 /**
  * Function to tell if user is in database, or only in authentication
  */
@@ -183,7 +182,7 @@ export function setMessagesFromChat(friendshipID, setMessages, friendImageUrl) {
 }
 
 /**
- * Function to add a message to the chat
+ * Function to add a message (or movie invitation) to the chat
  */
 export async function sendAMessage(GiftedChat, messages, setMessages, friendshipID, userID) {
 
@@ -191,14 +190,27 @@ export async function sendAMessage(GiftedChat, messages, setMessages, friendship
         GiftedChat.append(previousMessages, messages),
     )
 
-    addDoc(collection(db, "friends", friendshipID, "messages"), {
-        text: messages[0].text,
-        user: {
-            _id: userID,
-        },
-        createdAt: new Date(),
-    })    
-    
+    if(messages[0].image && messages[0].invitation) {
+        addDoc(collection(db, "friends", friendshipID, "messages"), {
+            text: messages[0].text,
+            user: {
+                _id: userID,
+            },
+            image: messages[0].image,
+            createdAt: new Date(),
+            invitation: messages[0].invitation
+        })
+    }
+    else {
+        addDoc(collection(db, "friends", friendshipID, "messages"), {
+            text: messages[0].text,
+            user: {
+                _id: userID,
+            },
+            createdAt: new Date(),
+        })
+    }
+
     updateDoc(doc(db, "friends", friendshipID), {
         lastMessage: {
             text: messages[0].text,
@@ -235,54 +247,35 @@ export async function uploadProfilePhoto(userID, userEmail, first, last, age, ti
     }
 }
 
-
 /**
- * Function to update user preference about film
- */
-export async function addWantPreference(userID, filmID, doWant) {
-    const collectionPath = "users/" + userID + "/upreferences"
-    const docRef = doc(db, collectionPath, userID+filmID);
-    const docSnap = await getDoc(docRef);
-    if(docSnap.exists())
-    {
-        await updateDoc(doc(db, collectionPath, userID + filmID), {
-            doWant: doWant,
-        });
-    }
-    else
-    {
-        await setDoc(doc(db, collectionPath, userID + filmID), {
-            filmID: filmID,
-            doWant: doWant,
-            rate: 0
-        });
-    }
-}
-
-/**
- * Function to update user's rate about film
- */
+  * Function to update user's rate about film
+  */
 export async function addRatePreference(userID, filmID, rate) {
-    const collectionPath = "users/" + userID + "/upreferences"
-    const docRef = doc(db, collectionPath, userID+filmID);
-    const docSnap = await getDoc(docRef);
-    if(docSnap.exists())
-    {
-        await updateDoc(doc(db, collectionPath, userID + filmID), {
-            rate: rate,
-        });
-    }
-    else
-    {
-        await setDoc(doc(db, collectionPath, userID + filmID), {
-            filmID: filmID,
-            doWant: null,
-            rate: rate
-        });
-    }
+    console.log(userID)
+    console.log(filmID)
+    console.log(rate)
+
+    const docRef = doc(db, "users/" + userID + "/filmReview/" + filmID);
+    await setDoc(docRef, {
+        filmID: filmID,
+        rate: rate,
+        time: serverTimestamp(),
+    });
+    
 }
 
-
+/**
+  * Function to update user preference about film
+  */
+export async function addWantPreference(userID, filmID, doWant) {
+    const docRef = doc(db, "users/" + userID + "/filmPreference/" + filmID);
+    await setDoc(docRef, {
+        filmID: filmID,
+        doWant: doWant,
+        time: serverTimestamp(),
+    });
+    
+}
 
 /**
  * Helper function to update the user data if 'friends' collection

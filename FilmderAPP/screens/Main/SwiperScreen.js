@@ -1,26 +1,25 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, Image } from 'react-native'
+import { View, Text, Image, Modal, TouchableOpacity } from 'react-native'
 import Swiper from 'react-native-deck-swiper';
 import { useNavigation } from '@react-navigation/core';
 import { fetchMovies, image500, fallbackMoviePoster } from '../../api/moviedb';
-import { addRatePreference, addWantPreference } from '../../backend/UserQueries';
 import { basicMovie } from '../../constants/index';
+import { addWantPreference, addRatePreference } from '../../backend/UserQueries';
 import useAuth from '../../backend/AuthProvider'
-import { Rating } from 'react-native-ratings';
-
+import StarRating from 'react-native-star-rating-widget';
 
 
 const SwiperScreen = () => {
     const [ cardsNumber, setCardsNumber ] = useState(19);
     const { user } = useAuth();
     const [ page, setPage ] = useState(1);
-    /**
-     * TODO: Janie, zrób proszę dokumentację, jeśli uważasz, że jest potrzebna
-     */
 
     const navigation = useNavigation();
     // this is the default film on the screen, you can see it for a sec while loading
     const [trending, setMovies] = useState([ basicMovie ]);
+
+    const [rating, setRating] = useState(0)
+    const [ratingScreen, setRatingScreen] = useState([false, -1])
 
     useEffect(()=>{
         getMovies();           
@@ -56,19 +55,51 @@ const SwiperScreen = () => {
         }
     }
 
-    //state describing whether rating bar is visible
-    const [isRatingBarVisible, setIsRatingBarVisible] = useState(false);
-    //state describning currently rated film
-    const [currFilm, setCurrFilm] = useState(0);
-
-
-
-
-
   return (
     <View className="flex h-screen bg-slate-300">
 
+        <Modal
+            className="bg-red-500"
+            animationType="slide"
+            transparent={true}
+            visible={ratingScreen[0]}
+            >
+                <View className="absolute self-center p-5 mt-48 bg-zinc-500 rounded-xl">
+                    <Text className="relative text-2xl font-bold w-full text-center truncate max-h-10 whitespace-nowrap mb-3">Review film</Text>
+                    <StarRating
+                        className="mb-3"
+                        rating={rating}
+                        onChange={setRating}
+                        enableHalfStar={false}
+                    />
+
+                    <TouchableOpacity 
+                        onPress={() => {
+                            addRatePreference(user.uid, ratingScreen[1], rating)
+                            setRatingScreen([false, -1])
+                            setRating(0)
+                            getMovies()
+                        }}
+                        className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-blue-500">
+                        <Text className=" text-lg my-auto text-center color-white">SUBMIT</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity 
+                        onPress={() => {
+                            setRatingScreen([false, -1])
+                            setRating(0)
+                        }}
+                        className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-red-500">
+                        <Text className=" text-lg my-auto text-center color-white">CLOSE</Text>
+                    </TouchableOpacity>
+                </View>
+        </Modal>
+
+
         <Swiper 
+            ref={swiper => {
+                this.swiper = swiper;
+            }}
             containerStyle={{backgroundColor: "transparent" }}
             cards={trending}
             stackSize={1}
@@ -80,26 +111,22 @@ const SwiperScreen = () => {
                 update_cards(id)
             }}
 
-            onSwipedTop={() => {
-                setIsRatingBarVisible(false)
+            onSwipedTop={async (id) => {
+                navigation.navigate("sendToFriendScreen", {film: trending[id]})
             }}
 
-            onSwipedRight={async (id) => {
+            onSwipedRight={(id) => {
                 addWantPreference(user.uid, trending[id].id, true)
-                setIsRatingBarVisible(false)
             }}
 
-            onSwipedBottom={async (id) => {
-                console.log(trending[id].id)
-                setCurrFilm(trending[id].id)
-                console.log(currFilm)
-                console.log(typeof currFilm)
-                setIsRatingBarVisible(true)
+            onSwipedBottom={(id) => {
+                setRatingScreen([true, trending[id].id])
+
+                this.swiper.swipeBack()
             }}
 
             onSwipedLeft={(id) => {
                 addWantPreference(user.uid, trending[id].id, false)
-                setIsRatingBarVisible(false)
             }}
 
             onTapCard={(id) => {
@@ -130,19 +157,6 @@ const SwiperScreen = () => {
             }}
 
         />
-        {isRatingBarVisible && (
-             <Rating
-                showRating
-                ratingColor='#239C3F'
-                ratingBackgroundColor='#239C3F'
-                onFinishRating={(rating) => {console.log('Ocena: ' + rating + " " + currFilm);
-                    addRatePreference(user.uid, currFilm, rating)
-                    setIsRatingBarVisible(false)
-                } }
-                style={{ paddingVertical: 10 }}
-            />
-        )}
-       
     </View>
   )
 }
