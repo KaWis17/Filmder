@@ -235,15 +235,33 @@ export async function uploadProfilePhoto(userID, userEmail, first, last, age, ti
 }
 
 /**
- * Function to update user preference about film
- */
-export function addWantPreference(userID, filmID, doWant) {
+  * Function to update user's rate about film
+  */
+export async function addRatePreference(userID, filmID, rate) {
+    console.log(userID)
+    console.log(filmID)
+    console.log(rate)
 
-    setDoc(doc(db, "user_preferences", userID + filmID), {
-        userID: userID,
+    const docRef = doc(db, "users/" + userID + "/filmReview/" + filmID);
+    await setDoc(docRef, {
         filmID: filmID,
-        doWant: doWant
+        rate: rate,
+        time: new Date(),
     });
+    
+}
+
+/**
+  * Function to update user preference about film
+  */
+export async function addWantPreference(userID, filmID, doWant) {
+    const docRef = doc(db, "users/" + userID + "/filmPreference/" + filmID);
+    await setDoc(docRef, {
+        filmID: filmID,
+        doWant: doWant,
+        time: new Date(),
+    });
+    
 }
 
 /**
