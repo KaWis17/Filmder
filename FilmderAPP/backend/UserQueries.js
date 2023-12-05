@@ -5,6 +5,7 @@ import * as ImagePicker from "expo-image-picker";
             
 import { db, st } from "./FirebaseConnection"
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import {fetchMovieDetails} from "../api/moviedb";
 
 
 /**
@@ -329,4 +330,29 @@ async function getProfileByEmail(userEmail) {
 function generateFriendshipID(uid1, uid2) {
     
     return (uid1 > uid2 ? uid1 + uid2 : uid2 + uid1)
+}
+
+/**
+ * Get to watch list from by the ID of a user
+ */
+export async function getToWatchById(userID) {
+    const filmIds = [];
+
+    const q = query(collection(db, 'users', userID, 'filmPreference'));
+
+    try {
+        const querySnapshot = await getDocs(q);
+
+        querySnapshot.forEach((doc) => {
+            //TODO FILTER
+            const filmID = doc.data().filmID;
+
+            //fetchMovieDetails(filmID)
+            filmIds.push(filmID);
+        });
+    } catch (error) {
+        console.error('Error getting film IDs for user:', error);
+    }
+
+    return filmIds;
 }
