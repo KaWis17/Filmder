@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, TextInput, Image, ScrollView, TouchableOpacity, Text } from 'react-native'
 
 import useAuth from '../../backend/AuthProvider'
-import {deleteFromFriendList, getToWatchById, setUserData} from '../../backend/UserQueries';
+import {deleteFromFriendList, getFriendFromFriendsList, getToWatchById, setUserData} from '../../backend/UserQueries';
 
 const tempURL = "https://t4.ftcdn.net/jpg/03/49/49/79/360_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5.jpg"
 
@@ -61,6 +61,7 @@ const OtherUserScreen = ({route, navigation}) => {
                             try {
                                 const filmIds = await getToWatchById(friendID);
                                 console.log('Film IDs for user:', filmIds);
+                                navigation.navigate("otherUserWatchList",{filmIds: filmIds, friendID:friendID});
                             } catch (error) {
                                 console.error('Error fetching film IDs:', error);
                             }
