@@ -73,7 +73,7 @@ const ProfileScreen = ({}) => {
                     <TouchableOpacity 
                         onPress={() => uploadProfilePhoto(user.uid, user.email, first, last, age, timestamp)}
                         className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-pink-600">
-                        <Text className=" text-lg my-auto text-center color-white">CHANGE IMAGE</Text>
+                        <Text className=" text-lg my-auto text-center color-white">🎅 CHANGE IMAGE 🎅🏿</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
