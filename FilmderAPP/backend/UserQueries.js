@@ -183,6 +183,28 @@ export function setMessagesFromChat(friendshipID, setMessages, friendImageUrl) {
 }
 
 /**
+ * Get to watch list from by the ID of a user
+ */
+export async function getToWatchById(userID) {
+    const filmIds = [];
+
+    const q = query(collection(db, 'users', userID, 'filmPreference'));
+
+    try {
+        const querySnapshot = await getDocs(q);
+
+        querySnapshot.forEach((doc) => {
+            //TODO FILTER
+            const filmID = doc.data().filmID;
+            filmIds.push(filmID);
+        });
+    } catch (error) {
+        console.error('Error getting film IDs for user:', error);
+    }
+    return filmIds;
+}
+
+/**
  * Function to add a message (or movie invitation) to the chat
  */
 export async function sendAMessage(GiftedChat, messages, setMessages, friendshipID, userID) {
@@ -332,27 +354,3 @@ function generateFriendshipID(uid1, uid2) {
     return (uid1 > uid2 ? uid1 + uid2 : uid2 + uid1)
 }
 
-/**
- * Get to watch list from by the ID of a user
- */
-export async function getToWatchById(userID) {
-    const filmIds = [];
-
-    const q = query(collection(db, 'users', userID, 'filmPreference'));
-
-    try {
-        const querySnapshot = await getDocs(q);
-
-        querySnapshot.forEach((doc) => {
-            //TODO FILTER
-            const filmID = doc.data().filmID;
-
-            //fetchMovieDetails(filmID)
-            filmIds.push(filmID);
-        });
-    } catch (error) {
-        console.error('Error getting film IDs for user:', error);
-    }
-
-    return filmIds;
-}

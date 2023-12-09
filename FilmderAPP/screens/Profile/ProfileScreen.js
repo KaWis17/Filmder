@@ -66,20 +66,32 @@ const ProfileScreen = ({}) => {
 
                     <TouchableOpacity 
                         onPress={() => updateUserData(user.uid, user.email, first, last, age, imageUrl, timestamp)}
-                        className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-blue-500">
+                        className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-pink-300">
                         <Text className=" text-lg my-auto text-center color-white">UPDATE PROFILE</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity 
                         onPress={() => uploadProfilePhoto(user.uid, user.email, first, last, age, timestamp)}
-                        className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-blue-500">
+                        className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-pink-600">
                         <Text className=" text-lg my-auto text-center color-white">CHANGE IMAGE</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        onPress={async () => {
+                            try {
+                                navigation.navigate("otherUserWatchList",{friendID: user.uid});
+                            } catch (error) {
+                                console.error('Error fetching film IDs:', error);
+                            }
+                        }}
+                        className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-purple-400">
+                        <Text className=" text-lg my-auto text-center color-white">🎬 Watchlist 🎬</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity 
                         onPress={() => navigation.navigate("addFriendsScreen", {userID: user.uid})}
-                        className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-green-500">
-                        <Text className=" text-lg my-auto text-center color-white">ADD FRIEND</Text>
+                        className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-purple-900">
+                        <Text className=" text-lg my-auto text-center color-white">💗 ADD FRIEND 💗</Text>
                     </TouchableOpacity>
 
                     <Text className="mx-auto w-4/5 h-12 my-4 border-solid rounded-md border-sky-500 text-center">

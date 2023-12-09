@@ -3,6 +3,7 @@ import { View, TextInput, Image, ScrollView, TouchableOpacity, Text } from 'reac
 
 import useAuth from '../../backend/AuthProvider'
 import {deleteFromFriendList, getFriendFromFriendsList, getToWatchById, setUserData} from '../../backend/UserQueries';
+import {fetchMovieDetails, fetchMovies} from "../../api/moviedb";
 
 const tempURL = "https://t4.ftcdn.net/jpg/03/49/49/79/360_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5.jpg"
 
@@ -59,15 +60,13 @@ const OtherUserScreen = ({route, navigation}) => {
                     <TouchableOpacity
                         onPress={async () => {
                             try {
-                                const filmIds = await getToWatchById(friendID);
-                                console.log('Film IDs for user:', filmIds);
-                                navigation.navigate("otherUserWatchList",{filmIds: filmIds, friendID:friendID});
+                                navigation.navigate("otherUserWatchList",{friendID:friendID});
                             } catch (error) {
                                 console.error('Error fetching film IDs:', error);
                             }
                         }}
-                        className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-red-500">
-                        <Text className=" text-lg my-auto text-center color-white">Watched Movies</Text>
+                        className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-purple-400">
+                        <Text className=" text-lg my-auto text-center color-white">🎬 Watchlist 🎬</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity 
