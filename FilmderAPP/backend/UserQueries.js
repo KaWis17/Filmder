@@ -226,7 +226,7 @@ export async function sendInvitation(userID, friendsEmail, setFriendsEmail) {
     }
 
     setFriendsEmail('')
-
+    
 }
 
 /**
@@ -292,9 +292,31 @@ export function setUsersFriendList(userID, setFriends){
 } 
 
 /**
-* Function to set user invitation list
+* Function to set user sent invitation list
 */
-export function setUsersInvitationList(userID, setInvitations){
+export function setUsersSentInvitationList(userID, setSentInvitations){
+
+    onSnapshot(
+        query(
+            collection(db, "invites"), 
+            where('sending', '==', userID),
+            orderBy("timestamp", "desc")
+        ), 
+        (snapshot) =>  {
+            setSentInvitations(
+                snapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }))
+            )
+        }
+    )
+} 
+
+/**
+* Function to set user received invitation list
+*/
+export function setUsersReceivedInvitationList(userID, setReceivedInvitations){
 
     onSnapshot(
         query(
@@ -303,7 +325,7 @@ export function setUsersInvitationList(userID, setInvitations){
             orderBy("timestamp", "desc")
         ), 
         (snapshot) =>  {
-            setInvitations(
+            setReceivedInvitations(
                 snapshot.docs.map((doc) => ({
                     id: doc.id,
                     ...doc.data(),

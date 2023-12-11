@@ -6,7 +6,8 @@ import { useNavigation } from '@react-navigation/core'
 
 import useAuth from '../../backend/AuthProvider'
 import { setUserData, updateUserData, uploadProfilePhoto } from '../../backend/UserQueries'
-import { setUsersInvitationList } from '../../backend/UserQueries';
+import { setUsersSentInvitationList } from '../../backend/UserQueries';
+import { setUsersReceivedInvitationList } from '../../backend/UserQueries';
 import { addToFriendList2 } from '../../backend/UserQueries';
 import { rejectInvitation } from '../../backend/UserQueries';
 
@@ -19,7 +20,8 @@ const ProfileScreen = ({}) => {
     const { logout } = useAuth();
     const { user } = useAuth();
 
-    const[ invitations, setInvitations ] = useState([]);
+    const[ sentInvitations, setSentInvitations ] = useState([]);
+    const[ receivedInvitations, setReceivedInvitations ] = useState([]);
     const[first, setFirst] = useState('');
     const[last, setLast] = useState('');
     const[age, setAge] = useState('');
@@ -32,7 +34,8 @@ const ProfileScreen = ({}) => {
     useEffect(
         () => {
             setUserData(user.uid, setFirst, setLast, setAge, setImageUrl, setTimestamp)
-            setUsersInvitationList(user.uid, setInvitations)
+            setUsersSentInvitationList(user.uid, setSentInvitations)
+            setUsersReceivedInvitationList(user.uid, setReceivedInvitations)
          },
         [user]
     );
@@ -87,12 +90,40 @@ const ProfileScreen = ({}) => {
                         className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-green-500">
                         <Text className=" text-lg my-auto text-center color-white">ADD FRIEND</Text>
                     </TouchableOpacity>
-                
-                    <Text className="mx-auto w-4/5 h-12 my-4 border-solid rounded-md border-sky-500 text-center text-xl">
-                        Invitations:
-                    </Text>
 
-                    {invitations.map(item => (
+                    {sentInvitations.length > 0 && (
+                        <Text className="mx-auto w-4/5 h-12 my-4 mb-0 border-solid rounded-md border-sky-500 text-center text-xl">
+                            Sent invitations:
+                        </Text>
+                    )}
+
+                    {sentInvitations.map(item => (
+                            <View key={item.id}>
+                                <View className="flex flex-row my-auto mx-5 mb-1">
+                                    <Image 
+                                        className="bg-red-500 h-16 aspect-square rounded-full"
+                                        source={item.receivingImageUrl !== undefined ? {uri: item.receivingImageUrl } : {uri: tempURL}}
+                                    />
+
+                                    <View className="flex-auto ml-5 my-auto">
+                                        <Text numberOfLines={1} className="text-xl font-medium">
+                                            {
+                                                item.receivingFirst +" "+ 
+                                                item.receivingLast}
+                                        </Text>
+                                    </View>
+                                
+                                </View>
+                            </View>
+                        ))}
+                
+                    {receivedInvitations.length > 0 && (
+                        <Text className="mx-auto w-4/5 h-12 my-4 mt-8 mb-0 border-solid rounded-md border-sky-500 text-center text-xl">
+                            Received invitations:
+                        </Text>
+                    )}
+
+                    {receivedInvitations.map(item => (
                             <TouchableOpacity
                             key={item.id}
                             onPress={ async () => {
@@ -114,7 +145,7 @@ const ProfileScreen = ({}) => {
                             }}
                             >
 
-                                <View className="flex flex-row my-auto mx-5">
+                                <View className="flex flex-row my-auto mx-5 mb-1">
                                     <Image 
                                         className="bg-red-500 h-16 aspect-square rounded-full"
                                         source={item.sendingImageUrl !== undefined ? {uri: item.sendingImageUrl } : {uri: tempURL}}
@@ -134,7 +165,7 @@ const ProfileScreen = ({}) => {
                         ))}
 
 
-                    <Text className="mx-auto w-4/5 h-12 my-4 border-solid rounded-md border-sky-500 text-center">
+                    <Text className="mx-auto w-4/5 h-12 my-4 mt-12 border-solid rounded-md border-sky-500 text-center">
                         This product uses the TMDB API but is not endorsed or certified by TMDB.
                     </Text>
 
