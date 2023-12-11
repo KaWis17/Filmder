@@ -194,9 +194,10 @@ export async function getToWatchById(userID) {
         const querySnapshot = await getDocs(q);
 
         querySnapshot.forEach((doc) => {
-            //TODO FILTER
             const filmID = doc.data().filmID;
-            filmIds.push(filmID);
+            if(doc.data().doWant === true) {
+                filmIds.push(filmID);
+            }
         });
     } catch (error) {
         console.error('Error getting film IDs for user:', error);

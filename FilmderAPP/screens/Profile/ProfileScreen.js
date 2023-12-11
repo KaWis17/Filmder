@@ -79,7 +79,7 @@ const ProfileScreen = ({}) => {
                     <TouchableOpacity
                         onPress={async () => {
                             try {
-                                navigation.navigate("otherUserWatchList",{friendID: user.uid});
+                                navigation.navigate("userWatchList",{friendID: user.uid});
                             } catch (error) {
                                 console.error('Error fetching film IDs:', error);
                             }
