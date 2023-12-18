@@ -66,17 +66,17 @@ export async function updateUserData(userID, userEmail, first, last, age, imageU
 }
 
 /**
- * Function to add a friend to a 'friends' collection
- * TODO: consider adding by non-existing email and adding yourself
- */
+* Function to add a friend to a 'friends' collection
+* TODO: consider adding by non-existing email and adding yourself
+*/
 export async function addToFriendList(userID, friendsEmail, setFriendsEmail) {
-      
+
     var userProfile = await getProfileById(userID)
 
     var friendsProfile = await getProfileByEmail(friendsEmail)
 
     if(friendsProfile !== undefined){
-        var friendshipID = generateFriendshipID(userID, friendsProfile.uid)
+        var friendshipID = await generateFriendshipID(userID, friendsProfile.uid)
 
         const docRef = doc(db, "friends", friendshipID);
         const docSnap = await getDoc(docRef);
@@ -98,6 +98,7 @@ export async function addToFriendList(userID, friendsEmail, setFriendsEmail) {
                         usersMatched: [userID, friendsProfile.uid],
                         timestamp: serverTimestamp()
                     });
+                    deleteDoc(doc(db, "invites", friendshipID));
                     alert("Friend has been added!")
                 } else {
                     alert("Friendship already exists!")
@@ -111,17 +112,161 @@ export async function addToFriendList(userID, friendsEmail, setFriendsEmail) {
     }
 
     setFriendsEmail('')
-    
+
+}
+
+/**
+* Function to add a friend to a 'friends' collection
+*/
+export async function addToFriendList2(userID, friendID) {
+
+    var userProfile = await getProfileById(userID)
+
+    var friendsProfile = await getProfileById(friendID)
+
+    if(friendsProfile !== undefined){
+        var friendshipID = await generateFriendshipID(userID, friendsProfile.uid)
+
+        const docRef = doc(db, "friends", friendshipID);
+        const docSnap = await getDoc(docRef);
+
+        if(friendsProfile !== undefined){
+            if(userProfile.first != "Name"){
+                console.log("1")
+                if(!docSnap.exists()){
+                    setDoc(doc(db, "friends", friendshipID), {
+                        lastMessage: {
+                            text: "Say Hi",
+                            time: new Date(),
+                            sendBy: userID
+                        },
+                        users: {
+                            [userID]: userProfile,
+                            [friendsProfile.uid]: friendsProfile,
+                        },
+                        usersMatched: [userID, friendsProfile.uid],
+                        timestamp: serverTimestamp()
+                    });
+                    deleteDoc(doc(db, "invites", friendshipID));
+                    alert("Friend has been added!")
+                } else {
+                    alert("Friendship already exists!")
+                } 
+            } else {
+                alert("Firstly update your user profile!")
+            }
+        }
+    } else {
+        alert("There is no user with this email")
+    }
+
+
+}
+
+/**
+* Function to reject an invitation from other user
+*/
+export async function rejectInvitation(friendshipID) {
+    console.log("Friendship ID:", friendshipID);
+
+    await deleteDoc(doc(db, "invites", friendshipID));
+    alert("Invitation has been rejected!")
+}
+
+/**
+* Function to send an invitation to other user
+*/
+export async function sendInvitation(userID, friendsEmail, setFriendsEmail) {
+
+    var userProfile = await getProfileById(userID)
+
+    var friendsProfile = await getProfileByEmail(friendsEmail)
+
+    if(friendsProfile !== undefined){
+        var friendshipID = await generateFriendshipID(userID, friendsProfile.uid)
+
+        const docRef = doc(db, "friends", friendshipID);
+        const docSnap = await getDoc(docRef);
+        const docRef2 = doc(db, "invites", friendshipID);
+        const docSnap2 = await getDoc(docRef2);
+
+        if(friendsProfile !== undefined){
+            if(userProfile.first != "Name"){
+                console.log("1")
+                if(!docSnap.exists() && !docSnap2.exists()){
+                    setDoc(doc(db, "invites", friendshipID), {
+                        receiving: friendsProfile.uid,
+                        receivingFirst: friendsProfile.first,
+                        receivingLast: friendsProfile.last,
+                        receivingImageUrl: friendsProfile.imageUrl,
+                        sending: userID,
+                        sendingFirst: userProfile.first,
+                        sendingLast: userProfile.last,
+                        sendingImageUrl: userProfile.imageUrl,
+                        timestamp: serverTimestamp()
+                    });
+                    alert("Invitation has been sent!")
+                } else {
+                    if (docSnap2.exists() && docSnap2.data() && docSnap2.data().sending === userID) {
+                        alert("Invitation was sent!");
+                    } 
+                    if(docSnap2.exists() && docSnap2.data() && docSnap2.data().sending === friendsProfile.uid) {
+                        addToFriendList(userID, friendsEmail, setFriendsEmail);
+                    }
+                    if(docSnap.exists()) {
+                        alert("Friendship already exists!")
+                    }
+                } 
+            } else {
+                alert("Firstly update your user profile!")
+            }
+        }
+    } else {
+    alert("There is no user with this email")
+    }
+
+    setFriendsEmail('')
+
 }
 
 /**
  * Function to delete user from friend list
- * TODO: Delete recursively also a collection of messages under friendship
  */
 export async function deleteFromFriendList(userID, friendID){
 
-    await deleteDoc(doc(db, "friends", generateFriendshipID(userID, friendID)));
+    var friendshipID = await generateFriendshipID(userID, friendID)
+
+    const messagesCollectionRef = collection(db, "friends", friendshipID, "messages");
+    const messagesQuerySnapshot = await getDocs(messagesCollectionRef);
+
+    messagesQuerySnapshot.forEach(async (doc) => {
+        await deleteDoc(doc.ref);
+    });
+
+    await deleteDoc(doc(db, "friends", friendshipID));
+    alert("User has been deleted from friends!")
+}
+
+/**
+* Function to delete user from friend list by email
+*/
+export async function deleteFromFriendList2(userID, friendsEmail, setFriendsEmail){
+
+    var friendsProfile = await getProfileByEmail(friendsEmail)
+
+    var friendshipID = await generateFriendshipID(userID, friendsProfile.uid)
+
+    const messagesCollectionRef = collection(db, "friends", friendshipID, "messages");
+    const messagesQuerySnapshot = await getDocs(messagesCollectionRef);
+
+    messagesQuerySnapshot.forEach(async (doc) => {
+    await deleteDoc(doc.ref);
+    });
+
+    await deleteDoc(doc(db, "friends", friendshipID));
     alert("User has been deleted from friends")
+
+    setFriendsEmail('')
 }
 
 /**
@@ -137,6 +282,50 @@ export function setUsersFriendList(userID, setFriends){
         ), 
         (snapshot) =>  {
             setFriends(
+                snapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }))
+            )
+        }
+    )
+} 
+
+/**
+* Function to set user sent invitation list
+*/
+export function setUsersSentInvitationList(userID, setSentInvitations){
+
+    onSnapshot(
+        query(
+            collection(db, "invites"), 
+            where('sending', '==', userID),
+            orderBy("timestamp", "desc")
+        ), 
+        (snapshot) =>  {
+            setSentInvitations(
+                snapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }))
+            )
+        }
+    )
+} 
+
+/**
+* Function to set user received invitation list
+*/
+export function setUsersReceivedInvitationList(userID, setReceivedInvitations){
+
+    onSnapshot(
+        query(
+            collection(db, "invites"), 
+            where('receiving', '==', userID),
+            orderBy("timestamp", "desc")
+        ), 
+        (snapshot) =>  {
+            setReceivedInvitations(
                 snapshot.docs.map((doc) => ({
                     id: doc.id,
                     ...doc.data(),
