@@ -226,7 +226,7 @@ export async function sendInvitation(userID, friendsEmail, setFriendsEmail) {
     }
 
     setFriendsEmail('')
-    
+
 }
 
 /**

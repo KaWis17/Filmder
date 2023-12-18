@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, TouchableOpacity, Text, SafeAreaView } from 'react-native'
+import {View, TouchableOpacity, Text, SafeAreaView, Image} from 'react-native'
 
-import { GiftedChat } from 'react-native-gifted-chat';
+import {GiftedChat, Bubble, Message} from 'react-native-gifted-chat';
 
 import useAuth from '../../backend/AuthProvider';
 import { setMessagesFromChat, sendAMessage } from '../../backend/UserQueries';
+import {flex} from "nativewind/dist/postcss/to-react-native/properties/flex";
 
 
 const ChatConversationScreen = ({route, navigation}) => {
@@ -21,7 +22,6 @@ const ChatConversationScreen = ({route, navigation}) => {
     useEffect(
         () => {
             setMessagesFromChat(friendshipID, setMessages, friendProfile.imageUrl)
-            console.log(messages)
         },        
         [user]
     );
@@ -34,6 +34,59 @@ const ChatConversationScreen = ({route, navigation}) => {
         sendAMessage(GiftedChat, messages, setMessages, friendshipID, user.uid), 
         []
     )
+
+    const CustomMessage = (props) => {
+        const { currentMessage } = props;
+
+        function getAlignment() {
+            return currentMessage.user._id === user.uid ? 'flex-end' : 'flex-start';
+        }
+
+        if (currentMessage.image) {
+            return (
+                <TouchableOpacity onPress={() => handleBubblePress(props.currentMessage)}
+                                  style={{margin:10,width:215,alignSelf: getAlignment()}}>
+                    <Image
+                        source={{ uri: currentMessage.image }}
+                        style={{ height: 205}}
+                    />
+                    <Text style={{fontSize:20, backgroundColor: '#ccbbcc'}}> Let's watch together!</Text>
+                </TouchableOpacity>
+            );
+        }
+        return <Message {...props} />;
+    };
+
+    const renderBubble = (props) => {
+        return (
+            <Bubble
+                {...props}
+                wrapperStyle={{
+                    left: {
+                        backgroundColor: '#e0e0e0', // Background color for received messages
+                    },
+                    right: {
+                        backgroundColor: '#333333', // Background color for sent messages
+                    },
+                }}
+                textStyle={{
+                    left: {
+                        color: '#000', // Text color for received messages
+                    },
+                    right: {
+                        color: '#fff', // Text color for sent messages
+                    },
+                }}
+                onPress={() => handleBubblePress(props.currentMessage)}
+            />
+        );
+    };
+
+    const handleBubblePress = (message) => {
+        if(message.invitation){
+            navigation.navigate("modalScreen", {film: message.invitation})
+        }
+    };
 
     return (
         <View style={{flex: 1}}>
@@ -56,6 +109,8 @@ const ChatConversationScreen = ({route, navigation}) => {
                 showAvatarForEveryMessage={false}
                 scrollToBottom={true}
                 onPressAvatar={() => navigation.navigate("otherUserScreen", {friendID: friendProfile.uid})}
+                renderBubble={renderBubble}
+                renderMessage={props => <CustomMessage {...props} />}
             />
         </View>
     )

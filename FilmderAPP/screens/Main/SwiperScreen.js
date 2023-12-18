@@ -1,83 +1,131 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, Image } from 'react-native'
-
+import { View, Text, Image, Modal, TouchableOpacity } from 'react-native'
 import Swiper from 'react-native-deck-swiper';
 import { useNavigation } from '@react-navigation/core';
-
 import { fetchMovies, image500, fallbackMoviePoster } from '../../api/moviedb';
-import { addWantPreference } from '../../backend/UserQueries';
+import { basicMovie } from '../../constants/index';
+import { addWantPreference, addRatePreference } from '../../backend/UserQueries';
 import useAuth from '../../backend/AuthProvider'
+import StarRating from 'react-native-star-rating-widget';
 
 
 const SwiperScreen = () => {
-
+    const [ cardsNumber, setCardsNumber ] = useState(19);
     const { user } = useAuth();
-
-    /**
-     * TODO: Mario, Janie, zróbcie proszę dokumentację, jeśli uważacie, że jest potrzebna
-     */
+    const [ page, setPage ] = useState(1);
 
     const navigation = useNavigation();
-    
-    // this is the default film on the screen, you can see it for a sec while loading <-- would be managed later 
-    const [trending, setMovies] = useState([
-        {
-            "adult": false,
-            "backdrop_path": "/fm6KqXpk3M2HVveHwCrBSSBaO0V.jpg",
-            "id": 872585,
-            "title": "Oppenheimer",
-            "original_language": "en",
-            "original_title": "Oppenheimer",
-            "overview": "The story of J. Robert Oppenheimer's role in the development of the atomic bomb during World War II.",
-            "poster_path": "/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg",
-            "media_type": "movie",
-            "genre_ids": [
-              18,
-              36
-            ],
-            "popularity": 2706.372,
-            "release_date": "2023-07-19",
-            "video": false,
-            "vote_average": 8.237,
-            "vote_count": 4380
-          },
-    ]);
+    // this is the default film on the screen, you can see it for a sec while loading
+    const [trending, setMovies] = useState([ basicMovie ]);
+
+    const [rating, setRating] = useState(0)
+    const [ratingScreen, setRatingScreen] = useState([false, -1])
 
     useEffect(()=>{
         getMovies();           
     }, [])
 
+    /**
+     * paramExample = {"queryParam1": int_value1,
+     *                 "queryParam2": "string_value2",
+     *                 "queryParam3": "value1|value2,value3"}    {, - and} {| - or}
+     * List of all parameters can be finded here: https://developer.themoviedb.org/reference/discover-movie
+     */
+    var exampleOptions = {
+        "with_original_language": 'pl', "year": 2023
+    }
+
+    /**
+     * This function gets films from API. The maximum number of films that can be received in one API call is one page which contains 19 films.
+     * Remember that variable {page} means actual page number + 1. 
+     */
     const getMovies = async ()=>{
-        const data = await fetchMovies();
-        if (data && data.results) setMovies(data.results);
+        setPage(p => p + 1);
+        console.log(`page = ${page}`)
+        const data = await fetchMovies(page, exampleOptions);
+        if (data && data.results) {
+            setMovies(data.results);
+            setCardsNumber(data.results.length - 1);
+        }
+    }
+
+    const update_cards = async (id)=>{
+        if (id == cardsNumber) {
+            await getMovies();
+        }
     }
 
   return (
     <View className="flex h-screen bg-slate-300">
 
+        <Modal
+            className="bg-red-500"
+            animationType="slide"
+            transparent={true}
+            visible={ratingScreen[0]}
+            >
+                <View className="absolute self-center p-5 mt-48 bg-zinc-500 rounded-xl">
+                    <Text className="relative text-2xl font-bold w-full text-center truncate max-h-10 whitespace-nowrap mb-3">Review film</Text>
+                    <StarRating
+                        className="mb-3"
+                        rating={rating}
+                        onChange={setRating}
+                        enableHalfStar={false}
+                    />
+
+                    <TouchableOpacity 
+                        onPress={() => {
+                            addRatePreference(user.uid, ratingScreen[1], rating)
+                            setRatingScreen([false, -1])
+                            setRating(0)
+                            getMovies()
+                        }}
+                        className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-blue-500">
+                        <Text className=" text-lg my-auto text-center color-white">SUBMIT</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity 
+                        onPress={() => {
+                            setRatingScreen([false, -1])
+                            setRating(0)
+                        }}
+                        className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-red-500">
+                        <Text className=" text-lg my-auto text-center color-white">CLOSE</Text>
+                    </TouchableOpacity>
+                </View>
+        </Modal>
+
+
         <Swiper 
+            ref={swiper => {
+                this.swiper = swiper;
+            }}
             containerStyle={{backgroundColor: "transparent" }}
             cards={trending}
-            stackSize={10}
-            stackSeparation={15}
+            stackSize={1}
             animateCardOpacity
             infinite={true}
 
-            // onSwipedAll={} <-- todo: write this function
-
-            onSwipedTop={() => {
-                //alert("swipedTOP")
+            onSwiped={(id)=>{
+                console.log(`swiped, card_id = ${id} on page ${page}`);
+                update_cards(id)
             }}
 
-            onSwipedRight={async (id) => {
-                addWantPreference(user.uid, trending[id].id, true, true)
+            onSwipedTop={async (id) => {
+                navigation.navigate("sendToFriendScreen", {film: trending[id]})
             }}
 
-            onSwipedBottom={() => {
-                //alert("swipedBOTTOM")
+            onSwipedRight={(id) => {
+                addWantPreference(user.uid, trending[id].id, true)
             }}
 
-            onSwipedLeft={async (id) => {
+            onSwipedBottom={(id) => {
+                setRatingScreen([true, trending[id].id])
+
+                this.swiper.swipeBack()
+            }}
+
+            onSwipedLeft={(id) => {
                 addWantPreference(user.uid, trending[id].id, false)
             }}
 
@@ -86,7 +134,7 @@ const SwiperScreen = () => {
             }}
 
             renderCard={(card) => {
-                console.log('\nCARD: ', card.title); 
+                id = card.id;
                 return (
                     <View className="my-auto relative bg-black h-4/5 rounded-xl">
                         <Image 
@@ -107,7 +155,6 @@ const SwiperScreen = () => {
                     </View>
                 )
             }}
-            cardIndex={0}
 
         />
     </View>

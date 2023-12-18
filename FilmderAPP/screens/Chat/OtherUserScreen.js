@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, TextInput, Image, ScrollView, TouchableOpacity, Text } from 'react-native'
 
 import useAuth from '../../backend/AuthProvider'
-import { deleteFromFriendList, setUserData } from '../../backend/UserQueries';
+import {deleteFromFriendList, getFriendFromFriendsList, getToWatchById, setUserData} from '../../backend/UserQueries';
+import {fetchMovieDetails, fetchMovies} from "../../api/moviedb";
 
 const tempURL = "https://t4.ftcdn.net/jpg/03/49/49/79/360_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5.jpg"
 
@@ -55,6 +56,18 @@ const OtherUserScreen = ({route, navigation}) => {
                             editable={false} selectTextOnFocus={false}
                         className="w-4/5 h-12 mb-4 border-solid rounded-md border-sky-500 bg-white text-center"/>
                     </View>
+
+                    <TouchableOpacity
+                        onPress={async () => {
+                            try {
+                                navigation.navigate("otherUserWatchList",{friendID:friendID});
+                            } catch (error) {
+                                console.error('Error fetching film IDs:', error);
+                            }
+                        }}
+                        className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-purple-400">
+                        <Text className=" text-lg my-auto text-center color-white">🎬 Watchlist 🎬</Text>
+                    </TouchableOpacity>
 
                     <TouchableOpacity 
                         onPress={() => {
