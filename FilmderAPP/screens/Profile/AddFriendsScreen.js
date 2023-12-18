@@ -32,15 +32,6 @@ const AddFriendsScreen = ({route, navigation}) => {
                     className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-blue-500">
                     <Text className=" text-lg my-auto text-center color-white">SEND INVITATION</Text>
                 </TouchableOpacity>
-
-                <TouchableOpacity 
-                    onPress={() => {
-                        deleteFromFriendList2(userID, friendsEmail, setFriendsEmail)
-                        navigation.navigate("profileScreen")
-                    }}
-                    className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-blue-500">
-                    <Text className=" text-lg my-auto text-center color-white">DELETE FRIEND</Text>
-                </TouchableOpacity>
             </View>
         </ScrollView>
     );

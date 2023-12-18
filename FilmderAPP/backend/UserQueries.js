@@ -67,9 +67,10 @@ export async function updateUserData(userID, userEmail, first, last, age, imageU
 
 /**
 * Function to add a friend to a 'friends' collection
+* Friendship is created when two users send each other an invitation
 * TODO: consider adding by non-existing email and adding yourself
 */
-export async function addToFriendList(userID, friendsEmail, setFriendsEmail) {
+export async function addToFriendListByInviteEachOther(userID, friendsEmail, setFriendsEmail) {
 
     var userProfile = await getProfileById(userID)
 
@@ -117,8 +118,9 @@ export async function addToFriendList(userID, friendsEmail, setFriendsEmail) {
 
 /**
 * Function to add a friend to a 'friends' collection
+* Friendship is created by accepting an invitation
 */
-export async function addToFriendList2(userID, friendID) {
+export async function addToFriendList(userID, friendID) {
 
     var userProfile = await getProfileById(userID)
 
@@ -211,7 +213,7 @@ export async function sendInvitation(userID, friendsEmail, setFriendsEmail) {
                         alert("Invitation was sent!");
                     } 
                     if(docSnap2.exists() && docSnap2.data() && docSnap2.data().sending === friendsProfile.uid) {
-                        addToFriendList(userID, friendsEmail, setFriendsEmail);
+                        addToFriendListByInviteEachOther(userID, friendsEmail, setFriendsEmail);
                     }
                     if(docSnap.exists()) {
                         alert("Friendship already exists!")
@@ -245,28 +247,6 @@ export async function deleteFromFriendList(userID, friendID){
 
     await deleteDoc(doc(db, "friends", friendshipID));
     alert("User has been deleted from friends!")
-}
-
-/**
-* Function to delete user from friend list by email
-*/
-export async function deleteFromFriendList2(userID, friendsEmail, setFriendsEmail){
-
-    var friendsProfile = await getProfileByEmail(friendsEmail)
-
-    var friendshipID = await generateFriendshipID(userID, friendsProfile.uid)
-
-    const messagesCollectionRef = collection(db, "friends", friendshipID, "messages");
-    const messagesQuerySnapshot = await getDocs(messagesCollectionRef);
-
-    messagesQuerySnapshot.forEach(async (doc) => {
-    await deleteDoc(doc.ref);
-    });
-
-    await deleteDoc(doc(db, "friends", friendshipID));
-    alert("User has been deleted from friends")
-
-    setFriendsEmail('')
 }
 
 /**

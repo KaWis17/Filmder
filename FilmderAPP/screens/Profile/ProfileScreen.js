@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/core'
 import useAuth from '../../backend/AuthProvider'
 import { setUserData, updateUserData, uploadProfilePhoto } from '../../backend/UserQueries'
 import { setUsersSentInvitationList, setUsersReceivedInvitationList } from '../../backend/UserQueries';
-import { addToFriendList2, rejectInvitation } from '../../backend/UserQueries';
+import { addToFriendList, rejectInvitation } from '../../backend/UserQueries';
 
 const tempURL = "https://t4.ftcdn.net/jpg/03/49/49/79/360_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5.jpg"
 
@@ -131,7 +131,7 @@ const ProfileScreen = ({}) => {
                                     {
                                         text: 'accept',
                                         onPress: async () => {
-                                            await addToFriendList2(user.uid, item.sending)
+                                            await addToFriendList(user.uid, item.sending)
                                         },
                                     },
                                     {
