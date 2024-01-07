@@ -443,16 +443,18 @@ export async function uploadProfilePhoto(userID, userEmail, first, last, age, ti
 /**
   * Function to update user's rate about film
   */
-export async function addRatePreference(userID, filmID, rate) {
+export async function addRatePreference(userID, filmID, genre_id, rate) {
     console.log(userID)
     console.log(filmID)
     console.log(rate)
+    console.log(genre_id)
 
     const docRef = doc(db, "users/" + userID + "/filmReview/" + filmID);
     await setDoc(docRef, {
         filmID: filmID,
         rate: rate,
         time: new Date(),
+        film_genre: genre_id,
     });
     
 }
@@ -460,12 +462,17 @@ export async function addRatePreference(userID, filmID, rate) {
 /**
   * Function to update user preference about film
   */
-export async function addWantPreference(userID, filmID, doWant) {
+export async function addWantPreference(userID, filmID, genre_id, doWant) {
+    console.log(userID)
+    console.log(filmID)
+    console.log(genre_id)
+    
     const docRef = doc(db, "users/" + userID + "/filmPreference/" + filmID);
     await setDoc(docRef, {
         filmID: filmID,
         doWant: doWant,
         time: new Date(),
+        film_genre: genre_id,
     });
     
 }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { View, Text, Image, Modal, TouchableOpacity } from 'react-native'
 import Swiper from 'react-native-deck-swiper';
 import { useNavigation } from '@react-navigation/core';
-import { fetchMovies, image500, fallbackMoviePoster } from '../../api/moviedb';
+import { fetchMovies, image500, fallbackMoviePoster, fetchAllMovieGenres } from '../../api/moviedb';
 import { basicMovie } from '../../constants/index';
 import { addWantPreference, addRatePreference } from '../../backend/UserQueries';
 import useAuth from '../../backend/AuthProvider'
@@ -13,13 +13,14 @@ const SwiperScreen = () => {
     const [ cardsNumber, setCardsNumber ] = useState(19);
     const { user } = useAuth();
     const [ page, setPage ] = useState(1);
+    // var film_genres;
 
     const navigation = useNavigation();
     // this is the default film on the screen, you can see it for a sec while loading
     const [trending, setMovies] = useState([ basicMovie ]);
 
     const [rating, setRating] = useState(0)
-    const [ratingScreen, setRatingScreen] = useState([false, -1])
+    const [ratingScreen, setRatingScreen] = useState([false, -1, -1])
 
     useEffect(()=>{
         getMovies();           
@@ -35,6 +36,10 @@ const SwiperScreen = () => {
         "with_original_language": 'pl', "year": 2023
     }
 
+    var genreOption = {
+        "with_original_language": 'pl', "year": 2023, "with_genres": 28
+    }
+
     /**
      * This function gets films from API. The maximum number of films that can be received in one API call is one page which contains 19 films.
      * Remember that variable {page} means actual page number + 1. 
@@ -42,7 +47,10 @@ const SwiperScreen = () => {
     const getMovies = async ()=>{
         setPage(p => p + 1);
         console.log(`page = ${page}`)
-        const data = await fetchMovies(page, exampleOptions);
+        // var film_genres = await fetchAllMovieGenres()
+        // const data = await fetchMovies(page, exampleOptions);
+        const data = await fetchMovies(page, genreOption);
+        // console.log(data)
         if (data && data.results) {
             setMovies(data.results);
             setCardsNumber(data.results.length - 1);
@@ -75,10 +83,14 @@ const SwiperScreen = () => {
 
                     <TouchableOpacity 
                         onPress={() => {
-                            addRatePreference(user.uid, ratingScreen[1], rating)
-                            setRatingScreen([false, -1])
+                            addRatePreference(user.uid, ratingScreen[1], ratingScreen[2] ,rating)
+                            setRatingScreen([false, -1, -1])
                             setRating(0)
                             getMovies()
+                            // console.log(ratingScreen.length)
+                            // console.log(ratingScreen[0])
+                            // console.log(ratingScreen[1])
+                            // console.log(ratingScreen[1])
                         }}
                         className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-blue-500">
                         <Text className=" text-lg my-auto text-center color-white">SUBMIT</Text>
@@ -86,7 +98,7 @@ const SwiperScreen = () => {
 
                     <TouchableOpacity 
                         onPress={() => {
-                            setRatingScreen([false, -1])
+                            setRatingScreen([false, -1, -1])
                             setRating(0)
                         }}
                         className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-red-500">
@@ -116,17 +128,19 @@ const SwiperScreen = () => {
             }}
 
             onSwipedRight={(id) => {
-                addWantPreference(user.uid, trending[id].id, true)
+                addWantPreference(user.uid, trending[id].id, trending[id].genre_ids, true)
+                console.log("Swiped right")
             }}
 
             onSwipedBottom={(id) => {
-                setRatingScreen([true, trending[id].id])
+                setRatingScreen([true, trending[id].id, trending[id].genre_ids])
 
                 this.swiper.swipeBack()
             }}
 
             onSwipedLeft={(id) => {
-                addWantPreference(user.uid, trending[id].id, false)
+                addWantPreference(user.uid, trending[id].id, trending[id].genre_ids, false)
+                console.log("Swiped left")
             }}
 
             onTapCard={(id) => {
