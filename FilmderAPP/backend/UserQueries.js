@@ -375,6 +375,34 @@ export async function getToWatchById(userID) {
 }
 
 /**
+ * Get to common watch list from the ID of a user and the ID of a friend
+ */
+export async function getToCommonWatchById(userID, friendID) {
+    const filmIds = [];
+
+    const qUser = query(collection(db, 'users', userID, 'filmPreference'));
+    const qFriend = query(collection(db, 'users', friendID, 'filmPreference'));
+
+    try {
+        const querySnapshotUser = await getDocs(qUser);
+        const querySnapshotFriend = await getDocs(qFriend);
+
+        querySnapshotUser.forEach((docUser) => {
+            const filmIDUser = docUser.data().filmID;
+            querySnapshotFriend.forEach((docFriend) => {
+                const filmIDFriend = docFriend.data().filmID;
+                if(filmIDUser === filmIDFriend && docUser.data().doWant === true && docFriend.data().doWant === true) {
+                    filmIds.push(filmIDUser);
+                }
+            });
+        });
+    } catch (error) {
+        console.error('Error getting film IDs for user:', error);
+    }
+    return filmIds;
+}
+
+/**
  * Function to add a message (or movie invitation) to the chat
  */
 export async function sendAMessage(GiftedChat, messages, setMessages, friendshipID, userID) {
