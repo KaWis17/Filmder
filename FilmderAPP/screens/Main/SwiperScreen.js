@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/core';
 import { fetchMovies, image500, fallbackMoviePoster } from '../../api/moviedb';
 import { basicMovie } from '../../constants/index';
 import { addWantPreference, addRatePreference, countWantedFilmsFromGenre, 
-    countNumberOfAllFilms } from '../../backend/UserQueries';
+    countNumberOfUsersFilms, getAllGenres } from '../../backend/UserQueries';
 import useAuth from '../../backend/AuthProvider'
 import StarRating from 'react-native-star-rating-widget';
 
@@ -85,8 +85,9 @@ const SwiperScreen = () => {
                             addRatePreference(user.uid, ratingScreen[1], ratingScreen[2], rating)
                             let num_of_Wanted = countWantedFilmsFromGenre(user.uid, 14)
                             console.log(num_of_Wanted)
-                            let num_of_All = countNumberOfAllFilms()
+                            let num_of_All = countNumberOfUsersFilms(user.uid)
                             console.log(num_of_All)
+                            genres = getAllGenres()
                             let r = Math.random();
                             console.log(r.toString())
                             if(r < 1.0)
