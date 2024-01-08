@@ -39,6 +39,8 @@ const SwiperScreen = () => {
        "with_genres": "14,28"
     }
 
+    const genres_array = [14, 28, 99]
+
     /**
      * This function gets films from API. The maximum number of films that can be received in one API call is one page which contains 19 films.
      * Remember that variable {page} means actual page number + 1. 
@@ -80,6 +82,26 @@ const SwiperScreen = () => {
                     <TouchableOpacity 
                         onPress={() => {
                             addRatePreference(user.uid, ratingScreen[1], ratingScreen[2], rating)
+                            let r = Math.random();
+                            console.log(r.toString())
+                            if(r < 0.5)
+                            {
+                                let genre_str = genres_array[0].toString()
+                                console.log(genre_str)
+                                genreOption["with_genres"] = genre_str
+                            }  
+                            else if(r < 0.75)
+                            {
+                                let genre_str = genres_array[1].toString()
+                                console.log(genre_str)
+                                genreOption["with_genres"] = genre_str
+                            }
+                            else
+                            {
+                                let genre_str = genres_array[2].toString()
+                                console.log(genre_str)
+                                genreOption["with_genres"] = genre_str
+                            }
                             setRatingScreen([false, -1, -1])
                             setRating(0)
                             getMovies()
