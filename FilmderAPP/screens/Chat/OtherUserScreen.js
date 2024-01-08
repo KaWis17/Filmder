@@ -69,6 +69,18 @@ const OtherUserScreen = ({route, navigation}) => {
                         <Text className=" text-lg my-auto text-center color-white">🎬 Watchlist 🎬</Text>
                     </TouchableOpacity>
 
+                    <TouchableOpacity
+                        onPress={async () => {
+                            try {
+                                navigation.navigate("userCommonWatchList",{friendID:friendID});
+                            } catch (error) {
+                                console.error('Error fetching film IDs:', error);
+                            }
+                        }}
+                        className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-purple-400">
+                        <Text className=" text-lg my-auto text-center color-white">🎬 Common watchlist 🎬</Text>
+                    </TouchableOpacity>
+
                     <TouchableOpacity 
                         onPress={() => {
                             deleteFromFriendList(user.uid, friendID);

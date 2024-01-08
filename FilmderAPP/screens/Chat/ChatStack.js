@@ -6,6 +6,7 @@ import ChatListScreen from "./ChatListScreen";
 import ChatConversationScreen from "./ChatConversationScreen";
 import OtherUserScreen from './OtherUserScreen';
 import UserWatchList from './UserWatchList';
+import UserCommonWatchList from './UserCommonWatchList';
 import ModalScreen from "../Main/ModalScreen";
 
 
@@ -20,6 +21,7 @@ const ChatStack = ({ navigation, route }) => {
             <StackInChat.Screen name="chatConversation" component={ChatConversationScreen}/>
             <StackInChat.Screen name="otherUserScreen" component={OtherUserScreen}/>
             <StackInChat.Screen name="otherUserWatchList" component={UserWatchList}/>
+            <StackInChat.Screen name="userCommonWatchList" component={UserCommonWatchList}/>
             <StackInChat.Screen name="modalScreen" component={ModalScreen}/>
 
         </StackInChat.Navigator>
