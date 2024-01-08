@@ -4,7 +4,8 @@ import Swiper from 'react-native-deck-swiper';
 import { useNavigation } from '@react-navigation/core';
 import { fetchMovies, image500, fallbackMoviePoster } from '../../api/moviedb';
 import { basicMovie } from '../../constants/index';
-import { addWantPreference, addRatePreference } from '../../backend/UserQueries';
+import { addWantPreference, addRatePreference, countWantedFilmsFromGenre, 
+    countNumberOfAllFilms } from '../../backend/UserQueries';
 import useAuth from '../../backend/AuthProvider'
 import StarRating from 'react-native-star-rating-widget';
 
@@ -82,15 +83,19 @@ const SwiperScreen = () => {
                     <TouchableOpacity 
                         onPress={() => {
                             addRatePreference(user.uid, ratingScreen[1], ratingScreen[2], rating)
+                            let num_of_Wanted = countWantedFilmsFromGenre(user.uid, 14)
+                            console.log(num_of_Wanted)
+                            let num_of_All = countNumberOfAllFilms()
+                            console.log(num_of_All)
                             let r = Math.random();
                             console.log(r.toString())
-                            if(r < 0.5)
+                            if(r < 1.0)
                             {
                                 let genre_str = genres_array[0].toString()
                                 console.log(genre_str)
                                 genreOption["with_genres"] = genre_str
                             }  
-                            else if(r < 0.75)
+                            else if(r < 2.0)
                             {
                                 let genre_str = genres_array[1].toString()
                                 console.log(genre_str)
