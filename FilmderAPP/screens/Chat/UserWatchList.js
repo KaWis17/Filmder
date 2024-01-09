@@ -6,7 +6,9 @@ import {fallbackMoviePoster, fetchMovieDetails, image500} from "../../api/movied
 import {getToWatchById} from "../../backend/UserQueries";
 
 
-/** returns list of movie details based on given film ids*/
+/** returns list of movie details based on given film ids
+ * @param filmIds list of movie ids to fetch
+ * */
 async function fetchMovieDetailsList(filmIds) {
     try {
         const movieDetailsPromises = filmIds.map((filmId) => {
