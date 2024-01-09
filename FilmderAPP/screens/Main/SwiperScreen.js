@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { View, Text, Image, Modal, TouchableOpacity } from 'react-native'
 import Swiper from 'react-native-deck-swiper';
 import { useNavigation } from '@react-navigation/core';
-import { fetchMovies, image500, fallbackMoviePoster } from '../../api/moviedb';
+import { fetchMovies, image500, fallbackMoviePoster, fetchAllMovieGenres } from '../../api/moviedb';
 import { basicMovie } from '../../constants/index';
 import { addWantPreference, addRatePreference, countWantedFilmsFromGenre, 
     countNumberOfUsersFilms, getAllGenres } from '../../backend/UserQueries';
@@ -36,20 +36,74 @@ const SwiperScreen = () => {
         "with_original_language": 'pl', "year": 2023
     }
 
-    var genreOption = {
+    const genreOption = {
        "with_genres": "14,28"
     }
 
-    const genres_array = [14, 28, 99]
+    const genres_array = [12, 14, 18, 28, 35, 53, 80, 99, 878, 10402, 10749]
+    var distribution_array = new Array(genres_array.length+1).fill(0)
+
+
+    async function algorithm_count() {
+        let prob_sum = 0
+        for(let i = 0; i < genres_array.length; i++)
+        {
+            let num_of_Wanted = await countWantedFilmsFromGenre(user.uid, genres_array[i])
+            // console.log(num_of_Wanted)
+            let num_of_All = await countNumberOfUsersFilms(user.uid)
+            // console.log(num_of_All)
+            distribution_array[i] = num_of_Wanted/num_of_All
+            prob_sum += distribution_array[i]
+        }
+        distribution_array[genres_array.length] = 1 - prob_sum
+    }
+
+    async function chooseKindOfApiQuery() {
+        algorithm_count()
+        console.log(distribution_array)
+        let r = Math.random();
+        console.log(r.toString())
+
+
+        let curr = 0;
+        let idx = 0;
+        while(curr + distribution_array[idx] < r)
+        {
+            curr += distribution_array[idx]
+            idx++
+        }
+        if(idx < genres_array.length)
+        {
+            let genre_str = genres_array[idx].toString()
+            console.log(genre_str)
+            genreOption["with_genres"] = genre_str
+            return true
+        }
+        else
+        {
+            return false
+        }
+        
+    }
 
     /**
      * This function gets films from API. The maximum number of films that can be received in one API call is one page which contains 19 films.
      * Remember that variable {page} means actual page number + 1. 
      */
     const getMovies = async ()=>{
+        await chooseKindOfApiQuery()
         setPage(p => p + 1);
         console.log(`page = ${page}`)
-        const data = await fetchMovies(page, genreOption);
+        select_genre = await chooseKindOfApiQuery
+        const data = {};
+        if(select_genre)
+        {
+            data = await fetchMovies(page, genreOption);
+        }
+        else
+        {
+            data = await fetchMovies(page, exampleOptions)
+        }
         if (data && data.results) {
             setMovies(data.results);
             setCardsNumber(data.results.length - 1);
@@ -61,6 +115,8 @@ const SwiperScreen = () => {
             await getMovies();
         }
     }
+
+
 
   return (
     <View className="flex h-screen bg-slate-300">
@@ -83,31 +139,6 @@ const SwiperScreen = () => {
                     <TouchableOpacity 
                         onPress={() => {
                             addRatePreference(user.uid, ratingScreen[1], ratingScreen[2], rating)
-                            let num_of_Wanted = countWantedFilmsFromGenre(user.uid, 14)
-                            console.log(num_of_Wanted)
-                            let num_of_All = countNumberOfUsersFilms(user.uid)
-                            console.log(num_of_All)
-                            genres = getAllGenres()
-                            let r = Math.random();
-                            console.log(r.toString())
-                            if(r < 1.0)
-                            {
-                                let genre_str = genres_array[0].toString()
-                                console.log(genre_str)
-                                genreOption["with_genres"] = genre_str
-                            }  
-                            else if(r < 2.0)
-                            {
-                                let genre_str = genres_array[1].toString()
-                                console.log(genre_str)
-                                genreOption["with_genres"] = genre_str
-                            }
-                            else
-                            {
-                                let genre_str = genres_array[2].toString()
-                                console.log(genre_str)
-                                genreOption["with_genres"] = genre_str
-                            }
                             setRatingScreen([false, -1, -1])
                             setRating(0)
                             getMovies()

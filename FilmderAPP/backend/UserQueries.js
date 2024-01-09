@@ -487,7 +487,7 @@ export async function countWantedFilmsFromGenre(userID, genre_id)
     const querySnapshotPref = await getDocs(qUserPreferences);
     console.log(typeof(querySnapshotPref))
     const number_of_elements = querySnapshotPref.size
-    console.log(number_of_elements);
+    // console.log(number_of_elements);
     return number_of_elements;
 }
 
@@ -512,7 +512,7 @@ export async function countNumberOfAllFilms()
             // console.log(filmsSet)
         });
     });
-    console.log(filmsSet.size)
+    // console.log(filmsSet.size)
     return filmsSet.size
 }
 
@@ -535,7 +535,7 @@ export async function countNumberOfUsersFilms(userID)
         filmsSet.add(doc.data().filmID)
         // console.log(filmsSet)
     });
-    console.log(filmsSet.size)
+    // console.log(filmsSet.size)
     return filmsSet.size
     // const querySnapshotPref = await getDocs(collection(db, 'users', userID, 'filmPreference'));
     // const num_of_swiped = querySnapshotPref.size;
