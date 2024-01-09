@@ -1,3 +1,6 @@
+/**
+ * @module screens
+ */
 import React from 'react';
 import { View, Text, LinearGradient, ScrollView, ImageBackground } from 'react-native';
 

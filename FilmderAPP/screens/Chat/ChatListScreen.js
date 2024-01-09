@@ -4,6 +4,9 @@ import {View, Text, FlatList, TouchableOpacity, Image, SafeAreaView} from 'react
 import { useNavigation } from '@react-navigation/core';
 
 import useAuth from '../../backend/AuthProvider'
+/**
+ * @module screens
+ */
 import { setUsersFriendList, getFriendFromFriendsList } from '../../backend/UserQueries';
 
 const tempURL = "https://t4.ftcdn.net/jpg/03/49/49/79/360_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5.jpg"

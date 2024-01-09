@@ -1,3 +1,6 @@
+/**
+ * @module temporary
+ */
 
     /**
      * Temporary data to use for testing

@@ -1,3 +1,6 @@
+/**
+ * @module screens
+ */
 import {View, Modal, Text, TouchableOpacity, FlatList, SafeAreaView, Image} from 'react-native'
 import React, {useState, useEffect} from 'react'
 import { GiftedChat } from 'react-native-gifted-chat';

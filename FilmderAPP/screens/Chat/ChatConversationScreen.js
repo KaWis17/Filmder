@@ -1,3 +1,6 @@
+/**
+ * @module screens
+ */
 import React, { useState, useEffect, useCallback } from 'react';
 import {View, TouchableOpacity, Text, SafeAreaView, Image} from 'react-native'
 

@@ -1,4 +1,7 @@
-import {    collection, query, where, 
+/**
+ * @module backend
+ */
+import {    collection, query, where,
             getDocs, setDoc, getDoc, addDoc, doc, updateDoc, deleteDoc,
             onSnapshot, orderBy, serverTimestamp } from "firebase/firestore"; 
 import * as ImagePicker from "expo-image-picker";

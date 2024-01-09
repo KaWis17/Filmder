@@ -1,3 +1,6 @@
+/**
+ * @module screens
+ */
 import React, { useEffect, useState } from 'react'
 import { View, Text, Image, Modal, TouchableOpacity } from 'react-native'
 import Swiper from 'react-native-deck-swiper';
