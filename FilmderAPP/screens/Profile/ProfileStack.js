@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import ProfileScreen from './ProfileScreen';
 import AddFriendsScreen from './AddFriendsScreen';
+import UserWatchList from "../Chat/UserWatchList";
 
 
 const ProfileStack = ({ navigation, route }) => {
@@ -17,6 +18,7 @@ const ProfileStack = ({ navigation, route }) => {
             <StackInProfile.Group screenOptions={{presentation: 'modal'}} >
                 <StackInProfile.Screen name="addFriendsScreen" component={AddFriendsScreen}/>
             </StackInProfile.Group>
+            <StackInProfile.Screen name="userWatchList" component={UserWatchList}/>
         </StackInProfile.Navigator>
         
     )

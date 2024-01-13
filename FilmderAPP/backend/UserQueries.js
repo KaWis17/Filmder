@@ -5,6 +5,7 @@ import * as ImagePicker from "expo-image-picker";
             
 import { db, st } from "./FirebaseConnection"
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import {fetchMovieDetails} from "../api/moviedb";
 
 
 /**
@@ -368,6 +369,57 @@ export function setMessagesFromChat(friendshipID, setMessages, friendImageUrl) {
 }
 
 /**
+ * Get to watch list from by the ID of a user
+ */
+export async function getToWatchById(userID) {
+    const filmIds = [];
+
+    const q = query(collection(db, 'users', userID, 'filmPreference'));
+
+    try {
+        const querySnapshot = await getDocs(q);
+
+        querySnapshot.forEach((doc) => {
+            const filmID = doc.data().filmID;
+            if(doc.data().doWant === true) {
+                filmIds.push(filmID);
+            }
+        });
+    } catch (error) {
+        console.error('Error getting film IDs for user:', error);
+    }
+    return filmIds;
+}
+
+/**
+ * Get to common watch list from the ID of a user and the ID of a friend
+ */
+export async function getToCommonWatchById(userID, friendID) {
+    const filmIds = [];
+
+    const qUser = query(collection(db, 'users', userID, 'filmPreference'));
+    const qFriend = query(collection(db, 'users', friendID, 'filmPreference'));
+
+    try {
+        const querySnapshotUser = await getDocs(qUser);
+        const querySnapshotFriend = await getDocs(qFriend);
+
+        querySnapshotUser.forEach((docUser) => {
+            const filmIDUser = docUser.data().filmID;
+            querySnapshotFriend.forEach((docFriend) => {
+                const filmIDFriend = docFriend.data().filmID;
+                if(filmIDUser === filmIDFriend && docUser.data().doWant === true && docFriend.data().doWant === true) {
+                    filmIds.push(filmIDUser);
+                }
+            });
+        });
+    } catch (error) {
+        console.error('Error getting film IDs for user:', error);
+    }
+    return filmIds;
+}
+
+/**
  * Function to add a message (or movie invitation) to the chat
  */
 export async function sendAMessage(GiftedChat, messages, setMessages, friendshipID, userID) {
@@ -516,3 +568,4 @@ function generateFriendshipID(uid1, uid2) {
     
     return (uid1 > uid2 ? uid1 + uid2 : uid2 + uid1)
 }
+
