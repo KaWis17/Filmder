@@ -22,7 +22,7 @@ const SwiperScreen = () => {
     const [ratingScreen, setRatingScreen] = useState([false, -1])
 
     useEffect(()=>{
-        getMovies();           
+        getMovies();
     }, [])
 
     /**

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -10,6 +10,13 @@ import SendFilmToFriendScreen from "./SendFilmToFriendScreen";
 const MainStack = ({ navigation, route }) => {
 
     const StackInMain = createNativeStackNavigator();
+    
+    useEffect(() => {
+        console.log('MainStack mounted');
+        return () => {
+            console.log('MainStack unmounted');
+        }
+    }, [])
 
     return (
 

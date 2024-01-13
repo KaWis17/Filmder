@@ -41,6 +41,23 @@ export async function doesUserExistInDb(userID) {
 }
 
 /**
+ * Function to save watched films into cache
+ */
+export async function getAllWatchedFilmsFromDbToCache(userID) {
+    
+    const filmPrefRef = collection(db, 'users', userID, 'filmPreference');
+    const filmRevRef = collection(db, 'users', userID, 'filmReview');
+
+    const [filmPref, filmRev] = await Promise.all([getDocs(filmPrefRef), getDocs(filmRevRef)]);
+    const films = {...filmPref, ...filmRev};
+    console.log(films);
+}
+
+export async function clearCache() {
+    
+}
+
+/**
  * Function to update user data in the 'users' collection,
  * it also runs a function to update user data in all 'friends' collections 
  */
