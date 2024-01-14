@@ -18,17 +18,19 @@ const Navigation = () => {
     const Tab = createBottomTabNavigator();
     const { user } =  useAuth();
 
-    useEffect(() => {
-        if (user) {
-            console.log('save films to cache');
-        }
-        // user 
-        // ? getAllWatchedFilmsFromDbToCache()
-        // : clearCache();
-        return () => {
-            console.log('clean cache');
-        }
-    }, [user])
+    // useEffect(() => {
+    //     if (user) {
+    //         console.log('save films to cache');
+    //     } else {
+    //         console.log('user is not authentified')
+    //     }
+    //     // user 
+    //     // ? getAllWatchedFilmsFromDbToCache()
+    //     // : clearCache();
+    //     return () => {
+    //         console.log('clean cache');
+    //     }
+    // }, [user])
 
     /**
      * If user authenticated: giving access to the user navigation.

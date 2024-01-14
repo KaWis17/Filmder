@@ -42,20 +42,22 @@ export async function doesUserExistInDb(userID) {
 }
 
 /**
- * Function to save watched films into cache
+ * Function to get all watched films
  */
-export async function getAllWatchedFilmsFromDbToCache(userID) {
+export async function getAllWatchedFilmsIdsFromDb(userID) {
+    const films = []
     
     const filmPrefRef = collection(db, 'users', userID, 'filmPreference');
     const filmRevRef = collection(db, 'users', userID, 'filmReview');
+    const [filmPrefSnap, filmRevSnap] = await Promise.all([getDocs(filmPrefRef), getDocs(filmRevRef)]);
 
-    const [filmPref, filmRev] = await Promise.all([getDocs(filmPrefRef), getDocs(filmRevRef)]);
-    const films = {...filmPref, ...filmRev};
-    console.log(films);
-}
-
-export async function clearCache() {
-    
+    filmPrefSnap.forEach((doc) => {
+        films.push(doc.data().filmID)
+    })
+    filmRevSnap.forEach((doc) => {
+        films.push(doc.data().filmID)
+    })
+    return films;
 }
 
 /**

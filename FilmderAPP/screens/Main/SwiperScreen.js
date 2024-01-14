@@ -7,22 +7,24 @@ import { basicMovie } from '../../constants/index';
 import { addWantPreference, addRatePreference } from '../../backend/UserQueries';
 import useAuth from '../../backend/AuthProvider'
 import StarRating from 'react-native-star-rating-widget';
+import { getWatchedCards, updateWatchedCardsIfNeeded } from '../../backend/UserCacheQueries'
 
 
 const SwiperScreen = () => {
     const [ cardsNumber, setCardsNumber ] = useState(19);
     const { user } = useAuth();
     const [ page, setPage ] = useState(1);
+    const [ updatedCache, setUpdatedCache] = useState(true);
 
     const navigation = useNavigation();
     // this is the default film on the screen, you can see it for a sec while loading
-    const [trending, setMovies] = useState([ basicMovie ]);
+    const [cards, setMovies] = useState([ basicMovie ]);
 
     const [rating, setRating] = useState(0)
     const [ratingScreen, setRatingScreen] = useState([false, -1])
 
     useEffect(()=>{
-        getMovies();
+        getMovies(page);
     }, [])
 
     /**
@@ -32,26 +34,42 @@ const SwiperScreen = () => {
      * List of all parameters can be finded here: https://developer.themoviedb.org/reference/discover-movie
      */
     var exampleOptions = {
-        "with_original_language": 'pl', "year": 2023
+        "with_original_language": 'pl', "year": 2024
     }
 
     /**
      * This function gets films from API. The maximum number of films that can be received in one API call is one page which contains 19 films.
      * Remember that variable {page} means actual page number + 1. 
      */
-    const getMovies = async ()=>{
-        setPage(p => p + 1);
-        console.log(`page = ${page}`)
-        const data = await fetchMovies(page, exampleOptions);
+    const getMovies = async (currentPage)=>{
+        setPage(currentPage + 1);
+        console.log(`page = ${currentPage}`);
+        const data = await fetchMovies(currentPage, exampleOptions);
         if (data && data.results) {
-            setMovies(data.results);
-            setCardsNumber(data.results.length - 1);
+            const cardsIds = cards.map((value) => value.id);
+            const watchedCards = updatedCache 
+            ? await getWatchedCards()
+            : await updateWatchedCardsIfNeeded(cardsIds);
+
+            if (data.results.length == 0) {
+                exampleOptions = undefined;
+                setPage(1);
+            }
+            const filteredDataResults = data.results.filter((element) => !watchedCards.includes(element.id));
+            if (filteredDataResults.length == 0) {
+                await getMovies(currentPage + 1)
+
+            } else {
+                setMovies(filteredDataResults);
+                setUpdatedCache(false);
+                setCardsNumber(filteredDataResults.length - 1);
+            }
         }
     }
 
     const update_cards = async (id)=>{
         if (id == cardsNumber) {
-            await getMovies();
+            await getMovies(page);
         }
     }
 
@@ -78,7 +96,7 @@ const SwiperScreen = () => {
                             addRatePreference(user.uid, ratingScreen[1], rating)
                             setRatingScreen([false, -1])
                             setRating(0)
-                            getMovies()
+                            getMovies(page)
                         }}
                         className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-blue-500">
                         <Text className=" text-lg my-auto text-center color-white">SUBMIT</Text>
@@ -101,7 +119,7 @@ const SwiperScreen = () => {
                 this.swiper = swiper;
             }}
             containerStyle={{backgroundColor: "transparent" }}
-            cards={trending}
+            cards={cards}
             stackSize={1}
             animateCardOpacity
             infinite={true}
@@ -112,25 +130,26 @@ const SwiperScreen = () => {
             }}
 
             onSwipedTop={async (id) => {
-                navigation.navigate("sendToFriendScreen", {film: trending[id]})
+                navigation.navigate("sendToFriendScreen", {film: cards[id]})
+                //addWantPreference(user.uid, trending[id].id, true)        //TODO?
             }}
 
             onSwipedRight={(id) => {
-                addWantPreference(user.uid, trending[id].id, true)
+                addWantPreference(user.uid, cards[id].id, true)
             }}
 
             onSwipedBottom={(id) => {
-                setRatingScreen([true, trending[id].id])
+                setRatingScreen([true, cards[id].id])
 
                 this.swiper.swipeBack()
             }}
 
             onSwipedLeft={(id) => {
-                addWantPreference(user.uid, trending[id].id, false)
+                addWantPreference(user.uid, cards[id].id, false)
             }}
 
             onTapCard={(id) => {
-                navigation.navigate("modalScreen", {film: trending[id]})
+                navigation.navigate("modalScreen", {film: cards[id]})
             }}
 
             renderCard={(card) => {

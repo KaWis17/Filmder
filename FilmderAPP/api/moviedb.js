@@ -5,7 +5,7 @@ export const parameterizedEndpoint = `${apiBaseUrl}/discover/movie?`;
 export const fallbackMoviePoster = 'https://img.myloview.com/stickers/white-laptop-screen-with-hd-video-technology-icon-isolated-on-grey-background-abstract-circle-random-dots-vector-illustration-400-176057922.jpg';
 export const image500 = path => path ? 'https://image.tmdb.org/t/p/w500'+ path : null;
 const movieDetailsEndpoint = id => `${apiBaseUrl}/movie/${id}?api_key=${apiKey}`;
-const movieGenreEndpoint =id => `${apiBaseUrl}/genre/movie/list?api_key=${apiKey}`;
+const movieGenreEndpoint = () => `${apiBaseUrl}/genre/movie/list?api_key=${apiKey}`;
 
 
 const injectParametersIntoUrl = (url, params) => (
@@ -69,5 +69,5 @@ export const fetchMovieDetails = (id)=>{
  * Check this for more details https://developer.themoviedb.org/reference/genre-movie-list
  */
 export const fetchAllMovieGenres = ()=>{
-    return apiCall(movieGenreEndpoint);
+    return apiCall(movieGenreEndpoint());
 }

@@ -1,33 +1,35 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import SwiperScreen from './SwiperScreen';
 import ModalScreen from './ModalScreen';
 import SendFilmToFriendScreen from "./SendFilmToFriendScreen";
+import FilmCache from "./UserCache"
 
 
 const MainStack = ({ navigation, route }) => {
+    const [savedCards, setSavedCards] = useState(false);
 
     const StackInMain = createNativeStackNavigator();
     
-    useEffect(() => {
-        console.log('MainStack mounted');
-        return () => {
-            console.log('MainStack unmounted');
-        }
-    }, [])
+    useEffect(() => 
+    {}, [savedCards])
 
     return (
-
-        <StackInMain.Navigator screenOptions={{headerShown: false}} initialRouteName="swiperScreen">
-            <StackInMain.Screen name="swiperScreen" component={SwiperScreen} />
-            <StackInMain.Group screenOptions={{presentation: 'modal'}} >
-                <StackInMain.Screen name="modalScreen" component={ModalScreen}/>
-                <StackInMain.Screen name="sendToFriendScreen" component={SendFilmToFriendScreen} />
-            </StackInMain.Group>
-        </StackInMain.Navigator>
-        
+        <>
+            <FilmCache setSavedCards={setSavedCards}></FilmCache>
+            {savedCards
+            ?
+            <StackInMain.Navigator screenOptions={{headerShown: false}} initialRouteName="swiperScreen">
+                <StackInMain.Screen name="swiperScreen" component={SwiperScreen} />
+                <StackInMain.Group screenOptions={{presentation: 'modal'}} >
+                    <StackInMain.Screen name="modalScreen" component={ModalScreen}/>
+                    <StackInMain.Screen name="sendToFriendScreen" component={SendFilmToFriendScreen} />
+                </StackInMain.Group>
+            </StackInMain.Navigator>
+            : <></>}
+        </>
     )
 }
 
