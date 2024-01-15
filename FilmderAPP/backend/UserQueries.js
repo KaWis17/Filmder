@@ -41,6 +41,7 @@ const docSnap = await getDoc(docRef);
 return (docSnap.exists()) 
 }
 
+
 /**
 * Function to update user data in the 'users' collection,
 * it also runs a function to update user data in all 'friends' collections 
@@ -479,97 +480,97 @@ export async function addWantPreference(userID, filmID, genre_id, doWant) {
 
 
 
-export async function countWantedFilmsFromGenre(userID, genre_id)
-{
-    const qUserPreferences = query(collection(db, 'users', userID, 'filmPreference'), 
-        where("doWant", "==", true), where("film_genre", "array-contains", genre_id));
+// export async function countWantedFilmsFromGenre(userID, genre_id)
+// {
+//     const qUserPreferences = query(collection(db, 'users', userID, 'filmPreference'), 
+//         where("doWant", "==", true), where("film_genre", "array-contains", genre_id));
     
-    const querySnapshotPref = await getDocs(qUserPreferences);
-    console.log(typeof(querySnapshotPref))
-    const number_of_elements = querySnapshotPref.size
-    // console.log(number_of_elements);
-    return number_of_elements;
-}
+//     const querySnapshotPref = await getDocs(qUserPreferences);
+//     console.log(typeof(querySnapshotPref))
+//     const number_of_elements = querySnapshotPref.size
+//     // console.log(number_of_elements);
+//     return number_of_elements;
+// }
 
 
-export async function countNumberOfAllFilms()
-{
-    const qUsers = query(collection(db, 'users'));
-    const querySnapshotUsers = await getDocs(qUsers);
-    let usersIdsList = []
-    querySnapshotUsers.forEach((docUser) => {
-        // console.log(docUser.data().uid)
-        usersIdsList.push(docUser.data().uid)
-    });
+// export async function countNumberOfAllFilms()
+// {
+//     const qUsers = query(collection(db, 'users'));
+//     const querySnapshotUsers = await getDocs(qUsers);
+//     let usersIdsList = []
+//     querySnapshotUsers.forEach((docUser) => {
+//         // console.log(docUser.data().uid)
+//         usersIdsList.push(docUser.data().uid)
+//     });
 
-    let filmsSet = new Set()
-    usersIdsList.forEach(async function(userId) {
-        const qUserPreferences = query(collection(db, 'users', userId, 'filmPreference'));
-        const querySnapshotPref = await getDocs(qUserPreferences);
-        querySnapshotPref.forEach((doc) => {
-            // console.log(doc.data().filmID)
-            filmsSet.add(doc.data().filmID)
-            // console.log(filmsSet)
-        });
-    });
-    // console.log(filmsSet.size)
-    return filmsSet.size
-}
-
-
-export async function countNumberOfUsersFilms(userID)
-{
-    let filmsSet = new Set()
-    const qUserPreferences = query(collection(db, 'users', userID, 'filmPreference'));
-    const querySnapshotPref = await getDocs(qUserPreferences);
-    querySnapshotPref.forEach((doc) => {
-        // console.log(doc.data().filmID)
-        filmsSet.add(doc.data().filmID)
-        // console.log(filmsSet)
-    });
-
-    const qUserReviews = query(collection(db, 'users', userID, 'filmReview'));
-    const querySnapshotReviews = await getDocs(qUserReviews);
-    querySnapshotReviews.forEach((doc) => {
-        // console.log(doc.data().filmID)
-        filmsSet.add(doc.data().filmID)
-        // console.log(filmsSet)
-    });
-    // console.log(filmsSet.size)
-    return filmsSet.size
-    // const querySnapshotPref = await getDocs(collection(db, 'users', userID, 'filmPreference'));
-    // const num_of_swiped = querySnapshotPref.size;
-    // console.log(num_of_swiped)
-    // return num_of_swiped;
-}
+//     let filmsSet = new Set()
+//     usersIdsList.forEach(async function(userId) {
+//         const qUserPreferences = query(collection(db, 'users', userId, 'filmPreference'));
+//         const querySnapshotPref = await getDocs(qUserPreferences);
+//         querySnapshotPref.forEach((doc) => {
+//             // console.log(doc.data().filmID)
+//             filmsSet.add(doc.data().filmID)
+//             // console.log(filmsSet)
+//         });
+//     });
+//     // console.log(filmsSet.size)
+//     return filmsSet.size
+// }
 
 
-export async function getAllGenres()
-{
-    let genres_set = new Set()
-    const qUsers = query(collection(db, 'users'));
-    const querySnapshotUsers = await getDocs(qUsers);
-    let usersIdsList = []
-    querySnapshotUsers.forEach((docUser) => {
-        // console.log(docUser.data().uid)
-        usersIdsList.push(docUser.data().uid)
-    });
+// export async function countNumberOfUsersFilms(userID)
+// {
+//     let filmsSet = new Set()
+//     const qUserPreferences = query(collection(db, 'users', userID, 'filmPreference'));
+//     const querySnapshotPref = await getDocs(qUserPreferences);
+//     querySnapshotPref.forEach((doc) => {
+//         // console.log(doc.data().filmID)
+//         filmsSet.add(doc.data().filmID)
+//         // console.log(filmsSet)
+//     });
+
+//     const qUserReviews = query(collection(db, 'users', userID, 'filmReview'));
+//     const querySnapshotReviews = await getDocs(qUserReviews);
+//     querySnapshotReviews.forEach((doc) => {
+//         // console.log(doc.data().filmID)
+//         filmsSet.add(doc.data().filmID)
+//         // console.log(filmsSet)
+//     });
+//     // console.log(filmsSet.size)
+//     return filmsSet.size
+//     // const querySnapshotPref = await getDocs(collection(db, 'users', userID, 'filmPreference'));
+//     // const num_of_swiped = querySnapshotPref.size;
+//     // console.log(num_of_swiped)
+//     // return num_of_swiped;
+// }
 
 
-    usersIdsList.forEach(async function(userId) {
-        const qUserPreferences = query(collection(db, 'users', userId, 'filmPreference'));
-        const querySnapshotPref = await getDocs(qUserPreferences);
-        querySnapshotPref.forEach((doc) => {
-            console.log(typeof(doc.data().genre_id.toArray()))
-            console.log(doc.data().genre_id.toArray())
-            // genres_set.add(doc.data().ge)
-            // console.log(filmsSet)
-        });
-    });
-    console.log(genres_set.size)
-    return genres_set
+// export async function getAllGenres()
+// {
+//     let genres_set = new Set()
+//     const qUsers = query(collection(db, 'users'));
+//     const querySnapshotUsers = await getDocs(qUsers);
+//     let usersIdsList = []
+//     querySnapshotUsers.forEach((docUser) => {
+//         // console.log(docUser.data().uid)
+//         usersIdsList.push(docUser.data().uid)
+//     });
 
-}
+
+//     usersIdsList.forEach(async function(userId) {
+//         const qUserPreferences = query(collection(db, 'users', userId, 'filmPreference'));
+//         const querySnapshotPref = await getDocs(qUserPreferences);
+//         querySnapshotPref.forEach((doc) => {
+//             console.log(typeof(doc.data().genre_id.toArray()))
+//             console.log(doc.data().genre_id.toArray())
+//             // genres_set.add(doc.data().ge)
+//             // console.log(filmsSet)
+//         });
+//     });
+//     console.log(genres_set.size)
+//     return genres_set
+
+// }
 
 
 /**

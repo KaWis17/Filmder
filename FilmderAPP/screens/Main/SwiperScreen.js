@@ -40,17 +40,21 @@ const SwiperScreen = () => {
        "with_genres": "14,28"
     }
 
-    const genres_array = [12, 14, 18, 28, 35, 53, 80, 99, 878, 10402, 10749]
+    var genres_array = []
     var distribution_array = new Array(genres_array.length+1).fill(0)
 
 
     async function algorithm_count() {
         let prob_sum = 0
+        // let num_of_All = await countNumberOfUsersFilms(user.uid)
         for(let i = 0; i < genres_array.length; i++)
         {
-            let num_of_Wanted = await countWantedFilmsFromGenre(user.uid, genres_array[i])
+            // let num_of_Wanted = await countWantedFilmsFromGenre(user.uid, genres_array[i])
             // console.log(num_of_Wanted)
-            let num_of_All = await countNumberOfUsersFilms(user.uid)
+            let genres = await fetchAllMovieGenres()
+            console.log(typeof(genres))
+            console.log(JSON.stringify(genres))
+            
             // console.log(num_of_All)
             distribution_array[i] = num_of_Wanted/num_of_All
             prob_sum += distribution_array[i]
@@ -59,7 +63,15 @@ const SwiperScreen = () => {
     }
 
     async function chooseKindOfApiQuery() {
-        algorithm_count()
+        // algorithm_count()
+        let genres_obj = await fetchAllMovieGenres()
+        // console.log(JSON.stringify(genres))
+        console.log(JSON.stringify(genres_obj["genres"]))
+        let genres = genres_obj["genres"]
+        genres_array = genres.map(obj => obj["id"])
+        // console.log(Object.keys(genres))
+        // genres_array = Object.keys(genres)
+        console.log(genres_array)
         console.log(distribution_array)
         let r = Math.random();
         console.log(r.toString())
@@ -94,8 +106,8 @@ const SwiperScreen = () => {
         await chooseKindOfApiQuery()
         setPage(p => p + 1);
         console.log(`page = ${page}`)
-        select_genre = await chooseKindOfApiQuery
-        const data = {};
+        select_genre = await chooseKindOfApiQuery()
+        var data = {};
         if(select_genre)
         {
             data = await fetchMovies(page, genreOption);

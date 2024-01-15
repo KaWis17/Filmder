@@ -69,5 +69,5 @@ export const fetchMovieDetails = (id)=>{
  * Check this for more details https://developer.themoviedb.org/reference/genre-movie-list
  */
 export const fetchAllMovieGenres = ()=>{
-    return apiCall(movieGenreEndpoint);
+    return apiCall(movieGenreEndpoint());
 }
