@@ -1,0 +1,3 @@
+In command prompt type:
+
+ReloadDocumentation.sh

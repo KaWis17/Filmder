@@ -1,3 +1,6 @@
+/**
+ * @module screens
+ */
 import React from 'react'
 import { View, TouchableOpacity, TextInput, Text } from 'react-native'
 
