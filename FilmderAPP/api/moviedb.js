@@ -1,3 +1,6 @@
+/**
+ * @module api
+ */
 import axios from 'axios';
 import {apiKey, apiBaseUrl} from '../constants/index';
 export const trendingMoviesEndpoint = `${apiBaseUrl}/trending/movie/day?api_key=${apiKey}`;

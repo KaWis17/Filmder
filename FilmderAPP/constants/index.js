@@ -1,4 +1,7 @@
 /**
+ * @module constants
+ */
+/**
  * This file defines const values used in API.
  */
 

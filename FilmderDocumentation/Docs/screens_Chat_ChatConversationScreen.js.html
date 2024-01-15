@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: screens/Chat/ChatConversationScreen.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: screens/Chat/ChatConversationScreen.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module screens
+ */
+import React, { useState, useEffect, useCallback } from 'react';
+import {View, TouchableOpacity, Text, SafeAreaView, Image} from 'react-native'
+
+import {GiftedChat, Bubble, Message} from 'react-native-gifted-chat';
+
+import useAuth from '../../backend/AuthProvider';
+import { setMessagesFromChat, sendAMessage } from '../../backend/UserQueries';
+import {flex} from "nativewind/dist/postcss/to-react-native/properties/flex";
+
+
+const ChatConversationScreen = ({route, navigation}) => {
+
+    const friendshipID = route.params.friendshipID;
+    const friendProfile = route.params.friendProfile;
+
+    const [ messages, setMessages ] = useState([])
+    const { user } = useAuth();
+
+    /**
+     * React hook to synchronize messages from chat depending on user variable
+     */
+    useEffect(
+        () => {
+            setMessagesFromChat(friendshipID, setMessages, friendProfile.imageUrl)
+        },        
+        [user]
+    );
+
+    /**
+     * Sending a message to the database 
+     */
+    const onSend = useCallback(
+        (messages = []) => 
+        sendAMessage(GiftedChat, messages, setMessages, friendshipID, user.uid), 
+        []
+    )
+
+    const CustomMessage = (props) => {
+        const { currentMessage } = props;
+
+        function getAlignment() {
+            return currentMessage.user._id === user.uid ? 'flex-end' : 'flex-start';
+        }
+
+        if (currentMessage.image) {
+            return (
+                &lt;TouchableOpacity onPress={() => handleBubblePress(props.currentMessage)}
+                                  style={{margin:10,width:215,alignSelf: getAlignment()}}>
+                    &lt;Image
+                        source={{ uri: currentMessage.image }}
+                        style={{ height: 205}}
+                    />
+                    &lt;Text style={{fontSize:20, backgroundColor: '#ccbbcc'}}> Let's watch together!&lt;/Text>
+                &lt;/TouchableOpacity>
+            );
+        }
+        return &lt;Message {...props} />;
+    };
+
+    const renderBubble = (props) => {
+        return (
+            &lt;Bubble
+                {...props}
+                wrapperStyle={{
+                    left: {
+                        backgroundColor: '#e0e0e0', // Background color for received messages
+                    },
+                    right: {
+                        backgroundColor: '#333333', // Background color for sent messages
+                    },
+                }}
+                textStyle={{
+                    left: {
+                        color: '#000', // Text color for received messages
+                    },
+                    right: {
+                        color: '#fff', // Text color for sent messages
+                    },
+                }}
+                onPress={() => handleBubblePress(props.currentMessage)}
+            />
+        );
+    };
+
+    const handleBubblePress = (message) => {
+        if(message.invitation){
+            navigation.navigate("modalScreen", {film: message.invitation})
+        }
+    };
+
+    return (
+        &lt;View style={{flex: 1}}>
+            &lt;View className="w-full bg-blue-500">
+                &lt;SafeAreaView>
+                    &lt;TouchableOpacity 
+                        onPress={() => navigation.navigate("otherUserScreen", {friendID: friendProfile.uid})}
+                        className="w-full h-12 bg-blue-500">
+                        &lt;Text className=" text-lg my-auto text-center color-white">{friendProfile.first + " " + friendProfile.last}&lt;/Text>
+                    &lt;/TouchableOpacity>
+                &lt;/SafeAreaView>
+            &lt;/View>
+            &lt;GiftedChat
+                messages={messages}
+                onSend={messages => onSend(messages)}
+                user={{
+                    _id: user.uid,
+                }} 
+                showUserAvatar={false}
+                showAvatarForEveryMessage={false}
+                scrollToBottom={true}
+                onPressAvatar={() => navigation.navigate("otherUserScreen", {friendID: friendProfile.uid})}
+                renderBubble={renderBubble}
+                renderMessage={props => &lt;CustomMessage {...props} />}
+            />
+        &lt;/View>
+    )
+
+}
+
+export default ChatConversationScreen;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-api.html">api</a></li><li><a href="module-backend.html">backend</a></li><li><a href="module-constants.html">constants</a></li><li><a href="module-screens.html">screens</a></li><li><a href="module-temporary.html">temporary</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue Jan 09 2024 15:45:41 GMT+0100 (Central European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: screens/Chat/ChatListScreen.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: screens/Chat/ChatListScreen.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, {useEffect, useState} from 'react'
+import {View, Text, FlatList, TouchableOpacity, Image, SafeAreaView} from 'react-native'
+
+import { useNavigation } from '@react-navigation/core';
+
+import useAuth from '../../backend/AuthProvider'
+/**
+ * @module screens
+ */
+import { setUsersFriendList, getFriendFromFriendsList } from '../../backend/UserQueries';
+
+const tempURL = "https://t4.ftcdn.net/jpg/03/49/49/79/360_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5.jpg"
+
+const ChatListScreen = () => {
+
+    const[ friends, setFriends ] = useState([]);
+    const { user } = useAuth();
+    const navigation = useNavigation();
+
+    const days = ["Sun.", "Mon.", "Tue.", "Wed.","Thu.", "Fri.","Sat."]
+
+    /**
+     * React hook to synchronize friendList depending on user variable
+     */
+    useEffect(
+        () => { setUsersFriendList(user.uid, setFriends) },
+        [user]
+    );
+
+    const renderFriend = ({ item }) => (
+        &lt;TouchableOpacity
+            className="h-20"
+            onPress={() => {
+                navigation.navigate("chatConversation", 
+                    {   friendshipID: item.id, 
+                        friendProfile: getFriendFromFriendsList(item.users, user.uid),
+                    }
+                )
+                }}
+        >
+
+            &lt;View className="flex flex-row my-auto mx-5">
+                &lt;Image 
+                    className="bg-red-500 h-16 aspect-square rounded-full"
+                    source={getFriendFromFriendsList(item.users, user.uid).imageUrl !== undefined ? {uri: getFriendFromFriendsList(item.users, user.uid).imageUrl } : {uri: tempURL}}
+                />
+
+                &lt;View className="flex-auto ml-5 my-auto">
+                    &lt;Text numberOfLines={1} className="text-xl font-medium">
+                        {   getFriendFromFriendsList(item.users, user.uid).first +" "+ 
+                            getFriendFromFriendsList(item.users, user.uid).last}
+                    &lt;/Text>
+                    &lt;View className="flex-row">
+                        &lt;Text numberOfLines={1} className="flex-1 text-base">
+                            {(item.lastMessage !== undefined) ? 
+                                (item.lastMessage.sendBy == user.uid ? 
+                                        ("You: " + item.lastMessage.text) : 
+                                        (getFriendFromFriendsList(item.users, user.uid).first + ": " + item.lastMessage.text)) :
+                                ("Say hi to " + getFriendFromFriendsList(item.users, user.uid).first + "!")
+                            }
+                        &lt;/Text>
+                        
+                        &lt;Text className="text-base pl-5">{
+
+                            (item.lastMessage === undefined) ? 
+                                (
+                                    " "
+                                ) : (
+                                    (new Date(item.lastMessage.time.seconds*1000).isSameDateAs(new Date())) ? 
+                                    (
+                                        new Date(item.lastMessage.time.seconds*1000).getHours().toLocaleString('en-US', {
+                                            minimumIntegerDigits: 2,
+                                            useGrouping: false
+                                        }) + ":" + new Date(item.lastMessage.time.seconds*1000).getMinutes().toLocaleString('en-US', {
+                                            minimumIntegerDigits: 2,
+                                            useGrouping: false
+                                        })
+                                    ) : (
+                                        days[new Date(item.lastMessage.time.seconds*1000).getDay(({ weekday:"short" }))]
+                                    )
+                                )
+                        }&lt;/Text>
+
+                    &lt;/View>
+                    
+                &lt;/View>
+            
+            &lt;/View>
+            
+        &lt;/TouchableOpacity>
+    );
+        
+    return (
+        &lt;SafeAreaView className="flex h-screen bg-slate-300">
+            &lt;FlatList
+                data={friends}
+                renderItem={renderFriend}
+                keyExtractor={(item) => item.id}
+                style={{marginTop:30}}
+            />
+        &lt;/SafeAreaView>
+    )
+
+};
+
+Date.prototype.isSameDateAs = function(otherDate) {
+    return (
+      this.getFullYear() === otherDate.getFullYear() &amp;&amp;
+      this.getMonth() === otherDate.getMonth() &amp;&amp;
+      this.getDate() === otherDate.getDate()
+    );
+}
+
+export default ChatListScreen
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-api.html">api</a></li><li><a href="module-backend.html">backend</a></li><li><a href="module-constants.html">constants</a></li><li><a href="module-screens.html">screens</a></li><li><a href="module-temporary.html">temporary</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue Jan 09 2024 15:45:41 GMT+0100 (Central European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
