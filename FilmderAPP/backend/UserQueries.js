@@ -45,6 +45,25 @@ export async function doesUserExistInDb(userID) {
 }
 
 /**
+ * Function to get all watched films
+ */
+export async function getAllWatchedFilmsIdsFromDb(userID) {
+    const films = []
+    
+    const filmPrefRef = collection(db, 'users', userID, 'filmPreference');
+    const filmRevRef = collection(db, 'users', userID, 'filmReview');
+    const [filmPrefSnap, filmRevSnap] = await Promise.all([getDocs(filmPrefRef), getDocs(filmRevRef)]);
+
+    filmPrefSnap.forEach((doc) => {
+        films.push(doc.data().filmID)
+    })
+    filmRevSnap.forEach((doc) => {
+        films.push(doc.data().filmID)
+    })
+    return films;
+}
+
+/**
  * Function to update user data in the 'users' collection,
  * it also runs a function to update user data in all 'friends' collections 
  */
