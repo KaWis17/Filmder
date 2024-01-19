@@ -551,33 +551,28 @@ export async function getUserPreferences(userID)
     const qUserPreferences = query(collection(db, 'users', userID, 'filmPreference'));
     const querySnapshotPref = await getDocs(qUserPreferences);
     querySnapshotPref.forEach((doc) => {
-        curr_pref = []
-        curr_pref.push(doc.data().filmID)
-        genres_str = doc.data().genres
-        genres_list = genres_str.split("##")
-        curr_pref.push(genres_list)
-        preferences.push(curr_pref)
+        currPref = doc.data()
+        preferences.push(currPref)
     });
     return preferences
 }
 
 
-// export async function getUserReviews(userID)
-// {
-//     var reviews = []
+export async function getUserReviews(userID)
+{
+    var reviews = []
     
-//     const qUserReviews = query(collection(db, 'users', userID, 'filmReview'));
-//     const querySnapshotReview = await getDocs(qUserReviews);
-//     querySnapshotPref.forEach((doc) => {
-//         curr_pref = []
-//         curr_pref.push(doc.data().filmID)
-//         genres_str = doc.data().genres
-//         genres_list = genres_str.split("##")
-//         curr_pref.push(genres_list)
-//         preferences.push(curr_pref)
-//     });
-//     return preferences
-// }
+    const qUserReviews = query(collection(db, 'users', userID, 'filmReview'));
+    const querySnapshotReview = await getDocs(qUserReviews);
+    querySnapshotReview.forEach((doc) => {
+        currReview = doc.data()
+        reviews.push(currReview)
+    });
+    return reviews
+}
+
+
+
 
 /**
  * Helper function to update the user data if 'friends' collection
