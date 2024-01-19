@@ -493,16 +493,18 @@ export async function uploadProfilePhoto(userID, userEmail, first, last, age, ti
 /**
   * Function to update user's rate about film
   */
-export async function addRatePreference(userID, filmID, rate) {
+export async function addRatePreference(userID, filmID, genres_list, rate) {
     console.log(userID)
     console.log(filmID)
+    console.log(genres_list)
     console.log(rate)
 
     const docRef = doc(db, "users/" + userID + "/filmReview/" + filmID);
     await setDoc(docRef, {
         filmID: filmID,
         rate: rate,
-        time: new Date(),
+        time: serverTimestamp(),
+        genres: genres_list,
     });
     
 }
@@ -510,15 +512,49 @@ export async function addRatePreference(userID, filmID, rate) {
 /**
   * Function to update user preference about film
   */
-export async function addWantPreference(userID, filmID, doWant) {
+export async function addWantPreference(userID, filmID, genres_list, doWant) {
+    console.log(userID)
+    console.log(filmID)
+    console.log(genres_list)
+    console.log(doWant)
+
+
     const docRef = doc(db, "users/" + userID + "/filmPreference/" + filmID);
     await setDoc(docRef, {
         filmID: filmID,
         doWant: doWant,
-        time: new Date(),
+        time: serverTimestamp(),
+        genres: genres_list,
     });
     
 }
+
+
+// export async function getUserPreferences(userID)
+// {
+//     let filmsSet = new Set()
+//     const qUserPreferences = query(collection(db, 'users', userID, 'filmPreference'));
+//     const querySnapshotPref = await getDocs(qUserPreferences);
+//     querySnapshotPref.forEach((doc) => {
+//         // console.log(doc.data().filmID)
+//         filmsSet.add(doc.data().filmID)
+//         // console.log(filmsSet)
+//     });
+
+//     const qUserReviews = query(collection(db, 'users', userID, 'filmReview'));
+//     const querySnapshotReviews = await getDocs(qUserReviews);
+//     querySnapshotReviews.forEach((doc) => {
+//         // console.log(doc.data().filmID)
+//         filmsSet.add(doc.data().filmID)
+//         // console.log(filmsSet)
+//     });
+//     // console.log(filmsSet.size)
+//     return filmsSet.size
+//     // const querySnapshotPref = await getDocs(collection(db, 'users', userID, 'filmPreference'));
+//     // const num_of_swiped = querySnapshotPref.size;
+//     // console.log(num_of_swiped)
+//     // return num_of_swiped;
+// }
 
 /**
  * Helper function to update the user data if 'friends' collection
