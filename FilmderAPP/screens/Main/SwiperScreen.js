@@ -11,7 +11,7 @@ import { addWantPreference, addRatePreference } from '../../backend/UserQueries'
 import useAuth from '../../backend/AuthProvider'
 import StarRating from 'react-native-star-rating-widget';
 import { getWatchedCards, updateWatchedCardsIfNeeded } from '../../backend/UserCacheQueries'
-import { getUserFilmsFromDb } from '../../preference_algorithm/preference_algorithm';
+import { readUserPreferencesFromDb } from '../../preference_algorithm/preference_algorithm';
 
 
 const SwiperScreen = () => {
@@ -49,7 +49,7 @@ const SwiperScreen = () => {
         if(currentPage == 1)
         {
             console.log("loading first_page...")
-            // getUserFilmsFromDb(user.uid)
+            readUserPreferencesFromDb(user.uid)
         }
         setPage(currentPage + 1);
         console.log(`page = ${currentPage}`);

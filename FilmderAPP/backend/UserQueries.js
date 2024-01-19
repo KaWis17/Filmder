@@ -550,31 +550,34 @@ export async function getUserPreferences(userID)
     
     const qUserPreferences = query(collection(db, 'users', userID, 'filmPreference'));
     const querySnapshotPref = await getDocs(qUserPreferences);
-    console.log(typeof(querySnapshotPref))
     querySnapshotPref.forEach((doc) => {
-        curr_pref = doc.data()
-        console.log(typeof(curr_pref))
+        curr_pref = []
+        curr_pref.push(doc.data().filmID)
+        genres_str = doc.data().genres
+        genres_list = genres_str.split("##")
+        curr_pref.push(genres_list)
         preferences.push(curr_pref)
-        // console.log(doc.data().filmID)
-        // filmsSet.add(doc.data().filmID)
-        // console.log(filmsSet)
     });
     return preferences
-
-    // const qUserReviews = query(collection(db, 'users', userID, 'filmReview'));
-    // const querySnapshotReviews = await getDocs(qUserReviews);
-    // querySnapshotReviews.forEach((doc) => {
-    //     // console.log(doc.data().filmID)
-    //     filmsSet.add(doc.data().filmID)
-    //     // console.log(filmsSet)
-    // });
-    // // console.log(filmsSet.size)
-    // return filmsSet.size
-    // // const querySnapshotPref = await getDocs(collection(db, 'users', userID, 'filmPreference'));
-    // // const num_of_swiped = querySnapshotPref.size;
-    // // console.log(num_of_swiped)
-    // // return num_of_swiped;
 }
+
+
+// export async function getUserReviews(userID)
+// {
+//     var reviews = []
+    
+//     const qUserReviews = query(collection(db, 'users', userID, 'filmReview'));
+//     const querySnapshotReview = await getDocs(qUserReviews);
+//     querySnapshotPref.forEach((doc) => {
+//         curr_pref = []
+//         curr_pref.push(doc.data().filmID)
+//         genres_str = doc.data().genres
+//         genres_list = genres_str.split("##")
+//         curr_pref.push(genres_list)
+//         preferences.push(curr_pref)
+//     });
+//     return preferences
+// }
 
 /**
  * Helper function to update the user data if 'friends' collection

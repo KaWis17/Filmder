@@ -1,13 +1,12 @@
 import { getUserPreferences } from "../backend/UserQueries"
 
 
-export async function getUserFilmsFromDb(userID)
+var preferences = []
+var reviews = []
+
+
+export async function readUserPreferencesFromDb(userID)
 {
-    preferences = getUserPreferences(userID)
-    console.log(typeof(preferences))
-    console.log(typeof(preferences[0]))
-    console.log(JSON.stringify(preferences[0]))
-    // preferences.forEach((filmObj) => {
-    //     console.log(JSON.stringify(filmObj))
-    // });
+    preferences = await getUserPreferences(userID)
+    console.log(preferences)
 }
