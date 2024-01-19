@@ -17,7 +17,7 @@ export async function readUserPreferencesFromDb(userID)
 
     for(let genre of genres_array)
     {
-        genre["wieght"] = 0
+        genre["weight"] = 0
     }
     await count_weights()
 
@@ -54,6 +54,45 @@ async function count_weights()
                     {
                         genreObj["weight"] = max(genreObj["weight"]-1, 0)
                         console.log("False")
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    console.log(genres_array)
+
+    for(let review of reviews)
+    {
+        let curr_genres_list = review["genres"].split("##").map(genre => parseInt(genre))
+        let currRate = review["rate"]
+        console.log(curr_genres_list)
+        for(let genreID of curr_genres_list)
+        {
+            for(let genreObj of genres_array)
+            {
+                if(genreObj["id"] == genreID)
+                {
+                    console.log(genreObj["weight"])
+                    console.log(genreID)
+                    console.log(currRate)
+                    if(currRate < 3)
+                    {
+                        console.log(genreObj["weight"])
+                        if(genreObj["weight"] - 1 < 0)
+                        {
+                            genreObj["weight"] = 0
+                        }
+                        else
+                        {
+                            genreObj["weight"] = genreObj["weight"] - 1
+                        }
+                        // genreObj["weight"] = max(genreObj["weight"]-1, 0)//???
+                    }
+                    else if(currRate > 3)
+                    {
+                        console.log(genreObj["weight"])
+                        genreObj["weight"] = genreObj["weight"] + 1
                     }
                     break;
                 }
