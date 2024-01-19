@@ -497,6 +497,13 @@ export async function addRatePreference(userID, filmID, genres_list, rate) {
     console.log(userID)
     console.log(filmID)
     console.log(genres_list)
+    genres_str = ""
+    for(i = 0; i < genres_list.length - 1; i++)
+    {
+        genres_str += genres_list[i].toString() + "##"
+    }
+    genres_str += genres_list[genres_list.length-1].toString()
+    console.log(genres_str)
     console.log(rate)
 
     const docRef = doc(db, "users/" + userID + "/filmReview/" + filmID);
@@ -504,7 +511,7 @@ export async function addRatePreference(userID, filmID, genres_list, rate) {
         filmID: filmID,
         rate: rate,
         time: serverTimestamp(),
-        genres: genres_list,
+        genres: genres_str,
     });
     
 }
@@ -516,6 +523,13 @@ export async function addWantPreference(userID, filmID, genres_list, doWant) {
     console.log(userID)
     console.log(filmID)
     console.log(genres_list)
+    genres_str = ""
+    for(i = 0; i < genres_list.length - 1; i++)
+    {
+        genres_str += genres_list[i].toString() + "##"
+    }
+    genres_str += genres_list[genres_list.length-1].toString()
+    console.log(genres_str)
     console.log(doWant)
 
 
@@ -524,37 +538,43 @@ export async function addWantPreference(userID, filmID, genres_list, doWant) {
         filmID: filmID,
         doWant: doWant,
         time: serverTimestamp(),
-        genres: genres_list,
+        genres: genres_str,
     });
     
 }
 
 
-// export async function getUserPreferences(userID)
-// {
-//     let filmsSet = new Set()
-//     const qUserPreferences = query(collection(db, 'users', userID, 'filmPreference'));
-//     const querySnapshotPref = await getDocs(qUserPreferences);
-//     querySnapshotPref.forEach((doc) => {
-//         // console.log(doc.data().filmID)
-//         filmsSet.add(doc.data().filmID)
-//         // console.log(filmsSet)
-//     });
+export async function getUserPreferences(userID)
+{
+    var preferences = []
+    
+    const qUserPreferences = query(collection(db, 'users', userID, 'filmPreference'));
+    const querySnapshotPref = await getDocs(qUserPreferences);
+    console.log(typeof(querySnapshotPref))
+    querySnapshotPref.forEach((doc) => {
+        curr_pref = doc.data()
+        console.log(typeof(curr_pref))
+        preferences.push(curr_pref)
+        // console.log(doc.data().filmID)
+        // filmsSet.add(doc.data().filmID)
+        // console.log(filmsSet)
+    });
+    return preferences
 
-//     const qUserReviews = query(collection(db, 'users', userID, 'filmReview'));
-//     const querySnapshotReviews = await getDocs(qUserReviews);
-//     querySnapshotReviews.forEach((doc) => {
-//         // console.log(doc.data().filmID)
-//         filmsSet.add(doc.data().filmID)
-//         // console.log(filmsSet)
-//     });
-//     // console.log(filmsSet.size)
-//     return filmsSet.size
-//     // const querySnapshotPref = await getDocs(collection(db, 'users', userID, 'filmPreference'));
-//     // const num_of_swiped = querySnapshotPref.size;
-//     // console.log(num_of_swiped)
-//     // return num_of_swiped;
-// }
+    // const qUserReviews = query(collection(db, 'users', userID, 'filmReview'));
+    // const querySnapshotReviews = await getDocs(qUserReviews);
+    // querySnapshotReviews.forEach((doc) => {
+    //     // console.log(doc.data().filmID)
+    //     filmsSet.add(doc.data().filmID)
+    //     // console.log(filmsSet)
+    // });
+    // // console.log(filmsSet.size)
+    // return filmsSet.size
+    // // const querySnapshotPref = await getDocs(collection(db, 'users', userID, 'filmPreference'));
+    // // const num_of_swiped = querySnapshotPref.size;
+    // // console.log(num_of_swiped)
+    // // return num_of_swiped;
+}
 
 /**
  * Helper function to update the user data if 'friends' collection
