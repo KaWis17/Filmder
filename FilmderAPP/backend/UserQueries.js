@@ -571,6 +571,24 @@ export async function getUserReviews(userID)
     return reviews
 }
 
+/**
+ * function to test reading empty collection
+ * @param {*} userID 
+ * @returns 
+ */
+export async function getUserPrefs(userID)
+{
+    var prefs = []
+    
+    const qUserPreferences = query(collection(db, 'users', userID, 'filmPref'));
+    const querySnapshotPref = await getDocs(qUserPreferences);
+    querySnapshotPref.forEach((doc) => {
+        currPref = doc.data()
+        prefs.push(currPref)
+    });
+    return prefs;
+}
+
 
 
 
