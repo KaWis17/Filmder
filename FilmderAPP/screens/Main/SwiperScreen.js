@@ -60,10 +60,10 @@ const SwiperScreen = () => {
         setPage(currentPage + 1);
         console.log(`page = ${currentPage}`);
         // let chosenOptions = await chooseKindOfApiQuery()
-        let chosenOptions = exampleOptions
-        setQueryOptions(chosenOptions)
-        console.log(chosenOptions)
-        const data = await fetchMovies(currentPage,queryOptions);
+        // let chosenOptions = exampleOptions
+        // setQueryOptions(chosenOptions)
+        // console.log(chosenOptions)
+        const data = await fetchMovies(currentPage, exampleOptions);
         if (data && data.results) {
             const cardsIds = cards.map((value) => value.id);
             const watchedCards = updatedCache 
