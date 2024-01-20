@@ -41,6 +41,12 @@ const SwiperScreen = () => {
         "with_original_language": 'pl', "year": 2024
     }
 
+    // var queryOptions = {
+    //     "with_original_language": 'pl', "year": 2024
+    // }
+
+    const [queryOptions, setQueryOptions] = useState(exampleOptions)
+
     /**
      * This function gets films from API. The maximum number of films that can be received in one API call is one page which contains 19 films.
      * Remember that variable {page} means actual page number + 1. 
@@ -49,11 +55,15 @@ const SwiperScreen = () => {
         if(currentPage == 1)
         {
             console.log("loading first_page...")
-            readUserPreferencesFromDb(user.uid)
+            // readUserPreferencesFromDb(user.uid)
         }
         setPage(currentPage + 1);
         console.log(`page = ${currentPage}`);
-        const data = await fetchMovies(currentPage, exampleOptions);
+        // let chosenOptions = await chooseKindOfApiQuery()
+        let chosenOptions = exampleOptions
+        setQueryOptions(chosenOptions)
+        console.log(chosenOptions)
+        const data = await fetchMovies(currentPage,queryOptions);
         if (data && data.results) {
             const cardsIds = cards.map((value) => value.id);
             const watchedCards = updatedCache 

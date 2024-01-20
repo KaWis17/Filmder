@@ -497,12 +497,15 @@ export async function addRatePreference(userID, filmID, genres_list, rate) {
     console.log(userID)
     console.log(filmID)
     console.log(genres_list)
-    genres_str = ""
-    for(i = 0; i < genres_list.length - 1; i++)
+    let genres_str = ""
+    if(genres_list.length > 0)
     {
-        genres_str += genres_list[i].toString() + "##"
+        for(i = 0; i < genres_list.length - 1; i++)
+        {
+            genres_str += genres_list[i].toString() + "##"
+        }
+        genres_str += genres_list[genres_list.length-1].toString()
     }
-    genres_str += genres_list[genres_list.length-1].toString()
     console.log(genres_str)
     console.log(rate)
 
@@ -523,12 +526,15 @@ export async function addWantPreference(userID, filmID, genres_list, doWant) {
     console.log(userID)
     console.log(filmID)
     console.log(genres_list)
-    genres_str = ""
-    for(i = 0; i < genres_list.length - 1; i++)
+    let genres_str = ""
+    if(genres_list.length > 0)
     {
-        genres_str += genres_list[i].toString() + "##"
+        for(i = 0; i < genres_list.length - 1; i++)
+        {
+            genres_str += genres_list[i].toString() + "##"
+        }
+        genres_str += genres_list[genres_list.length-1].toString()
     }
-    genres_str += genres_list[genres_list.length-1].toString()
     console.log(genres_str)
     console.log(doWant)
 
