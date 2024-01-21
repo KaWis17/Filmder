@@ -24,7 +24,7 @@ const SwiperScreen = () => {
     const [cards, setMovies] = useState([ basicMovie ]);
 
     const [rating, setRating] = useState(0)
-    const [ratingScreen, setRatingScreen] = useState([false, -1])
+    const [ratingScreen, setRatingScreen] = useState([false, -1, -1])
 
     useEffect(()=>{
         getMovies(page);
@@ -96,8 +96,8 @@ const SwiperScreen = () => {
 
                     <TouchableOpacity 
                         onPress={() => {
-                            addRatePreference(user.uid, ratingScreen[1], rating)
-                            setRatingScreen([false, -1])
+                            addRatePreference(user.uid, ratingScreen[1], ratingScreen[2], rating)
+                            setRatingScreen([false, -1, -1])
                             setRating(0)
                             getMovies(page)
                         }}
@@ -107,7 +107,7 @@ const SwiperScreen = () => {
 
                     <TouchableOpacity 
                         onPress={() => {
-                            setRatingScreen([false, -1])
+                            setRatingScreen([false, -1, -1])
                             setRating(0)
                         }}
                         className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-red-500">
@@ -142,7 +142,7 @@ const SwiperScreen = () => {
             }}
 
             onSwipedBottom={(id) => {
-                setRatingScreen([true, cards[id].id])
+                setRatingScreen([true, cards[id].id, cards[id].genre_ids])
 
                 this.swiper.swipeBack()
             }}

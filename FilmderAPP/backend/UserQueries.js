@@ -493,17 +493,33 @@ export async function uploadProfilePhoto(userID, userEmail, first, last, age, ti
 /**
   * Function to update user's rate about film
   */
-export async function addRatePreference(userID, filmID, rate) {
+export async function addRatePreference(userID, filmID, genres_list, rate) {
     console.log(userID)
     console.log(filmID)
     console.log(rate)
+    console.log(genres_list)
 
-    const docRef = doc(db, "users/" + userID + "/filmReview/" + filmID);
-    await setDoc(docRef, {
-        filmID: filmID,
-        rate: rate,
-        time: new Date(),
-    });
+    for(genreID of genres_list)
+    {
+        console.log(genreID)
+        const docRef = doc(db, "users/" + userID + "/genres_stats/" + genreID);
+        if(rate > 3)
+        {
+            await setDoc(docRef, {
+                genreID: genreID,
+                weight: 1,
+            }, { merge: true})
+            
+            // docRef.set({
+            //     genreID: genreID,
+            //     weight: 1,
+            // }, { merge: true})
+        }
+       
+    }
+   
+    
+
     
 }
 
