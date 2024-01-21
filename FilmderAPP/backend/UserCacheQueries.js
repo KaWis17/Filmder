@@ -55,7 +55,7 @@ export const updateWatchedCardsIfNeeded = async (newWatchedCardIds) => {
  * This function gets all ids of films that where earlier showed on SwiperScreen
  * and store them in @param WATCHED_FILM_CARDS
  */
-export const saveGenreSats = async (user) => {
+export const saveGenreStats = async (user) => {
     console.log("saving stats to cache...")
     const value = await getUserPreferencesFromDb(user.uid)
     const jsonValue = JSON.stringify(value);
@@ -63,4 +63,3 @@ export const saveGenreSats = async (user) => {
     await AsyncStorage.setItem(GENRE_STATS, jsonValue);
     return true;
 }
-

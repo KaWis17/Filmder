@@ -3,7 +3,7 @@
  */
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { saveGenreSats, clearGenreStats } from './UserCacheQueries';
+import { saveGenreStats } from './UserCacheQueries';
 
 import { 
     createUserWithEmailAndPassword, 
@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }) => {
                 else
                 {
                     console.log(auth)
-                    await saveGenreSats(auth.currentUser)
+                    await saveGenreStats(auth.currentUser)
                 }
             })
             .catch((error) => {

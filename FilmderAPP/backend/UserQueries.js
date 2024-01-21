@@ -8,6 +8,7 @@ import * as ImagePicker from "expo-image-picker";
             
 import { db, st } from "./FirebaseConnection"
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { incrementWeightOfGenre, decrementWeightOfGenre } from "./UserCacheGetGenres";
 import {fetchMovieDetails} from "../api/moviedb";
 
 
@@ -505,24 +506,27 @@ export async function addRatePreference(userID, filmID, genres_list, rate) {
         const docRef = doc(db, "users/" + userID + "/genres_stats/" + genreID);
         if(rate < 3)
         {
+            let newWeight = await decrementWeightOfGenre(genreID, 1)
             await setDoc(docRef, {
                 genreID: genreID,
-                weight: 0,
+                weight: newWeight,
             }, { merge: true})
             
         }
         else if(rate == 4)
         {
+            let newWeight = await incrementWeightOfGenre(genreID, 1)
             await setDoc(docRef, {
                 genreID: genreID,
-                weight: 1,
+                weight: newWeight,
             }, { merge: true})
         }
         else if(rate == 5)
         {
+            let newWeight = await incrementWeightOfGenre(genreID, 2)
             await setDoc(docRef, {
                 genreID: genreID,
-                weight: 2,
+                weight: newWeight,
             }, { merge: true})
         }
        
@@ -544,17 +548,19 @@ export async function addWantPreference(userID, filmID, genres_list, doWant) {
         const docRef = doc(db, "users/" + userID + "/genres_stats/" + genreID);
         if(doWant)
         {
+            let newWeight = await incrementWeightOfGenre(genreID, 1)
             await setDoc(docRef, {
                 genreID: genreID,
-                weight: 1,
+                weight: newWeight,
             }, { merge: true})
             
         }
         else
         {
+            let newWeight = await decrementWeightOfGenre(genreID, 1)
             await setDoc(docRef, {
                 genreID: genreID,
-                weight: 0,
+                weight: newWeight,
             }, { merge: true})
         }
     }
