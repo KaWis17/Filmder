@@ -503,37 +503,61 @@ export async function addRatePreference(userID, filmID, genres_list, rate) {
     {
         console.log(genreID)
         const docRef = doc(db, "users/" + userID + "/genres_stats/" + genreID);
-        if(rate > 3)
+        if(rate < 3)
+        {
+            await setDoc(docRef, {
+                genreID: genreID,
+                weight: 0,
+            }, { merge: true})
+            
+        }
+        else if(rate == 4)
+        {
+            await setDoc(docRef, {
+                genreID: genreID,
+                weight: 1,
+            }, { merge: true})
+        }
+        else if(rate == 5)
+        {
+            await setDoc(docRef, {
+                genreID: genreID,
+                weight: 2,
+            }, { merge: true})
+        }
+       
+    } 
+}
+
+
+/**
+  * Function to update user preference about film
+  */
+export async function addWantPreference(userID, filmID, genres_list, doWant) {
+    console.log(userID)
+    console.log(filmID)
+    console.log(doWant)
+    console.log(genres_list)
+    for(genreID of genres_list)
+    {
+        console.log(genreID)
+        const docRef = doc(db, "users/" + userID + "/genres_stats/" + genreID);
+        if(doWant)
         {
             await setDoc(docRef, {
                 genreID: genreID,
                 weight: 1,
             }, { merge: true})
             
-            // docRef.set({
-            //     genreID: genreID,
-            //     weight: 1,
-            // }, { merge: true})
         }
-       
+        else
+        {
+            await setDoc(docRef, {
+                genreID: genreID,
+                weight: 0,
+            }, { merge: true})
+        }
     }
-   
-    
-
-    
-}
-
-/**
-  * Function to update user preference about film
-  */
-export async function addWantPreference(userID, filmID, doWant) {
-    const docRef = doc(db, "users/" + userID + "/filmPreference/" + filmID);
-    await setDoc(docRef, {
-        filmID: filmID,
-        doWant: doWant,
-        time: new Date(),
-    });
-    
 }
 
 /**

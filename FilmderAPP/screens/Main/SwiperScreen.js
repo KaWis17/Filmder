@@ -138,7 +138,7 @@ const SwiperScreen = () => {
             }}
 
             onSwipedRight={(id) => {
-                addWantPreference(user.uid, cards[id].id, true)
+                addWantPreference(user.uid, cards[id].id, cards[id].genre_ids, true)
             }}
 
             onSwipedBottom={(id) => {
@@ -148,7 +148,7 @@ const SwiperScreen = () => {
             }}
 
             onSwipedLeft={(id) => {
-                addWantPreference(user.uid, cards[id].id, false)
+                addWantPreference(user.uid, cards[id].id, cards[id].genre_ids, false)
             }}
 
             onTapCard={(id) => {
