@@ -560,6 +560,22 @@ export async function addWantPreference(userID, filmID, genres_list, doWant) {
     }
 }
 
+
+export async function getUserPreferencesFromDb(userID)
+{
+    var genres_weights = []
+
+    const qUserStats = query(collection(db, 'users', userID, 'genres_stats'))
+    const querySnapshotStats = await getDocs(qUserStats);
+    querySnapshotStats.forEach((doc) => {
+        let currGenre = doc.data()
+        genres_weights.push(currGenre)
+    });
+    console.log(genres_weights)
+    return genres_weights
+}
+
+
 /**
  * Helper function to update the user data if 'friends' collection
  */

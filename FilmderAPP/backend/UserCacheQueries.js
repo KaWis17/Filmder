@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getAllWatchedFilmsIdsFromDb } from './UserQueries'
+import { getAllWatchedFilmsIdsFromDb, getUserPreferencesFromDb } from './UserQueries'
 
 const WATCHED_FILM_CARDS = 'watched-cards'
+const GENRE_STATS = 'genre-stats'
 
 /**
  * This function gets all ids of films that where earlier showed on SwiperScreen
@@ -48,3 +49,18 @@ export const updateWatchedCardsIfNeeded = async (newWatchedCardIds) => {
         return oldCardsList;
     }
 }
+
+
+/**
+ * This function gets all ids of films that where earlier showed on SwiperScreen
+ * and store them in @param WATCHED_FILM_CARDS
+ */
+export const saveGenreSats = async (user) => {
+    console.log("saving stats to cache...")
+    const value = await getUserPreferencesFromDb(user.uid)
+    const jsonValue = JSON.stringify(value);
+    console.log(jsonValue)
+    await AsyncStorage.setItem(GENRE_STATS, jsonValue);
+    return true;
+}
+

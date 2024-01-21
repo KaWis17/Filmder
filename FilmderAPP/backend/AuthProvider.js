@@ -3,6 +3,7 @@
  */
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { saveGenreSats, clearGenreStats } from './UserCacheQueries';
 
 import { 
     createUserWithEmailAndPassword, 
@@ -44,11 +45,17 @@ export const AuthProvider = ({ children }) => {
      */
     const signIn = () => {
         const auth = getAuth();
+        console.log(auth)
         signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
+            .then( async (userCredential) => {
                 if(!userCredential.user.emailVerified){
                     logout()
                     alert("Email not yet verified!")
+                }
+                else
+                {
+                    console.log(auth)
+                    await saveGenreSats(auth.currentUser)
                 }
             })
             .catch((error) => {
