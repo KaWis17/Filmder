@@ -36,6 +36,7 @@ import * as ImagePicker from "expo-image-picker";
             
 import { db, st } from "./FirebaseConnection"
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { incrementWeightOfGenre, decrementWeightOfGenre } from "./UserCacheGenres";
 import {fetchMovieDetails} from "../api/moviedb";
 
 
@@ -70,6 +71,25 @@ export async function doesUserExistInDb(userID) {
     const docSnap = await getDoc(docRef);
 
     return (docSnap.exists()) 
+}
+
+/**
+ * Function to get all watched films
+ */
+export async function getAllWatchedFilmsIdsFromDb(userID) {
+    const films = []
+    
+    const filmPrefRef = collection(db, 'users', userID, 'filmPreference');
+    const filmRevRef = collection(db, 'users', userID, 'filmReview');
+    const [filmPrefSnap, filmRevSnap] = await Promise.all([getDocs(filmPrefRef), getDocs(filmRevRef)]);
+
+    filmPrefSnap.forEach((doc) => {
+        films.push(doc.data().filmID)
+    })
+    filmRevSnap.forEach((doc) => {
+        films.push(doc.data().filmID)
+    })
+    return films;
 }
 
 /**
@@ -406,6 +426,34 @@ export async function getToWatchById(userID) {
 }
 
 /**
+ * Get to common watch list from the ID of a user and the ID of a friend
+ */
+export async function getToCommonWatchById(userID, friendID) {
+    const filmIds = [];
+
+    const qUser = query(collection(db, 'users', userID, 'filmPreference'));
+    const qFriend = query(collection(db, 'users', friendID, 'filmPreference'));
+
+    try {
+        const querySnapshotUser = await getDocs(qUser);
+        const querySnapshotFriend = await getDocs(qFriend);
+
+        querySnapshotUser.forEach((docUser) => {
+            const filmIDUser = docUser.data().filmID;
+            querySnapshotFriend.forEach((docFriend) => {
+                const filmIDFriend = docFriend.data().filmID;
+                if(filmIDUser === filmIDFriend &amp;&amp; docUser.data().doWant === true &amp;&amp; docFriend.data().doWant === true) {
+                    filmIds.push(filmIDUser);
+                }
+            });
+        });
+    } catch (error) {
+        console.error('Error getting film IDs for user:', error);
+    }
+    return filmIds;
+}
+
+/**
  * Function to add a message (or movie invitation) to the chat
  */
 export async function sendAMessage(GiftedChat, messages, setMessages, friendshipID, userID) {
@@ -474,32 +522,106 @@ export async function uploadProfilePhoto(userID, userEmail, first, last, age, ti
 /**
   * Function to update user's rate about film
   */
-export async function addRatePreference(userID, filmID, rate) {
+export async function addRatePreference(userID, filmID, genres_list, rate) {
     console.log(userID)
     console.log(filmID)
     console.log(rate)
-
-    const docRef = doc(db, "users/" + userID + "/filmReview/" + filmID);
-    await setDoc(docRef, {
+    console.log(genres_list)
+    const docRef2 = doc(db, "users/" + userID + "/filmReview/" + filmID);
+    await setDoc(docRef2, {
         filmID: filmID,
         rate: rate,
-        time: new Date(),
+        time: new serverTimestamp(),
     });
-    
+
+    for(genreID of genres_list)
+    {
+        console.log(genreID)
+        const docRef = doc(db, "users/" + userID + "/genres_stats/" + genreID);
+        if(rate &lt; 3)
+        {
+            let newWeight = await decrementWeightOfGenre(genreID, 1)
+            await setDoc(docRef, {
+                genreID: genreID,
+                weight: newWeight,
+            }, { merge: true})   
+        }
+        else if(rate == 4)
+        {
+            let newWeight = await incrementWeightOfGenre(genreID, 1)
+            await setDoc(docRef, {
+                genreID: genreID,
+                weight: newWeight,
+            }, { merge: true})
+        }
+        else if(rate == 5)
+        {
+            let newWeight = await incrementWeightOfGenre(genreID, 2)
+            await setDoc(docRef, {
+                genreID: genreID,
+                weight: newWeight,
+            }, { merge: true})
+        }
+    } 
 }
+
 
 /**
   * Function to update user preference about film
   */
-export async function addWantPreference(userID, filmID, doWant) {
-    const docRef = doc(db, "users/" + userID + "/filmPreference/" + filmID);
-    await setDoc(docRef, {
+export async function addWantPreference(userID, filmID, genres_list, doWant) {
+    console.log(userID)
+    console.log(filmID)
+    console.log(doWant)
+    console.log(genres_list)
+    const docRef2 = doc(db, "users/" + userID + "/filmPreference/" + filmID);
+    await setDoc(docRef2, {
         filmID: filmID,
         doWant: doWant,
-        time: new Date(),
+        time: new serverTimestamp(),
     });
-    
+    for(genreID of genres_list)
+    {
+        console.log(genreID)
+        const docRef = doc(db, "users/" + userID + "/genres_stats/" + genreID);
+        if(doWant)
+        {
+            let newWeight = await incrementWeightOfGenre(genreID, 1)
+            await setDoc(docRef, {
+                genreID: genreID,
+                weight: newWeight,
+            }, { merge: true})
+            
+        }
+        else
+        {
+            let newWeight = await decrementWeightOfGenre(genreID, 1)
+            await setDoc(docRef, {
+                genreID: genreID,
+                weight: newWeight,
+            }, { merge: true})
+        }
+    }
 }
+
+/**
+ * Function returning read user preferences from database
+ * @param {*} userID id of user
+ * @returns user preferences from database
+ */
+export async function getUserPreferencesFromDb(userID)
+{
+    var genres_weights = []
+
+    const qUserStats = query(collection(db, 'users', userID, 'genres_stats'))
+    const querySnapshotStats = await getDocs(qUserStats);
+    querySnapshotStats.forEach((doc) => {
+        let currGenre = doc.data()
+        genres_weights.push(currGenre)
+    });
+    return genres_weights
+}
+
 
 /**
  * Helper function to update the user data if 'friends' collection
@@ -565,13 +687,13 @@ function generateFriendshipID(uid1, uid2) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-api.html">api</a></li><li><a href="module-backend.html">backend</a></li><li><a href="module-constants.html">constants</a></li><li><a href="module-screens.html">screens</a></li><li><a href="module-temporary.html">temporary</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-api.html">api</a></li><li><a href="module-backend.html">backend</a></li><li><a href="module-constants.html">constants</a></li><li><a href="module-screens.html">screens</a></li><li><a href="module-temporary.html">temporary</a></li></ul><h3>Global</h3><ul><li><a href="global.html#UserCommonWatchList">UserCommonWatchList</a></li><li><a href="global.html#clearWatchedCards">clearWatchedCards</a></li><li><a href="global.html#decrementWeightOfGenre">decrementWeightOfGenre</a></li><li><a href="global.html#fetchMovieDetailsList">fetchMovieDetailsList</a></li><li><a href="global.html#getWatchedCards">getWatchedCards</a></li><li><a href="global.html#getWeightOfGenre">getWeightOfGenre</a></li><li><a href="global.html#getWeightsOfGenres">getWeightsOfGenres</a></li><li><a href="global.html#incrementWeightOfGenre">incrementWeightOfGenre</a></li><li><a href="global.html#saveGenreStats">saveGenreStats</a></li><li><a href="global.html#saveWatchedCards">saveWatchedCards</a></li><li><a href="global.html#updateWatchedCardsIfNeeded">updateWatchedCardsIfNeeded</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue Jan 09 2024 15:45:41 GMT+0100 (Central European Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Mon Jan 22 2024 21:39:34 GMT+0100 (Central European Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

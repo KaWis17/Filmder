@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: screens/Chat/UserWatchList.js</title>
+    <title>JSDoc: Source: screens/Chat/UserCommonWatchList.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: screens/Chat/UserWatchList.js</h1>
+    <h1 class="page-title">Source: screens/Chat/UserCommonWatchList.js</h1>
 
     
 
@@ -26,20 +26,15 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
- * @module screens
- */
-import React, {useEffect, useState} from 'react';
+            <pre class="prettyprint source linenums"><code>import React, {useEffect, useState} from 'react';
 import {BackHandler, FlatList, Image, Text, TouchableOpacity, View} from 'react-native'
 
 import useAuth from '../../backend/AuthProvider'
 import {fallbackMoviePoster, fetchMovieDetails, image500} from "../../api/moviedb";
-import {getToWatchById} from "../../backend/UserQueries";
+import {getToCommonWatchById} from "../../backend/UserQueries";
 
 
-/** returns list of movie details based on given film ids
- * @param filmIds list of movie ids to fetch
- * */
+/** returns list of movie details based on given film ids*/
 async function fetchMovieDetailsList(filmIds) {
     try {
         const movieDetailsPromises = filmIds.map((filmId) => {
@@ -52,8 +47,8 @@ async function fetchMovieDetailsList(filmIds) {
     }
 }
 
-/** View for users watchlist */
-const UserWatchList = ({route, navigation}) => {
+/** View for users common watchlist */
+const UserCommonWatchList = ({route, navigation}) => {
     const friendID = route.params.friendID;
 
     const {user} = useAuth();
@@ -63,7 +58,7 @@ const UserWatchList = ({route, navigation}) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetchMovieDetailsList((await getToWatchById(friendID)));
+                const response = await fetchMovieDetailsList((await getToCommonWatchById(user.uid, friendID)));
                 setData(response);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -93,10 +88,10 @@ const UserWatchList = ({route, navigation}) => {
         &lt;/View>
     );
 
-    /** View for users watchlist */
+    /** View for users common watchlist */
     return (
         &lt;View>
-            &lt;Text style={{fontSize:30, backgroundColor: '#ccbbcc',marginTop:25,textAlign:"center"}}>🎬 Watch List 🎬&lt;/Text>
+            &lt;Text style={{fontSize:30, backgroundColor: '#ccbbcc',marginTop:25,textAlign:"center"}}>🎬 Common watch List 🎬&lt;/Text>
             &lt;FlatList
                 style={{marginBottom:50}}
                 data={data}
@@ -108,7 +103,7 @@ const UserWatchList = ({route, navigation}) => {
     )
 }
 
-export default UserWatchList</code></pre>
+export default UserCommonWatchList</code></pre>
         </article>
     </section>
 
