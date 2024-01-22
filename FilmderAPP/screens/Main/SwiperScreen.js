@@ -11,6 +11,7 @@ import { addWantPreference, addRatePreference } from '../../backend/UserQueries'
 import useAuth from '../../backend/AuthProvider'
 import StarRating from 'react-native-star-rating-widget';
 import { getWatchedCards, updateWatchedCardsIfNeeded } from '../../backend/UserCacheQueries'
+import { chooseKindOfApiQuery } from '../../preference_algorithm/preference_algorithm';
 
 
 const SwiperScreen = () => {
@@ -24,7 +25,7 @@ const SwiperScreen = () => {
     const [cards, setMovies] = useState([ basicMovie ]);
 
     const [rating, setRating] = useState(0)
-    const [ratingScreen, setRatingScreen] = useState([false, -1])
+    const [ratingScreen, setRatingScreen] = useState([false, -1, -1])
 
     useEffect(()=>{
         getMovies(page);
@@ -36,9 +37,7 @@ const SwiperScreen = () => {
      *                 "queryParam3": "value1|value2,value3"}    {, - and} {| - or}
      * List of all parameters can be finded here: https://developer.themoviedb.org/reference/discover-movie
      */
-    var exampleOptions = {
-        "with_original_language": 'pl', "year": 2024
-    }
+    var queryOptions = undefined
 
     /**
      * This function gets films from API. The maximum number of films that can be received in one API call is one page which contains 19 films.
@@ -47,7 +46,9 @@ const SwiperScreen = () => {
     const getMovies = async (currentPage)=>{
         setPage(currentPage + 1);
         console.log(`page = ${currentPage}`);
-        const data = await fetchMovies(currentPage, exampleOptions);
+        queryOptions = await chooseKindOfApiQuery()
+        console.log(queryOptions)
+        const data = await fetchMovies(currentPage, queryOptions);
         if (data && data.results) {
             const cardsIds = cards.map((value) => value.id);
             const watchedCards = updatedCache 
@@ -55,7 +56,7 @@ const SwiperScreen = () => {
             : await updateWatchedCardsIfNeeded(cardsIds);
 
             if (data.results.length == 0) {
-                exampleOptions = undefined;
+                queryOptions = undefined;
                 setPage(1);
             }
             const filteredDataResults = data.results.filter((element) => !watchedCards.includes(element.id));
@@ -96,8 +97,8 @@ const SwiperScreen = () => {
 
                     <TouchableOpacity 
                         onPress={() => {
-                            addRatePreference(user.uid, ratingScreen[1], rating)
-                            setRatingScreen([false, -1])
+                            addRatePreference(user.uid, ratingScreen[1], ratingScreen[2], rating)
+                            setRatingScreen([false, -1, -1])
                             setRating(0)
                             getMovies(page)
                         }}
@@ -107,7 +108,7 @@ const SwiperScreen = () => {
 
                     <TouchableOpacity 
                         onPress={() => {
-                            setRatingScreen([false, -1])
+                            setRatingScreen([false, -1, -1])
                             setRating(0)
                         }}
                         className="mx-auto w-3/5 h-12 mb-4 border-solid rounded-md bg-red-500">
@@ -138,17 +139,17 @@ const SwiperScreen = () => {
             }}
 
             onSwipedRight={(id) => {
-                addWantPreference(user.uid, cards[id].id, true)
+                addWantPreference(user.uid, cards[id].id, cards[id].genre_ids, true)
             }}
 
             onSwipedBottom={(id) => {
-                setRatingScreen([true, cards[id].id])
+                setRatingScreen([true, cards[id].id, cards[id].genre_ids])
 
                 this.swiper.swipeBack()
             }}
 
             onSwipedLeft={(id) => {
-                addWantPreference(user.uid, cards[id].id, false)
+                addWantPreference(user.uid, cards[id].id, cards[id].genre_ids, false)
             }}
 
             onTapCard={(id) => {

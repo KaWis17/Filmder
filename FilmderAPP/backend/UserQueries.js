@@ -8,6 +8,7 @@ import * as ImagePicker from "expo-image-picker";
             
 import { db, st } from "./FirebaseConnection"
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { incrementWeightOfGenre, decrementWeightOfGenre } from "./UserCacheGenres";
 import {fetchMovieDetails} from "../api/moviedb";
 
 
@@ -493,32 +494,106 @@ export async function uploadProfilePhoto(userID, userEmail, first, last, age, ti
 /**
   * Function to update user's rate about film
   */
-export async function addRatePreference(userID, filmID, rate) {
+export async function addRatePreference(userID, filmID, genres_list, rate) {
     console.log(userID)
     console.log(filmID)
     console.log(rate)
-
-    const docRef = doc(db, "users/" + userID + "/filmReview/" + filmID);
-    await setDoc(docRef, {
+    console.log(genres_list)
+    const docRef2 = doc(db, "users/" + userID + "/filmReview/" + filmID);
+    await setDoc(docRef2, {
         filmID: filmID,
         rate: rate,
-        time: new Date(),
+        time: new serverTimestamp(),
     });
-    
+
+    for(genreID of genres_list)
+    {
+        console.log(genreID)
+        const docRef = doc(db, "users/" + userID + "/genres_stats/" + genreID);
+        if(rate < 3)
+        {
+            let newWeight = await decrementWeightOfGenre(genreID, 1)
+            await setDoc(docRef, {
+                genreID: genreID,
+                weight: newWeight,
+            }, { merge: true})   
+        }
+        else if(rate == 4)
+        {
+            let newWeight = await incrementWeightOfGenre(genreID, 1)
+            await setDoc(docRef, {
+                genreID: genreID,
+                weight: newWeight,
+            }, { merge: true})
+        }
+        else if(rate == 5)
+        {
+            let newWeight = await incrementWeightOfGenre(genreID, 2)
+            await setDoc(docRef, {
+                genreID: genreID,
+                weight: newWeight,
+            }, { merge: true})
+        }
+    } 
 }
+
 
 /**
   * Function to update user preference about film
   */
-export async function addWantPreference(userID, filmID, doWant) {
-    const docRef = doc(db, "users/" + userID + "/filmPreference/" + filmID);
-    await setDoc(docRef, {
+export async function addWantPreference(userID, filmID, genres_list, doWant) {
+    console.log(userID)
+    console.log(filmID)
+    console.log(doWant)
+    console.log(genres_list)
+    const docRef2 = doc(db, "users/" + userID + "/filmPreference/" + filmID);
+    await setDoc(docRef2, {
         filmID: filmID,
         doWant: doWant,
-        time: new Date(),
+        time: new serverTimestamp(),
     });
-    
+    for(genreID of genres_list)
+    {
+        console.log(genreID)
+        const docRef = doc(db, "users/" + userID + "/genres_stats/" + genreID);
+        if(doWant)
+        {
+            let newWeight = await incrementWeightOfGenre(genreID, 1)
+            await setDoc(docRef, {
+                genreID: genreID,
+                weight: newWeight,
+            }, { merge: true})
+            
+        }
+        else
+        {
+            let newWeight = await decrementWeightOfGenre(genreID, 1)
+            await setDoc(docRef, {
+                genreID: genreID,
+                weight: newWeight,
+            }, { merge: true})
+        }
+    }
 }
+
+/**
+ * Function returning read user preferences from database
+ * @param {*} userID id of user
+ * @returns user preferences from database
+ */
+export async function getUserPreferencesFromDb(userID)
+{
+    var genres_weights = []
+
+    const qUserStats = query(collection(db, 'users', userID, 'genres_stats'))
+    const querySnapshotStats = await getDocs(qUserStats);
+    querySnapshotStats.forEach((doc) => {
+        let currGenre = doc.data()
+        genres_weights.push(currGenre)
+    });
+    return genres_weights
+}
+
 
 /**
  * Helper function to update the user data if 'friends' collection

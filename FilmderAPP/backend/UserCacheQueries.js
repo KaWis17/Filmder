@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getAllWatchedFilmsIdsFromDb } from './UserQueries'
+import { getAllWatchedFilmsIdsFromDb, getUserPreferencesFromDb } from './UserQueries'
 
 const WATCHED_FILM_CARDS = 'watched-cards'
+const GENRE_STATS = 'genre-stats'
 
 /**
  * This function gets all ids of films that where earlier showed on SwiperScreen
@@ -18,7 +19,6 @@ export const saveWatchedCards = async (user) => {
  * @returns @param WATCHED_FILM_CARDS from cache
  */
 export const getWatchedCards = async () => {
-    console.log('getWatchedCards')
     const cards = await AsyncStorage.getItem(WATCHED_FILM_CARDS);
     return JSON.parse(cards);
 }
@@ -35,16 +35,27 @@ export const clearWatchedCards = async () => {
  * @returns updated list of showed film ids.
  */
 export const updateWatchedCardsIfNeeded = async (newWatchedCardIds) => {
-    console.log('updateWatchedCardsIfNeeded')
     const oldCards = await AsyncStorage.getItem(WATCHED_FILM_CARDS);
     const oldCardsList = JSON.parse(oldCards);
-    if (newWatchedCardIds.length != 0) {
+    if (typeof(newWatchedCardIds) === undefined || newWatchedCardIds.length == 0) {
+        return oldCardsList;
+    }
+    else {
         const allCardsList = [...oldCardsList, ...newWatchedCardIds];
         const jsonAllCards = JSON.stringify(allCardsList);
         await AsyncStorage.setItem(WATCHED_FILM_CARDS, jsonAllCards);
         return allCardsList;
     }
-    else {
-        return oldCardsList;
-    }
+}
+
+
+/**
+ * This function gets all genres weights from database
+ * and stores it in cache
+ */
+export const saveGenreStats = async (user) => {
+    const value = await getUserPreferencesFromDb(user.uid)
+    const jsonValue = JSON.stringify(value);
+    await AsyncStorage.setItem(GENRE_STATS, jsonValue);
+    return true;
 }
