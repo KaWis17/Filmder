@@ -8,7 +8,7 @@ import * as ImagePicker from "expo-image-picker";
             
 import { db, st } from "./FirebaseConnection"
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { incrementWeightOfGenre, decrementWeightOfGenre } from "./UserCacheGetGenres";
+import { incrementWeightOfGenre, decrementWeightOfGenre } from "./UserCacheGenres";
 import {fetchMovieDetails} from "../api/moviedb";
 
 

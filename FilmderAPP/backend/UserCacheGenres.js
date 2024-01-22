@@ -20,6 +20,13 @@ export const getWeightOfGenre = async (genreID) => {
 }
 
 
+export const getWeightsOfGenres = async () => {
+    let genres_str = await AsyncStorage.getItem(GENRE_STATS)
+    let genres_array = JSON.parse(genres_str)
+    return genres_array
+}
+
+
 
 export const incrementWeightOfGenre = async (genreID, increment) => {
     let genres_str = await AsyncStorage.getItem(GENRE_STATS)

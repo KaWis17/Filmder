@@ -11,6 +11,7 @@ import { addWantPreference, addRatePreference } from '../../backend/UserQueries'
 import useAuth from '../../backend/AuthProvider'
 import StarRating from 'react-native-star-rating-widget';
 import { getWatchedCards, updateWatchedCardsIfNeeded } from '../../backend/UserCacheQueries'
+import { chooseKindOfApiQuery } from '../../preference_algorithm/preference_algorithm';
 
 
 const SwiperScreen = () => {
@@ -36,9 +37,7 @@ const SwiperScreen = () => {
      *                 "queryParam3": "value1|value2,value3"}    {, - and} {| - or}
      * List of all parameters can be finded here: https://developer.themoviedb.org/reference/discover-movie
      */
-    var exampleOptions = {
-        "with_original_language": 'pl', "year": 2024
-    }
+    var queryOptions = undefined
 
     /**
      * This function gets films from API. The maximum number of films that can be received in one API call is one page which contains 19 films.
@@ -47,7 +46,9 @@ const SwiperScreen = () => {
     const getMovies = async (currentPage)=>{
         setPage(currentPage + 1);
         console.log(`page = ${currentPage}`);
-        const data = await fetchMovies(currentPage, exampleOptions);
+        queryOptions = await chooseKindOfApiQuery()
+        console.log(queryOptions)
+        const data = await fetchMovies(currentPage, queryOptions);
         if (data && data.results) {
             const cardsIds = cards.map((value) => value.id);
             const watchedCards = updatedCache 
@@ -55,7 +56,7 @@ const SwiperScreen = () => {
             : await updateWatchedCardsIfNeeded(cardsIds);
 
             if (data.results.length == 0) {
-                exampleOptions = undefined;
+                queryOptions = undefined;
                 setPage(1);
             }
             const filteredDataResults = data.results.filter((element) => !watchedCards.includes(element.id));
