@@ -6,6 +6,7 @@ var distribution_array = []
 
 
 var exampleOptions = {}
+const ENTRY_THRESHOLD = 10
 
 
 /**
@@ -50,7 +51,7 @@ export async function chooseKindOfApiQuery()
 {
     await count_distribution()
     console.log(distribution_array)
-    if(sum_weights < 20)
+    if(sum_weights < ENTRY_THRESHOLD)
     {
         return undefined
     }
