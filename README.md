@@ -55,6 +55,7 @@
     * Number of users being supported by the system: Though the number is precisely not mentioned but the system is able to support a large number of online users at the same time.
     * Comunication between profiles: allows user to privately communicate between each other.
     * Generating film preferences for every user by analyzing users previous choices.
+    
 2. <b>User characteristics</b> <br />
     <p style='text-align: justify;'>
     The primary user of FD is a movie enthusiast. This group consists of people who vary in background and move preference. However, the common factor is that they are in most cases 'tech-savvy' and quickly adapt to new user interfaces. It is vital to provide them with high-quality and accurate predictions about their movie taste. As the primary target is the young generation, they will highly appreciate seamless user experience and social futures to connect to other like-minded individuals.
@@ -86,7 +87,7 @@
     * Communication interfaces
 2. Functional requirements
     * Enable a user to create a profile.
-    * Enable a logged in user to ask update his profile which includes his location, film preferences and profile picture.
+    * Enable a logged in user to ask update his profile which includes his film preferences and profile picture.
     * Enable a logged in user to swipe films.
     * Enable a logged in user to check films information.
     * Enable a logged in user to communicate with other users and add users to friend list.
