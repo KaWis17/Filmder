@@ -12,8 +12,6 @@
 
     The primary purpose of Filmder is to empower users with the ability to discover films tailored to their individual tastes and preferences. Moreover, the app promotes social interactions and engagement by allowing users to connect with each other to find films in their common niche.
 
-    It is vital to add, that the app itself will not contain streaming service for films - however short trailers may be added in the future.
-
     Above all, we ought to create a place for film aficionados, where they can expand their cinematic horizons. 
     <p>
 
@@ -51,16 +49,12 @@
 
 ## General description
 1. <b>Product perspective</b> <br />
-    * Cross platform support: Offers operating support for all operating systems.
-    * Large database of films (including a short decsription and a link to a trailer).
+    * Mobile application: Offers operating support for Android and IOS.
+    * Large database of films (including a short decsription).
     * User account: The system allows the user to create their accounts in the system and provide features of updating and viewing profiles.
     * Number of users being supported by the system: Though the number is precisely not mentioned but the system is able to support a large number of online users at the same time.
-    * People search: search is simply local search engine based on key words.
-    * Comment section for every film: provides users with a platform to discuss this particulat film.
     * Comunication between profiles: allows user to privately communicate between each other.
     * Generating film preferences for every user by analyzing users previous choices.
-    * Matching people with similar film preferences.
-    * Creating rankingS of films due to some criterias.
 2. <b>User characteristics</b> <br />
     <p style='text-align: justify;'>
     The primary user of FD is a movie enthusiast. This group consists of people who vary in background and move preference. However, the common factor is that they are in most cases 'tech-savvy' and quickly adapt to new user interfaces. It is vital to provide them with high-quality and accurate predictions about their movie taste. As the primary target is the young generation, they will highly appreciate seamless user experience and social futures to connect to other like-minded individuals.
@@ -81,8 +75,9 @@
     </p>
 5. <b>Tools and Technologies</b>
     * React Native
-    * Mongo DB : using the Realm management system.
-      The entire project would be devided into 2 microservices (both using MongoDB), one for films DB and the second for messaging between users. If we decide to reduce functionality connected with messaging, than the entire app will be managed by one service.
+    * Firebase Cloud Firestore - document database
+    * 
+
     
     
 ## Specific requirements 
@@ -93,11 +88,10 @@
     * Communication interfaces
 2. Functional requirements
     * Enable a user to create a profile.
-    * Enable a logged in user to ask update his profile which includes his location, film preferences, subscriptions and profile picture.
+    * Enable a logged in user to ask update his profile which includes his location, film preferences and profile picture.
     * Enable a logged in user to swipe films.
     * Enable a logged in user to check films information.
-    * Enable a logged in user to write comments in a comment section, reply for other comments, delete users comments.
-    * Enable a logged in user to communicate with other users, add users to friend list and block users.
+    * Enable a logged in user to communicate with other users and add users to friend list.
     * Enable a logged in user to suggest changes in FD.
     * Enable a logged in user to suggest extending film database with a selected film.
     * Enable the admin to view users suggestions, add films to database, direct some suggestions to developers.
