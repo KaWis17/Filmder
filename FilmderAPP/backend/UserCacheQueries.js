@@ -39,15 +39,24 @@ export const updateWatchedCardsIfNeeded = async (newWatchedCardIds) => {
     console.log('updateWatchedCardsIfNeeded')
     const oldCards = await AsyncStorage.getItem(WATCHED_FILM_CARDS);
     const oldCardsList = JSON.parse(oldCards);
-    if (newWatchedCardIds.length != 0) {
+    if (typeof(newWatchedCardIds) === undefined || newWatchedCardIds.length == 0) {
+        return oldCardsList;
+    }
+    else {
         const allCardsList = [...oldCardsList, ...newWatchedCardIds];
         const jsonAllCards = JSON.stringify(allCardsList);
         await AsyncStorage.setItem(WATCHED_FILM_CARDS, jsonAllCards);
         return allCardsList;
     }
-    else {
-        return oldCardsList;
-    }
+    // if (newWatchedCardIds.length != 0) {
+    //     const allCardsList = [...oldCardsList, ...newWatchedCardIds];
+    //     const jsonAllCards = JSON.stringify(allCardsList);
+    //     await AsyncStorage.setItem(WATCHED_FILM_CARDS, jsonAllCards);
+    //     return allCardsList;
+    // }
+    // else {
+    //     return oldCardsList;
+    // }
 }
 
 

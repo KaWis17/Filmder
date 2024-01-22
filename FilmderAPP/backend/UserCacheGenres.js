@@ -37,10 +37,8 @@ export const incrementWeightOfGenre = async (genreID, increment) => {
     {
         if(curr_genre["genreID"] == genreID)
         {
-            console.log(curr_genre["weight"])
             newWeight = curr_genre["weight"] + increment
             curr_genre["weight"] = newWeight
-            console.log(curr_genre["weight"])
             hasChanged = true
             break
         }
@@ -52,10 +50,8 @@ export const incrementWeightOfGenre = async (genreID, increment) => {
             "weight":   increment,
         }
         genres_array.push(newGenre)
-        console.log(increment)
     }
     const jsonValue = JSON.stringify(genres_array);
-    console.log(jsonValue)
     await AsyncStorage.setItem(GENRE_STATS, jsonValue);
     return newWeight
 }
@@ -70,12 +66,10 @@ export const decrementWeightOfGenre = async (genreID, decrement) => {
     {
         if(curr_genre["genreID"] == genreID)
         {
-            console.log(curr_genre["weight"])
             // newWeight = max(curr_genre["weight"] - decrement, 0)
             newWeight = curr_genre["weight"] - decrement
             newWeight = newWeight >= 0 ? newWeight : 0
             curr_genre["weight"] = newWeight
-            console.log(curr_genre["weight"])
             hasChanged = true
             break
         }
@@ -87,10 +81,8 @@ export const decrementWeightOfGenre = async (genreID, decrement) => {
             "weight":   0,
         }
         genres_array.push(newGenre)
-        console.log(0)
     }
     const jsonValue = JSON.stringify(genres_array);
-    console.log(jsonValue)
     await AsyncStorage.setItem(GENRE_STATS, jsonValue);
     return newWeight
 }
