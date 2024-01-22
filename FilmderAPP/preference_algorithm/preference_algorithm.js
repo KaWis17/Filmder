@@ -56,7 +56,7 @@ export async function chooseKindOfApiQuery()
     console.log("algorithm1")
     await count_distribution()
     console.log(distribution_array)
-    if(sum_weights == 0)
+    if(sum_weights < 20)
     {
         return undefined
     }
