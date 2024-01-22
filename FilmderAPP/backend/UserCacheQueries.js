@@ -61,8 +61,8 @@ export const updateWatchedCardsIfNeeded = async (newWatchedCardIds) => {
 
 
 /**
- * This function gets all ids of films that where earlier showed on SwiperScreen
- * and store them in @param WATCHED_FILM_CARDS
+ * This function gets all genres weights from database
+ * and stores it in cache
  */
 export const saveGenreStats = async (user) => {
     console.log("saving stats to cache...")

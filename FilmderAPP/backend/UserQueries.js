@@ -566,7 +566,11 @@ export async function addWantPreference(userID, filmID, genres_list, doWant) {
     }
 }
 
-
+/**
+ * Function returning read user preferences from database
+ * @param {*} userID id of user
+ * @returns user preferences from database
+ */
 export async function getUserPreferencesFromDb(userID)
 {
     var genres_weights = []

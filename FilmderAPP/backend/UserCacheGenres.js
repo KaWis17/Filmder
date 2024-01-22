@@ -4,6 +4,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const GENRE_STATS = 'genre-stats'
 
 
+/**
+ * This function retorns read weight of passed genre 
+ * @param genreID from database
+ * @param {*} genreID passed genre
+ * @returns  weight of genre
+ */
 export const getWeightOfGenre = async (genreID) => {
     let genres_str = await AsyncStorage.getItem(GENRE_STATS)
     let genres_array = JSON.parse(genres_str)
@@ -20,6 +26,11 @@ export const getWeightOfGenre = async (genreID) => {
 }
 
 
+/**
+ * This functions returns weight of all genres
+ * read from database
+ * @returns weight of all genres
+ */
 export const getWeightsOfGenres = async () => {
     let genres_str = await AsyncStorage.getItem(GENRE_STATS)
     let genres_array = JSON.parse(genres_str)
@@ -27,7 +38,13 @@ export const getWeightsOfGenres = async () => {
 }
 
 
-
+/**
+ * This function increment weight of passed genre @param genreID
+ * by passed value @param increment and stores it in cache
+ * @param {*} genreID passed genre
+ * @param {*} increment value
+ * @returns updated weight of genre
+ */
 export const incrementWeightOfGenre = async (genreID, increment) => {
     let genres_str = await AsyncStorage.getItem(GENRE_STATS)
     let genres_array = JSON.parse(genres_str)
@@ -57,6 +74,13 @@ export const incrementWeightOfGenre = async (genreID, increment) => {
 }
 
 
+/**
+ * This function decrement weight of passed genre @param genreID
+ * by passed value @param decrement and stores it in cache
+ * @param {*} genreID passed genre
+ * @param {*} decrement value
+ * @returns updated weight of genre
+ */
 export const decrementWeightOfGenre = async (genreID, decrement) => {
     let genres_str = await AsyncStorage.getItem(GENRE_STATS)
     let genres_array = JSON.parse(genres_str)

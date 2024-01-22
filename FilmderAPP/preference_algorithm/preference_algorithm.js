@@ -8,6 +8,10 @@ var distribution_array = []
 var exampleOptions = {}
 
 
+/**
+ * This function counts sum of all genres weights
+ * @returns sum of genres weights
+ */
 async function sumOfWeights()
 {
     sum_weights = 0
@@ -19,6 +23,10 @@ async function sumOfWeights()
 }
 
 
+/**
+ * This function counts genres distribution
+ * according to genres weights
+ */
 async function count_distribution()
 {
     genres_array = await getWeightsOfGenres()
@@ -38,7 +46,11 @@ async function count_distribution()
     }
 }
 
-
+/**
+ * This function returns kind of api query
+ * accroding to counted distribution
+ * @returns params of chosen api query
+ */
 export async function chooseKindOfApiQuery()
 {
     console.log("algorithm1")
