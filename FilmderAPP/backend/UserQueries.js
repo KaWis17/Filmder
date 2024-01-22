@@ -581,7 +581,6 @@ export async function getUserPreferencesFromDb(userID)
         let currGenre = doc.data()
         genres_weights.push(currGenre)
     });
-    console.log(genres_weights)
     return genres_weights
 }
 

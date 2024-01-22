@@ -45,7 +45,6 @@ export const AuthProvider = ({ children }) => {
      */
     const signIn = () => {
         const auth = getAuth();
-        console.log(auth)
         signInWithEmailAndPassword(auth, email, password)
             .then( async (userCredential) => {
                 if(!userCredential.user.emailVerified){
@@ -54,7 +53,6 @@ export const AuthProvider = ({ children }) => {
                 }
                 else
                 {
-                    console.log(auth)
                     await saveGenreStats(auth.currentUser)
                 }
             })

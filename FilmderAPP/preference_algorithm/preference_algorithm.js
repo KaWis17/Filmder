@@ -30,11 +30,7 @@ async function sumOfWeights()
 async function count_distribution()
 {
     genres_array = await getWeightsOfGenres()
-    console.log(genres_array)
     let s_weights = await sumOfWeights()
-    console.log("sum:")
-    console.log(s_weights)
-    // await sumOfWeights()
     if(sum_weights > 0)
     {
         for(let i = 0; i < genres_array.length; i++)
@@ -42,7 +38,6 @@ async function count_distribution()
             let genre_weight = genres_array[i]["weight"]
             distribution_array[i] = genre_weight/sum_weights
         }
-        // console.log(distribution_array)
     }
 }
 
@@ -53,7 +48,6 @@ async function count_distribution()
  */
 export async function chooseKindOfApiQuery()
 {
-    console.log("algorithm1")
     await count_distribution()
     console.log(distribution_array)
     if(sum_weights < 20)
@@ -72,10 +66,7 @@ export async function chooseKindOfApiQuery()
     }
     if(idx < genres_array.length)
     {
-        console.log(idx)
-        console.log(genres_array[idx])
         let genre_str = genres_array[idx]["genreID"]
-        console.log(genre_str)
         exampleOptions["with_genres"] = genre_str
         return exampleOptions
     }

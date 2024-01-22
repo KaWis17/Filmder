@@ -90,7 +90,6 @@ export const decrementWeightOfGenre = async (genreID, decrement) => {
     {
         if(curr_genre["genreID"] == genreID)
         {
-            // newWeight = max(curr_genre["weight"] - decrement, 0)
             newWeight = curr_genre["weight"] - decrement
             newWeight = newWeight >= 0 ? newWeight : 0
             curr_genre["weight"] = newWeight

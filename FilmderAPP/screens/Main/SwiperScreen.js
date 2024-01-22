@@ -50,7 +50,6 @@ const SwiperScreen = () => {
         console.log(queryOptions)
         const data = await fetchMovies(currentPage, queryOptions);
         if (data && data.results) {
-            console.log(cards)
             const cardsIds = cards.map((value) => value.id);
             const watchedCards = updatedCache 
             ? await getWatchedCards()

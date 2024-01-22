@@ -19,7 +19,6 @@ export const saveWatchedCards = async (user) => {
  * @returns @param WATCHED_FILM_CARDS from cache
  */
 export const getWatchedCards = async () => {
-    console.log('getWatchedCards')
     const cards = await AsyncStorage.getItem(WATCHED_FILM_CARDS);
     return JSON.parse(cards);
 }
@@ -36,7 +35,6 @@ export const clearWatchedCards = async () => {
  * @returns updated list of showed film ids.
  */
 export const updateWatchedCardsIfNeeded = async (newWatchedCardIds) => {
-    console.log('updateWatchedCardsIfNeeded')
     const oldCards = await AsyncStorage.getItem(WATCHED_FILM_CARDS);
     const oldCardsList = JSON.parse(oldCards);
     if (typeof(newWatchedCardIds) === undefined || newWatchedCardIds.length == 0) {
@@ -48,15 +46,6 @@ export const updateWatchedCardsIfNeeded = async (newWatchedCardIds) => {
         await AsyncStorage.setItem(WATCHED_FILM_CARDS, jsonAllCards);
         return allCardsList;
     }
-    // if (newWatchedCardIds.length != 0) {
-    //     const allCardsList = [...oldCardsList, ...newWatchedCardIds];
-    //     const jsonAllCards = JSON.stringify(allCardsList);
-    //     await AsyncStorage.setItem(WATCHED_FILM_CARDS, jsonAllCards);
-    //     return allCardsList;
-    // }
-    // else {
-    //     return oldCardsList;
-    // }
 }
 
 
@@ -65,10 +54,8 @@ export const updateWatchedCardsIfNeeded = async (newWatchedCardIds) => {
  * and stores it in cache
  */
 export const saveGenreStats = async (user) => {
-    console.log("saving stats to cache...")
     const value = await getUserPreferencesFromDb(user.uid)
     const jsonValue = JSON.stringify(value);
-    console.log(jsonValue)
     await AsyncStorage.setItem(GENRE_STATS, jsonValue);
     return true;
 }
