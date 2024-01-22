@@ -499,6 +499,12 @@ export async function addRatePreference(userID, filmID, genres_list, rate) {
     console.log(filmID)
     console.log(rate)
     console.log(genres_list)
+    const docRef2 = doc(db, "users/" + userID + "/filmReview/" + filmID);
+    await setDoc(docRef2, {
+        filmID: filmID,
+        rate: rate,
+        time: new serverTimestamp(),
+    });
 
     for(genreID of genres_list)
     {
@@ -510,8 +516,7 @@ export async function addRatePreference(userID, filmID, genres_list, rate) {
             await setDoc(docRef, {
                 genreID: genreID,
                 weight: newWeight,
-            }, { merge: true})
-            
+            }, { merge: true})   
         }
         else if(rate == 4)
         {
@@ -529,7 +534,6 @@ export async function addRatePreference(userID, filmID, genres_list, rate) {
                 weight: newWeight,
             }, { merge: true})
         }
-       
     } 
 }
 
@@ -542,6 +546,12 @@ export async function addWantPreference(userID, filmID, genres_list, doWant) {
     console.log(filmID)
     console.log(doWant)
     console.log(genres_list)
+    const docRef2 = doc(db, "users/" + userID + "/filmPreference/" + filmID);
+    await setDoc(docRef2, {
+        filmID: filmID,
+        doWant: doWant,
+        time: new serverTimestamp(),
+    });
     for(genreID of genres_list)
     {
         console.log(genreID)
