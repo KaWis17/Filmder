@@ -67,7 +67,6 @@
     * Legal compliance - user data should be protected by standards required by the EU regulations.
     * Platform constraints - an app should contain all requirements to deploy it on AppStore and PlayStore.
     * Performance constraint - an app must load within 5 seconds on a middle-tier phones.
-    * Integration constraint - an app should support user authentication via Google OAuth.
     * Framework constraint - an app must be compatible with third-party libraries licensing requirements.
     * Scalable constraint - an app will be designed to support future scaling 
 4. Assumptions and Dependencies
