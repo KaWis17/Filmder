@@ -1,3 +1,6 @@
+/**
+ * @module screens
+ */
 import React, {useEffect, useState} from 'react';
 import {BackHandler, FlatList, Image, Text, TouchableOpacity, View} from 'react-native'
 

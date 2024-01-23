@@ -1,3 +1,6 @@
+/**
+ * @module main
+ */
 import { NavigationContainer } from '@react-navigation/native';
 
 import { AuthProvider } from './backend/AuthProvider';

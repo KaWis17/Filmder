@@ -1,3 +1,6 @@
+/**
+ * @module main
+ */
 import React, { useEffect } from 'react'
 import useAuth from '../../backend/AuthProvider'
 import { saveWatchedCards, clearWatchedCards } from '../../backend/UserCacheQueries'
