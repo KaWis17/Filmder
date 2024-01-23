@@ -1,3 +1,6 @@
+/**
+ * @module preference_algorithm
+ */
 import { getWeightsOfGenres } from "../backend/UserCacheGenres"
 
 var genres_array = []
