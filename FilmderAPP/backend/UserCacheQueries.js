@@ -1,3 +1,6 @@
+/**
+ * @module backend
+ */
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getAllWatchedFilmsIdsFromDb, getUserPreferencesFromDb } from './UserQueries'
 
