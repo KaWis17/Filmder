@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: api</title>
+    <title>JSDoc: Module: preference_algorithm</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: api</h1>
+    <h1 class="page-title">Module: preference_algorithm</h1>
 
     
 
@@ -67,7 +67,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="api_moviedb.js.html">api/moviedb.js</a>, <a href="api_moviedb.js.html#line1">line 1</a>
+        <a href="preference_algorithm_preference_algorithm.js.html">preference_algorithm/preference_algorithm.js</a>, <a href="preference_algorithm_preference_algorithm.js.html#line1">line 1</a>
     </li></ul></dd>
     
 
@@ -96,18 +96,32 @@
     
 
     
-        <h3 class="subsection-title">Members</h3>
+
+    
+        <h3 class="subsection-title">Methods</h3>
 
         
             
-<h4 class="name" id=".fetchAllMovieGenres"><span class="type-signature">(static, constant) </span>fetchAllMovieGenres<span class="type-signature"></span></h4>
 
+    
+
+    
+    <h4 class="name" id=".chooseKindOfApiQuery"><span class="type-signature">(static) </span>chooseKindOfApiQuery<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
 
 
 
 <div class="description">
-    This function returns json with ALL pairs of genre_id and genre e.g.   {  "id": 35,  "name": "Comedy"  },Check this for more details https://developer.themoviedb.org/reference/genre-movie-list
+    This function returns kind of api queryaccroding to counted distribution
 </div>
+
+
+
+
+
+
 
 
 
@@ -144,7 +158,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="api_moviedb.js.html">api/moviedb.js</a>, <a href="api_moviedb.js.html#line74">line 74</a>
+        <a href="preference_algorithm_preference_algorithm.js.html">preference_algorithm/preference_algorithm.js</a>, <a href="preference_algorithm_preference_algorithm.js.html#line53">line 53</a>
     </li></ul></dd>
     
 
@@ -160,16 +174,52 @@
 
 
 
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    params of chosen api query
+</div>
+
+
+
+    
+
+
+
+
+
         
             
-<h4 class="name" id=".fetchMovieDetails"><span class="type-signature">(static, constant) </span>fetchMovieDetails<span class="type-signature"></span></h4>
 
+    
+
+    
+    <h4 class="name" id="~count_distribution"><span class="type-signature">(async, inner) </span>count_distribution<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
 
 
 
 <div class="description">
-    This function returns extended information about a film by its id e.g. tagline, budget, spoken_languages.Check this for more details https://developer.themoviedb.org/reference/movie-details
+    This function counts genres distributionaccording to genres weights
 </div>
+
+
+
+
+
+
 
 
 
@@ -206,7 +256,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="api_moviedb.js.html">api/moviedb.js</a>, <a href="api_moviedb.js.html#line61">line 61</a>
+        <a href="preference_algorithm_preference_algorithm.js.html">preference_algorithm/preference_algorithm.js</a>, <a href="preference_algorithm_preference_algorithm.js.html#line34">line 34</a>
     </li></ul></dd>
     
 
@@ -222,16 +272,42 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         
             
-<h4 class="name" id=".fetchMovies"><span class="type-signature">(static, constant) </span>fetchMovies<span class="type-signature"></span></h4>
 
+    
+
+    
+    <h4 class="name" id="~sumOfWeights"><span class="type-signature">(async, inner) </span>sumOfWeights<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
 
 
 
 <div class="description">
-    This function returns json which contains one page of films from API (19 films without possability to get more than 19 at once).Function returns filtered and sorted films due to options in variable {params}.If {params} is undefined then function returns films from the list of trending movies of the day.Check this for more filters and sort options https://developer.themoviedb.org/reference/movie-details.
+    This function counts sum of all genres weights
 </div>
+
+
+
+
+
+
 
 
 
@@ -268,7 +344,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="api_moviedb.js.html">api/moviedb.js</a>, <a href="api_moviedb.js.html#line50">line 50</a>
+        <a href="preference_algorithm_preference_algorithm.js.html">preference_algorithm/preference_algorithm.js</a>, <a href="preference_algorithm_preference_algorithm.js.html#line19">line 19</a>
     </li></ul></dd>
     
 
@@ -284,9 +360,31 @@
 
 
 
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
         
+<div class="param-desc">
+    sum of genres weights
+</div>
+
+
+
     
 
+
+
+
+
+        
     
 
     

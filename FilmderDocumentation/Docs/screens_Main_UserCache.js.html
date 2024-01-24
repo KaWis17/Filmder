@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: constants/index.js</title>
+    <title>JSDoc: Source: screens/Main/UserCache.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: constants/index.js</h1>
+    <h1 class="page-title">Source: screens/Main/UserCache.js</h1>
 
     
 
@@ -27,36 +27,35 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * @module constants
+ * @module main
  */
-/**
- * This file defines const values used in API.
- */
+import React, { useEffect } from 'react'
+import useAuth from '../../backend/AuthProvider'
+import { saveWatchedCards, clearWatchedCards } from '../../backend/UserCacheQueries'
 
-export const apiKey = '7a06bffd3bb7365e86f4d21626d34371';
-export const apiBaseUrl = 'https://api.themoviedb.org/3';
+const FilmCache = ({
+    setSavedCards
+}) => {
+    const { user } =  useAuth();
 
-export const basicMovie = {
-    "adult": false,
-    "backdrop_path": "/fm6KqXpk3M2HVveHwCrBSSBaO0V.jpg",
-    "id": 872585,
-    "title": "Oppenheimer",
-    "original_language": "en",
-    "original_title": "Oppenheimer",
-    "overview": "The story of J. Robert Oppenheimer's role in the development of the atomic bomb during World War II.",
-    "poster_path": "/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg",
-    "media_type": "movie",
-    "genre_ids": [
-      18,
-      36
-    ],
-    "popularity": 2706.372,
-    "release_date": "2023-07-19",
-    "video": false,
-    "vote_average": 8.237,
-    "vote_count": 4380
-  }
-</code></pre>
+    useEffect(() => {
+        fetchData();
+        return () => {
+            clearWatchedCards();
+            console.log('delete data')
+        }
+    }, [])
+
+    const fetchData = async () => {
+        setSavedCards(await saveWatchedCards(user));
+    }
+
+    return (
+        &lt;>&lt;/>
+    )
+}
+
+export default FilmCache</code></pre>
         </article>
     </section>
 
